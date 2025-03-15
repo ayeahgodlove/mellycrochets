@@ -9,7 +9,7 @@ import { BiLogoGmail } from "react-icons/bi";
 
 const SocialIcons = () => {
   return (
-    <div className="social-links pt-15 pb-30">
+    <div className="social-links pt-15 pb-20 md:pb-30">
       <h1 className="heading1 font-playfair text-black">Let&apos;s Connect Via</h1>
       <div className="icons">
         <a

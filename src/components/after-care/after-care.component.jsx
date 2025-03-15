@@ -41,13 +41,13 @@ const CrochetCareTips = () => {
             <span style={{ fontSize: 16, marginLeft: 30 }}>{care.title}</span>
           </div>
 
-          <div className="flex justify-center align-middle">
+          <div className="hidden md:flex justify-center align-middle">
             <span className="bg-[#f2c2c2] px-5 rounded-lg">Care</span>
           </div>
         </div>
       ),
       children: (
-        <div className="px-10">
+        <div className="px-2 md:px-10">
           <YoutubeVideo title={care.title} videoUrl={care.videoUrl} />
           <div>{care.description}</div>
         </div>
@@ -57,7 +57,7 @@ const CrochetCareTips = () => {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto px-4 py-30">
+      <div className="max-w-4xl mx-auto px-4 py-15 md:py-30">
         <Collapse
           size="large"
           accordion

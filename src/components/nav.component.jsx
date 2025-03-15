@@ -96,7 +96,7 @@ const AppNavigation = () => {
         </div>
 
         {isOpen && (
-          <div className="md:hidden absolute top-20 left-0 right-0 bg-white shadow-md py-5 px-10 md:px-30 lg:px-50">
+          <div className="md:hidden absolute top-20 left-0 right-0 bg-white shadow-md py-5 px-10 md:px-30 lg:px-50 z-10">
             <div className="flex flex-col space-y-6">
               <Link
                 href="/"
@@ -105,6 +105,15 @@ const AppNavigation = () => {
                 }`}
               >
                 {t("components.navigation.home")}
+              </Link>
+
+              <Link
+                href="/aftercare"
+                className={`nav-link font-playfair  ${
+                  pathname === "/aftercare" ? "active" : ""
+                }`}
+              >
+                After Care
               </Link>
 
               <Link
@@ -117,6 +126,15 @@ const AppNavigation = () => {
               </Link>
 
               <Link
+                href="/article"
+                className={`nav-link font-playfair  ${
+                  pathname === "/aftercare" ? "active" : ""
+                }`}
+              >
+                Article
+              </Link>
+
+              <Link
                 href="/contact"
                 className={`nav-link font-playfair  ${
                   pathname === "/contact" ? "active" : ""
@@ -124,6 +142,12 @@ const AppNavigation = () => {
               >
                 {t("components.navigation.contact")}
               </Link>
+
+              <AppLanguage />
+
+              <div className="shoppingCart">
+                <ShoppingCart cartCount={10} />
+              </div>
             </div>
           </div>
         )}
