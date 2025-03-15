@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { BiMenu } from "react-icons/bi";
 import AppLanguage from "./shared/language.component";
+import ShoppingCart from "./shopping-cart/shopping-cart";
 
 const AppNavigation = () => {
   const [isOpen, setOpen] = useState(false);
@@ -13,7 +14,7 @@ const AppNavigation = () => {
   const pathname = usePathname();
   // const t = useTranslations('HomePage');
   const { translate: t } = useTranslation();
- 
+
   return (
     <nav className="bg-[#fdf3f3] py-1 px-10 md:px-30 lg:px-50 shadow-md">
       <div className="flex justify-between items-center">
@@ -34,40 +35,54 @@ const AppNavigation = () => {
         <div className="hidden md:flex space-x-8">
           <Link
             href="/"
-            className={`nav-link font-playfair  ${pathname === "/" ? "active" : ""}`}
+            className={`nav-link font-playfair  ${
+              pathname === "/" ? "active" : ""
+            }`}
           >
             {t("components.navigation.home")}
           </Link>
 
           <Link
             href="/aftercare"
-            className={`nav-link font-playfair  ${pathname === "/aftercare" ? "active" : ""}`}
+            className={`nav-link font-playfair  ${
+              pathname === "/aftercare" ? "active" : ""
+            }`}
           >
             After Care
           </Link>
 
           <Link
             href="/about"
-            className={`nav-link font-playfair  ${pathname === "/about" ? "active" : ""}`}
+            className={`nav-link font-playfair  ${
+              pathname === "/about" ? "active" : ""
+            }`}
           >
             {t("components.navigation.about")}
           </Link>
 
           <Link
             href="/article"
-            className={`nav-link font-playfair  ${pathname === "/aftercare" ? "active" : ""}`}
+            className={`nav-link font-playfair  ${
+              pathname === "/aftercare" ? "active" : ""
+            }`}
           >
             Article
           </Link>
 
           <Link
             href="/contact"
-            className={`nav-link font-playfair  ${pathname === "/contact" ? "active" : ""}`}
+            className={`nav-link font-playfair  ${
+              pathname === "/contact" ? "active" : ""
+            }`}
           >
             {t("components.navigation.contact")}
           </Link>
 
           <AppLanguage />
+
+          <div className="shoppingCart">
+            <ShoppingCart cartCount={10} />
+          </div>
         </div>
 
         {/* mobile menu */}
@@ -85,14 +100,18 @@ const AppNavigation = () => {
             <div className="flex flex-col space-y-6">
               <Link
                 href="/"
-                className={`nav-link font-playfair  ${pathname === "/" ? "active" : ""}`}
+                className={`nav-link font-playfair  ${
+                  pathname === "/" ? "active" : ""
+                }`}
               >
                 {t("components.navigation.home")}
               </Link>
 
               <Link
                 href="/about"
-                className={`nav-link font-playfair  ${pathname === "/about" ? "active" : ""}`}
+                className={`nav-link font-playfair  ${
+                  pathname === "/about" ? "active" : ""
+                }`}
               >
                 {t("components.navigation.about")}
               </Link>

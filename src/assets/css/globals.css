@@ -59,6 +59,27 @@ b {
     border-top-right-radius: 5;
 }
 
-.custom_swiper {
-    
+.cartHolder {
+    display: flex;
+    flex-direction: column;
+}
+
+.cartHolder .removeCartItem {
+    cursor: pointer;
+}
+
+.cartHolder .checkOutBtn {
+    margin: auto;
+    padding: 5px 35px;
+}
+
+.shoppingCart {
+    margin-top: 0;
+    cursor: pointer;
+    user-select: none;
+    margin-left: 10px;
+}
+
+.shoppingCart .shoppingCardIcon {
+    font-size: 26px;
 }
