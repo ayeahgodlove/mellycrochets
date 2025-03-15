@@ -25,6 +25,7 @@ const CrochetCard = ({ crochet }) => {
                   }`}
                   alt={crochet.description}
                   preview={true}
+                  style={{ objectFit: "cover" }}
                 />
               </Image.PreviewGroup>
 

@@ -83,3 +83,28 @@ b {
 .shoppingCart .shoppingCardIcon {
     font-size: 26px;
 }
+
+
+.custom-ant-image {
+    width: 100% !important;
+    object-fit: cover;
+    display: block;
+}
+
+.custom-image-group .ant-image {
+    width: 100% !important;
+}
+.ant-image .ant-image-img {
+    width: 100% !important;
+    object-fit: cover;
+}
+
+.responsive-img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ant-image-preview-wrap {
+    background-color: rgba(0, 0, 0, 0.8);
+}
