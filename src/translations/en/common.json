@@ -1,10 +1,146 @@
 {
-  "components": {
-    "navigation": {
-      "home": "Welcome",
-      "about": "About",
-      "contact": "Contact",
-      "aftercare": "After Care"
+  "navigation": {
+    "home": "Welcome",
+    "about": "About",
+    "services": "Services",
+    "trainings": "Trainings",
+    "posts": "Posts",
+    "faqs": "FAQ",
+    "contact": "Contact",
+    "aftercare": "Aftercare"
+  },
+  "menus": {
+    "dashboard": "Dashboard",
+    "configurations": "Configurations",
+    "media": "Media",
+    "users": "Users",
+    "categories": "Categories",
+    "settings": "Settings",
+    "faqs": "FAQ",
+    "posts": "Blog Posts",
+    "events": "Events",
+    "ecommerce": "Ecommerce",
+    "products": "Products",
+    "customers": "Customers",
+    "inventory": "Inventory",
+    "orders": "Orders",
+    "payments": "Payments",
+    "our_services": "Our Services",
+    "services": "Services",
+    "consultations": "Consultations",
+    "appointments": "Appointments",
+    "trainings": "Trainings",
+    "profiles": "Profiles"
+  },
+  "buttons": {
+    "delete": "Delete",
+    "logout": "Logout",
+    "save": "Save",
+    "create": "Create",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "show": "Show",
+    "confirm": "Are you sure?",
+    "notAccessTitle": "You don't have permission to access",
+    "refresh": "Refresh"
+  },
+  "actions": {
+    "create": "Create",
+    "edit": "Edit",
+    "list": "List",
+    "show": "Show"
+  },
+  "notifications": {
+    "createError": "Transaction Failed!",
+    "createSuccess": "Transaction completed successfully!",
+    "success": "Success",
+    "error": "Error",
+    "deleteSuccess": "Successfully Deleted"
+  },
+  "pages": {
+    "error": {
+      "404": "Sorry, the page you visited does not exist.",
+      "backHome": "Back Home"
+    }
+  },
+  "services": {
+    "services": "Services",
+    "titles": {
+      "list": "List Services",
+      "create": "Create Service",
+      "edit": "Edit Service"
+    }
+  },
+  "posts": {
+    "posts": "Posts",
+    "titles": {
+      "list": "List Posts",
+      "create": "Create Post",
+      "edit": "Edit Post"
+    }
+  },
+  "events": {
+    "events": "Events",
+    "titles": {
+      "list": "List Events",
+      "create": "Create Event",
+      "edit": "Edit Event"
+    }
+  },
+  "trainings": {
+    "trainings": "Trainings",
+    "titles": {
+      "list": "List Trainings",
+      "create": "Create Training",
+      "edit": "Edit Training"
+    }
+  },
+  "faqs": {
+    "faqs": "Faqs",
+    "titles": {
+      "list": "List Faqs",
+      "create": "Create Faq",
+      "edit": "Edit Faq"
+    }
+  },
+  "products": {
+    "products": "Products",
+    "titles": {
+      "list": "List Products",
+      "create": "Create Product",
+      "edit": "Edit Product"
+    }
+  },
+  "users": {
+    "users": "Users",
+    "titles": {
+      "list": "List Users",
+      "create": "Create User",
+      "edit": "Edit User"
+    }
+  },
+  "profiles": {
+    "profiles": "Profiles",
+    "titles": {
+      "list": "List Profiles",
+      "create": "Create Profile",
+      "edit": "Edit Profile"
+    }
+  },
+  "appointments": {
+    "appointments": "Appointments",
+    "titles": {
+      "list": "List Appointments",
+      "create": "Create Appointment",
+      "edit": "Edit Appointment"
+    }
+  },
+  "consultations": {
+    "consultations": "Consultations",
+    "titles": {
+      "list": "List Consultations",
+      "create": "Create Consultation",
+      "edit": "Edit Consultation"
     }
   }
 }

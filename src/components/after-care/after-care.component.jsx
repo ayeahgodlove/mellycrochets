@@ -25,35 +25,40 @@ const CrochetCareTips = () => {
     );
   }
 
-  const items = afterCares.map((care) => {
-    return {
-      key: care.id,
-      label: (
-        <div className="flex align-middle justify-between">
-          <div>
-            <Image
-              height={20}
-              width={20}
-              preview={false}
-              src={"/icons/svg-path.png"}
-              style={{ marginTop: 5 }}
-            />
-            <span style={{ fontSize: 16, marginLeft: 30 }}>{care.title}</span>
-          </div>
+  const items =
+    afterCares && afterCares.length > 0
+      ? afterCares.map((care) => {
+          return {
+            key: care.id,
+            label: (
+              <div className="flex align-middle justify-between">
+                <div>
+                  <Image
+                    height={20}
+                    width={20}
+                    preview={false}
+                    src={"/icons/svg-path.png"}
+                    style={{ marginTop: 5 }}
+                  />
+                  <span style={{ fontSize: 16, marginLeft: 30 }}>
+                    {care.title}
+                  </span>
+                </div>
 
-          <div className="hidden md:flex justify-center align-middle">
-            <span className="bg-[#f2c2c2] px-5 rounded-lg">Care</span>
-          </div>
-        </div>
-      ),
-      children: (
-        <div className="px-2 md:px-10">
-          <YoutubeVideo title={care.title} videoUrl={care.videoUrl} />
-          <div>{care.description}</div>
-        </div>
-      ),
-    };
-  });
+                <div className="hidden md:flex justify-center align-middle">
+                  <span className="bg-[#f2c2c2] px-5 rounded-lg">Care</span>
+                </div>
+              </div>
+            ),
+            children: (
+              <div className="px-2 md:px-10">
+                <YoutubeVideo title={care.title} videoUrl={care.videoUrl} />
+                <div>{care.description}</div>
+              </div>
+            ),
+          };
+        })
+      : [];
 
   return (
     <>
@@ -63,6 +68,7 @@ const CrochetCareTips = () => {
           accordion
           items={items}
           expandIconPosition={"right"}
+          defaultActiveKey={items && items.length > 0 ? items[0].key : null}
         />
       </div>
     </>

@@ -1,5 +1,4 @@
 import ContactSection from "../../components/contact/contact.component";
-import Footer from "../../components/footer/footer.component";
 import Image from "next/image";
 import "../../assets/css/globals.css";
 

@@ -1,5 +1,5 @@
 "use client";
-import { useTranslation } from "@refinedev/core";
+
 import { Image } from "antd";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,13 +7,14 @@ import React, { useState } from "react";
 import { BiMenu } from "react-icons/bi";
 import AppLanguage from "./shared/language.component";
 import ShoppingCart from "./shopping-cart/shopping-cart";
+import { useTranslations } from "next-intl";
 
 const AppNavigation = () => {
   const [isOpen, setOpen] = useState(false);
 
   const pathname = usePathname();
   // const t = useTranslations('HomePage');
-  const { translate: t } = useTranslation();
+  const t = useTranslations('navigation');
 
   return (
     <nav className="bg-[#fdf3f3] py-1 px-10 md:px-30 lg:px-50 shadow-md">
@@ -39,13 +40,13 @@ const AppNavigation = () => {
               pathname === "/" ? "active" : ""
             }`}
           >
-            {t("components.navigation.home")}
+            {t("home")}
           </Link>
 
           <Link
-            href="/aftercare"
+            href="/after_cares"
             className={`nav-link font-playfair  ${
-              pathname === "/aftercare" ? "active" : ""
+              pathname === "/after_cares" ? "active" : ""
             }`}
           >
             After Care
@@ -57,13 +58,13 @@ const AppNavigation = () => {
               pathname === "/about" ? "active" : ""
             }`}
           >
-            {t("components.navigation.about")}
+            {t("about")}
           </Link>
 
           <Link
-            href="/article"
+            href="/blog_posts"
             className={`nav-link font-playfair  ${
-              pathname === "/aftercare" ? "active" : ""
+              pathname === "/blog_posts" ? "active" : ""
             }`}
           >
             Article
@@ -75,7 +76,7 @@ const AppNavigation = () => {
               pathname === "/contact" ? "active" : ""
             }`}
           >
-            {t("components.navigation.contact")}
+            {t("contact")}
           </Link>
 
           <AppLanguage />
@@ -104,13 +105,13 @@ const AppNavigation = () => {
                   pathname === "/" ? "active" : ""
                 }`}
               >
-                {t("components.navigation.home")}
+                {t("home")}
               </Link>
 
               <Link
-                href="/aftercare"
+                href="/after_cares"
                 className={`nav-link font-playfair  ${
-                  pathname === "/aftercare" ? "active" : ""
+                  pathname === "/after_cares" ? "active" : ""
                 }`}
               >
                 After Care
@@ -122,16 +123,16 @@ const AppNavigation = () => {
                   pathname === "/about" ? "active" : ""
                 }`}
               >
-                {t("components.navigation.about")}
+                {t("about")}
               </Link>
 
               <Link
-                href="/article"
+                href="/blog_posts"
                 className={`nav-link font-playfair  ${
-                  pathname === "/aftercare" ? "active" : ""
+                  pathname === "/blog_posts" ? "active" : ""
                 }`}
               >
-                Article
+                Blog Posts
               </Link>
 
               <Link
@@ -140,7 +141,7 @@ const AppNavigation = () => {
                   pathname === "/contact" ? "active" : ""
                 }`}
               >
-                {t("components.navigation.contact")}
+                {t("contact")}
               </Link>
 
               <AppLanguage />

@@ -30,7 +30,7 @@ const YoutubeVideo = ({ videoUrl, title }) => {
       }}
     >
       {/* <div className="mb-4"> */}
-        
+
       {/* </div> */}
       <div className="relative w-full h-56 bg-black">
         {!isPlaying ? (
@@ -38,9 +38,19 @@ const YoutubeVideo = ({ videoUrl, title }) => {
             className="absolute inset-0 flex items-center justify-center cursor-pointer bg-gray-800 rounded-lg h-60"
             onClick={() => setIsPlaying(true)}
           >
-            <div className="absolute inset-0 bg-black/40"></div>
+            <div
+              className="absolute inset-0 bg-black/40"
+              style={{
+                background: "url('./mellycrochets/product-jpeg-1000x1000.jpg')",
+                // backgroundPosition: "top",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                width: "100%"
+              }}
+            ></div>
             <PlayCircleOutlined
-              style={{ fontSize: "48px", color: "#ff4d4f" }}
+              style={{ fontSize: "48px", color: "#82181a" }}
               className="relative z-10 text-white text-6xl sm:text-7xl md:text-8xl hover:text-gray-300 transition-colors"
             />
           </div>
