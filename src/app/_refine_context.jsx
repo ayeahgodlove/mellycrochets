@@ -11,7 +11,6 @@ import routerProvider from "@refinedev/nextjs-router";
 
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "@refinedev/antd/dist/reset.css";
-import { ColorModeContextProvider } from "../contexts/color-mode";
 import { dataProvider } from "../providers/data-provider";
 import { menus } from "../utils/menus";
 
@@ -117,7 +116,6 @@ export const App = (props) => {
     },
   };
 
-  const defaultMode = props?.defaultMode;
   const filteredMenus = menus.filter((menu) =>
     menu.meta?.canAccess?.includes(data?.user?.role)
   );
@@ -127,37 +125,35 @@ export const App = (props) => {
       <RefineKbarProvider>
         <AntdRegistry>
           <ClientProvider>
-            <ColorModeContextProvider defaultMode={defaultMode}>
-              <Refine
-                routerProvider={routerProvider}
-                dataProvider={dataProvider}
-                accessControlProvider={{
-                  can: async ({ resource, action }) => {
-                    const user = await authProvider.getPermissions();
-                    return accessControlProvider.can({
-                      resource,
-                      action,
-                      params: { user },
-                    });
-                  },
-                  options: {},
-                }}
-                notificationProvider={useNotificationProvider}
-                authProvider={authProvider}
-                i18nProvider={i18nProvider}
-                resources={filteredMenus}
-                options={{
-                  syncWithLocation: true,
-                  warnWhenUnsavedChanges: true,
-                  useNewQueryKeys: true,
-                  projectId: "njMZZm-fu7OWZ-sdebsw",
-                  breadcrumb: true,
-                }}
-              >
-                {props.children}
-                <RefineKbar />
-              </Refine>
-            </ColorModeContextProvider>
+            <Refine
+              routerProvider={routerProvider}
+              dataProvider={dataProvider}
+              accessControlProvider={{
+                can: async ({ resource, action }) => {
+                  const user = await authProvider.getPermissions();
+                  return accessControlProvider.can({
+                    resource,
+                    action,
+                    params: { user },
+                  });
+                },
+                options: {},
+              }}
+              notificationProvider={useNotificationProvider}
+              authProvider={authProvider}
+              i18nProvider={i18nProvider}
+              resources={filteredMenus}
+              options={{
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+                useNewQueryKeys: true,
+                projectId: "njMZZm-fu7OWZ-sdebsw",
+                breadcrumb: true,
+              }}
+            >
+              {props.children}
+              <RefineKbar />
+            </Refine>
           </ClientProvider>
         </AntdRegistry>
       </RefineKbarProvider>

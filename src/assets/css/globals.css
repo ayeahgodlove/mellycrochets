@@ -94,6 +94,7 @@ b {
 .custom-image-group .ant-image {
     width: 100% !important;
 }
+
 .ant-image .ant-image-img {
     width: 100% !important;
     object-fit: cover;
@@ -107,4 +108,8 @@ b {
 
 .ant-image-preview-wrap {
     background-color: rgba(0, 0, 0, 0.8);
+}
+
+.float-group-custom .float-btn-custom:nth-child(1) .ant-float-btn-body {
+    background-color: #6ca12b !important;
 }
