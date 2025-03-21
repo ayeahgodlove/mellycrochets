@@ -1,33 +1,25 @@
-// models/AfterCare.ts
+// models/Size.ts
 module.exports = (sequelize, DataTypes) => {
-  const AfterCare = sequelize.define(
-    "AfterCare",
+  const Size = sequelize.define(
+    "Size",
     {
       id: {
         type: DataTypes.STRING(20),
         allowNull: false,
         primaryKey: true,
       },
-      title: {
+      label: {
         type: DataTypes.STRING(255),
         allowNull: false,
         unique: true,
       },
-      videoUrl: {
-        type: DataTypes.STRING(255),
-        allowNull: true,
-      },
-      description: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
     },
     {
       sequelize,
-      tableName: "after_cares",
+      tableName: "sizes",
       timestamps: true,
     }
   );
 
-  return AfterCare;
+  return Size;
 };

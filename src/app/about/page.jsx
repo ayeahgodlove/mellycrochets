@@ -1,6 +1,8 @@
 import ContactSection from "../../components/contact/contact.component";
 import Image from "next/image";
 import "../../assets/css/globals.css";
+import { FiFacebook, FiInstagram, FiX } from "react-icons/fi";
+import { RiTiktokFill } from "react-icons/ri";
 
 export default function About() {
   return (
@@ -12,18 +14,74 @@ export default function About() {
             About MellyCrochets
           </h1>
           <p class="text-lg leading-relaxed">
-            Handcrafted crochet pieces made with love, passion, and a touch of
-            warmth — from our hooks to your home.
+            MellyCrochets ETS is a fashion-forward crochet brand that creates
+            timeless, eco-friendly, and biodegradable fashion using natural wool
+            and cotton. Our mission is to craft high-quality, long-lasting, and
+            recyclable pieces that bring warmth, beauty, and sustainability to
+            wardrobes of all age groups and genders.
           </p>
         </div>
+
+        <section class="bg-gray-50 py-10 px-6 md:px-12">
+          <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">
+              Connect With Us
+            </h2>
+            <p class="text-gray-600 mb-6">
+              Follow us online to stay updated with new arrivals,
+              behind-the-scenes, and all things handmade.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-6 mt-6">
+              <a
+                href="https://www.instagram.com/mellycrochets_"
+                target="_blank"
+                class="flex items-center gap-3 text-pink-600 hover:underline"
+              >
+                <FiInstagram size={22} />
+                @mellycrochets_
+              </a>
+
+              <a
+                href="https://facebook.com/MellycrochetsETS"
+                target="_blank"
+                class="flex items-center gap-3 text-blue-700 hover:underline"
+              >
+                <FiFacebook size={22} />
+                Mellycrochets ETS
+              </a>
+
+              <a
+                href="https://tiktok.com/@mellycrochets_"
+                target="_blank"
+                class="flex items-center gap-3 text-black hover:underline"
+              >
+                <RiTiktokFill size={22} /> @mellycrochets_
+              </a>
+
+              <a
+                href="https://x.com/mellycrochets"
+                target="_blank"
+                class="flex items-center gap-3 text-gray-800 hover:underline"
+              >
+                <FiX size={22} /> @mellycrochets
+              </a>
+            </div>
+          </div>
+        </section>
 
         {/* <!-- Our Story --> */}
         <div class="max-w-5xl mx-auto px-6 py-12">
           <h2 class="text-2xl font-semibold text-red-950 mb-4">Our Story</h2>
           <p class="text-base leading-relaxed">
-            MellyCrochets began with a simple passion for yarn and a dream to
-            share handmade joy with the world. From cozy blankets to adorable
-            baby booties, each piece tells a story woven with care.
+            The heart of MellyCrochets ETS began with a thread of passion woven
+            in childhood. Our founder began crocheting at the tender age of
+            five, creating small pieces like hats, bonnets, and purses for her
+            mom and sister. What started as a childhood hobby grew into a
+            calling. In 2018, after graduating with a BSc in Economics, she
+            turned her lifelong love for crocheting into a full-fledged
+            business. Since then, MellyCrochets ETS has grown into a brand
+            driven by purpose, artistry, and sustainability.
           </p>
         </div>
 
@@ -35,9 +93,12 @@ export default function About() {
                 Our Mission
               </h2>
               <p class="text-base leading-relaxed">
-                We aim to celebrate the art of crochet, promote slow fashion,
-                and bring warmth and charm to everyday life through handcrafted
-                pieces.
+                Our mission is to promote sustainable fashion through
+                handcrafted crochet designs made from biodegradable and
+                eco-friendly materials. We strive to produce fashionable,
+                long-lasting pieces that not only elevate your style but also
+                support a greener planet. Every product is a blend of tradition,
+                creativity, and conscious living.
               </p>
             </div>
             <img
@@ -48,7 +109,7 @@ export default function About() {
                 height: 400,
                 width: "100%",
                 objectFit: "cover",
-                backgroundPosition: "top"
+                backgroundPosition: "top",
               }}
             />
           </div>
@@ -66,11 +127,15 @@ export default function About() {
               class="w-48 h-48 rounded-full object-cover shadow-md"
             />
             <p class="text-base leading-relaxed">
-              Hi, I&rsquo;m Melly — the heart and hands behind MellyCrochets. Crochet
-              is more than a craft to me; it&rsquo;s a connection to tradition,
-              creativity, and community. I started this shop to share my love of
-              handmade treasures and create pieces that warm both homes and
-              hearts.
+              Behind every stitch is a story, and behind every design is a maker
+              with a dream. Our founder — a passionate artisan with years of
+              experience — leads the creative process at MellyCrochets ETS. Her
+              journey from childhood hobbyist to full-time entrepreneur embodies
+              the dedication, love, and craftsmanship that go into every
+              MellyCrochets product. Her passion has also extended beyond
+              production — she has trained over 15 individuals in the art of
+              crocheting, with at least four of them launching their own crochet
+              businesses.
             </p>
           </div>
         </div>
@@ -87,25 +152,24 @@ export default function About() {
                   Handmade With Love
                 </h3>
                 <p class="text-sm">
-                  Every item is carefully crocheted by hand — no machines, just
-                  heart and soul.
+                  Every item is made by hand, ensuring uniqueness and quality.
                 </p>
               </div>
               <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-red-700 mb-2">
-                  Sustainable Materials
+                  Eco-Friendly Materials
                 </h3>
                 <p class="text-sm">
-                  We use eco-friendly yarn and packaging to protect our planet.
+                  We use biodegradable wool and cotton in all our designs
                 </p>
               </div>
               <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-red-700 mb-2">
-                  Custom Orders
+                  Versatile Styles
                 </h3>
                 <p class="text-sm">
-                  Looking for something unique? We craft personalized crochet
-                  gifts just for you.
+                  Our collections cater to all age groups and genders — from
+                  baby sets to beachwear, wedding dresses, and more.
                 </p>
               </div>
             </div>

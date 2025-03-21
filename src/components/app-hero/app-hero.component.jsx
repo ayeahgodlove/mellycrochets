@@ -1,9 +1,12 @@
 import React from "react";
-import { Autoplay, Navigation, Thumbs } from "swiper";
+import { Navigation, Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-// Import Swiper styles
-import "swiper/css";
-import { Pagination } from "antd";
+import "swiper/swiper-bundle.min.css";
+
+import {
+  FaRegArrowAltCircleLeft,
+  FaRegArrowAltCircleRight,
+} from "react-icons/fa";
 
 const AppHero = () => {
   return (
@@ -42,9 +45,13 @@ const AppHero = () => {
             slidesPerView={1}
             speed={1200}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
-            navigation={true}
-            pagination={{ clickable: true }}
-            // modules={[Autoplay, Navigation]}
+            // pagination={{ clickable: true }}
+            navigation={{
+              nextEl: ".featured-next__active",
+              prevEl: ".featured-prev__active",
+            }}
+            // pagination={{ el: ".featured-pagination__active", clickable: true }}
+            modules={[Navigation, Pagination]}
             className="w-full h-[50vh] lg:h-[80vh] rounded-lg"
           >
             <SwiperSlide className="flex justify-center">
@@ -76,6 +83,16 @@ const AppHero = () => {
               />
             </SwiperSlide>
           </Swiper>
+        </div>
+
+        <div className="absolute bottom-[40%] w-full z-10 px-2 flex items-center justify-between text-center space-x-4 mt-6">
+          <button className="featured-prev__active bg-[#fdf3f3] p-2 rounded-full hover:bg-red-200 hover:text-white">
+            <FaRegArrowAltCircleLeft size={25} />
+          </button>
+          <div className="pagination featured-pagination__active" />
+          <button className="featured-next__active bg-[#fdf3f3] p-2 rounded-full hover:bg-red-200 hover:text-white">
+            <FaRegArrowAltCircleRight size={25} />
+          </button>
         </div>
       </div>
     </div>

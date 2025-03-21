@@ -12,8 +12,8 @@ module.exports = {
     await queryInterface.createTable("crochets", {
       id: {
         type: Sequelize.STRING(20),
-        primaryKey: true,
         allowNull: false,
+        primaryKey: true,
       },
       name: {
         type: Sequelize.STRING(128),
@@ -23,43 +23,26 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      price: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
-      },
-      stock: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
-      },
       crochetTypeId: {
         type: Sequelize.STRING(20),
         allowNull: false,
-        references: {
-          model: "crochet_types",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       imageUrls: {
-        type: Sequelize.JSON, // Stores multiple image URLs
-        allowNull: true,
-      },
-      size: {
-        type: Sequelize.ENUM("S", "M", "L", "XL"),
-        allowNull: true,
+        type: Sequelize.JSON,
       },
       color: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(50),
         allowNull: true,
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
     });
   },

@@ -51,11 +51,11 @@ module.exports = {
           key: "id",
         },
       },
-      categoryId: {
-        type: Sequelize.STRING(128),
+      crochetTypeId: {
+        type: Sequelize.STRING(20),
         allowNull: false,
         references: {
-          model: "categories",
+          model: "crochet_types",
           key: "id",
         },
       },

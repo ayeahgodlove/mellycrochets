@@ -16,15 +16,19 @@ export default async function Layout({ children }) {
   }
 
   return (
-    <ThemedLayoutV2 Header={Header} title={"EMS"}>
-      <Row justify={"center"} align={"top"}>
-        <Col xs={22} md={18}>
-          <Authenticated key="home-page" fallback={<Login />}>
-            {children}
-          </Authenticated>
-        </Col>
-      </Row>
-    </ThemedLayoutV2>
+    <html lang="en">
+      <body>
+        <ThemedLayoutV2 Header={Header} title={"EMS"}>
+          <Row justify={"center"} align={"top"}>
+            <Col xs={22} md={18}>
+              <Authenticated key="home-page" fallback={<Login />}>
+                {children}
+              </Authenticated>
+            </Col>
+          </Row>
+        </ThemedLayoutV2>
+      </body>
+    </html>
   );
 }
 

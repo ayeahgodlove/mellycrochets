@@ -7,53 +7,51 @@ module.exports = {
      * Add altering commands here.
      *
      * Example:
-     * await queryInterface.createTable('cartItems', { id: Sequelize.INTEGER });
+     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("cart_items_tbl", {
+    await queryInterface.createTable("crochet_sizes", {
       id: {
         type: Sequelize.STRING(20),
         allowNull: false,
         primaryKey: true,
       },
       crochetId: {
-        type: Sequelize.STRING(128),
+        type: Sequelize.STRING(20),
         allowNull: false,
         references: {
           model: "crochets",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
-      userId: {
-        type: Sequelize.STRING(128),
+      sizeId: {
+        type: Sequelize.STRING(20),
         allowNull: false,
         references: {
-          model: "users",
+          model: "sizes",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
-      quantity: {
+      stock: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      price: {
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      total: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      discountPercentage: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      discountedPrice: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      }, 
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
     });
   },
@@ -63,8 +61,8 @@ module.exports = {
      * Add reverting commands here.
      *
      * Example:
-     * await queryInterface.dropTable('cartItems');
+     * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("cart_items_tbl");
+    await queryInterface.dropTable('crochet_sizes');
   },
 };

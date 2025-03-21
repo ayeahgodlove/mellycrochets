@@ -107,7 +107,7 @@ const FilterCrochets = () => {
           >
             <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
               <div>
-                <label className="text-left font-semibold">CrochetType</label>
+                <label className="text-left font-semibold">Crochet Designs</label>
                 <CrochetTypeSelect
                   setCrochetTypeId={setCrochetTypeId}
                   crochetTypeId={crochetTypeId}

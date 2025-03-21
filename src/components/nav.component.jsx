@@ -8,13 +8,15 @@ import { BiMenu } from "react-icons/bi";
 import AppLanguage from "./shared/language.component";
 import ShoppingCart from "./shopping-cart/shopping-cart";
 import { useTranslations } from "next-intl";
+import { useGetIdentity } from "@refinedev/core";
 
 const AppNavigation = () => {
   const [isOpen, setOpen] = useState(false);
+  const { data: user } = useGetIdentity({});
 
   const pathname = usePathname();
   // const t = useTranslations('HomePage');
-  const t = useTranslations('navigation');
+  const t = useTranslations("navigation");
 
   return (
     <nav className="bg-[#fdf3f3] py-1 px-10 md:px-30 lg:px-50 shadow-md">
@@ -84,6 +86,17 @@ const AppNavigation = () => {
           <div className="shoppingCart">
             <ShoppingCart cartCount={10} />
           </div>
+
+          {user && (
+            <Link
+              href="/dashboard"
+              className={`nav-link font-playfair  ${
+                pathname === "/dashboard" ? "active" : ""
+              }`}
+            >
+              Admin
+            </Link>
+          )}
         </div>
 
         {/* mobile menu */}

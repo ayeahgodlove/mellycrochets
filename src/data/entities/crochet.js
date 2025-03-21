@@ -16,26 +16,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-      },
-      stock: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
-      },
       crochetTypeId: {
         type: DataTypes.STRING(20),
         allowNull: false,
+        references: {
+          model: "crochet_types",
+          key: "id",
+        },
       },
       imageUrls: {
         type: DataTypes.JSON, // Stores multiple image URLs
       },
-      size: {
-        type: DataTypes.ENUM("S", "M", "L", "XL"),
-      },
       color: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
+        allowNull: true,
       },
     },
     {

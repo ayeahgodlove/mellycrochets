@@ -4,7 +4,6 @@ const { DataTypes } = require("sequelize");
 const User = require("./user")(sequelize, DataTypes);
 const Media = require("./media")(sequelize, DataTypes);
 const CrochetType = require("./crochet-type")(sequelize, DataTypes);
-const Category = require("./category")(sequelize, DataTypes);
 const Crochet = require("./crochet")(sequelize, DataTypes);
 const Role = require("./role")(sequelize, DataTypes);
 const Order = require("./order")(sequelize, DataTypes);
@@ -15,6 +14,9 @@ const CartItem = require("./cart-item")(sequelize, DataTypes);
 const Subscriber = require("./subscriber")(sequelize, DataTypes);
 const Post = require("./post")(sequelize, DataTypes);
 const AfterCare = require("./after-care")(sequelize, DataTypes);
+const Size = require("./size")(sequelize, DataTypes);
+const CrochetSize = require("./crochet_size")(sequelize, DataTypes);
+
 // User <=> post Associations
 User.hasMany(Post, {
   foreignKey: "authorId",
@@ -28,22 +30,34 @@ Post.belongsTo(User, {
 });
 
 // category <=> post Associations
-// Crochet <=> Category
+// Crochet <=> Crochet Type
 CrochetType.hasMany(Crochet, { foreignKey: "crochetTypeId", as: "crochets" });
 Crochet.belongsTo(CrochetType, {
   foreignKey: "crochetTypeId",
   as: "crochetType",
 });
 
-Category.hasMany(Post, {
-  foreignKey: "categoryId",
+Crochet.belongsToMany(Size, {
+  through: CrochetSize,
+  foreignKey: "crochetId",
+  as: "sizes",
+});
+
+Size.belongsToMany(Crochet, {
+  through: CrochetSize,
+  foreignKey: "sizeId",
+  as: "crochets",
+});
+
+CrochetType.hasMany(Post, {
+  foreignKey: "crochetTypeId",
   onDelete: "SET NULL",
   as: "posts",
 });
-Post.belongsTo(Category, {
-  foreignKey: "categoryId",
+Post.belongsTo(CrochetType, {
+  foreignKey: "CrochetTypeId",
   onDelete: "SET NULL",
-  as: "category",
+  as: "crochetType",
 });
 
 // Order <=> Crochet relationship with Crochet
@@ -106,7 +120,8 @@ module.exports = {
   Review,
   CartItem,
   Subscriber,
-  Category,
   Post,
   AfterCare,
+  Size,
+  CrochetSize,
 };

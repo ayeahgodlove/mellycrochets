@@ -44,11 +44,11 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      categoryId: {
+      crochetTypeId: {
         type: DataTypes.STRING(128),
         allowNull: false,
         references: {
-          model: "categories",
+          model: "crochet_types",
           key: "id",
         },
       },

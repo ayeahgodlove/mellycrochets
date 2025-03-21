@@ -15,6 +15,14 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
       },
+      // crochetTypeId: {
+      //   type: Sequelize.STRING(20),
+      //   allowNull: false,
+      //   references: {
+      //     model: "crochet_types",
+      //     key: "id",
+      //   },
+      // },
       title: {
         type: Sequelize.STRING(255),
         allowNull: false,
@@ -22,7 +30,7 @@ module.exports = {
       },
       videoUrl: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
       description: {
         type: Sequelize.TEXT,

@@ -123,7 +123,7 @@ const Footer = () => {
             <li className="flex items-center gap-2">
               <FiPhone className="text-green-400" />
               <Link href="tel:+237674757243" className="footer-link">
-                +237 680 75 72 43
+                +237 681 077 051 /640 922 135
               </Link>
             </li>
             <li className="flex items-center gap-2">

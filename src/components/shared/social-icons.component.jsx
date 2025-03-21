@@ -1,19 +1,17 @@
 import React from "react";
-import {
-  FaWhatsapp,
-  FaInstagram,
-  FaXTwitter,
-} from "react-icons/fa6";
-import { FaTiktok } from "react-icons/fa";
+import { FaWhatsapp, FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaTiktok } from "react-icons/fa";
 import { BiLogoGmail } from "react-icons/bi";
 
 const SocialIcons = () => {
   return (
     <div className="social-links pt-15 pb-20 md:pb-30">
-      <h1 className="heading1 font-playfair text-black">Let&apos;s Connect Via</h1>
+      <h1 className="heading1 font-playfair text-black">
+        Let&apos;s Connect Via
+      </h1>
       <div className="icons">
         <a
-          href="https://wa.me/your-number"
+          href="https://wa.me/+237681077051"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -30,7 +28,7 @@ const SocialIcons = () => {
           />
         </a>
         <a
-          href="https://instagram.com/your-profile"
+          href="https://www.instagram.com/mellycrochets_?igsh=cTkwZTc1eDcyaThw&utm_source=qr"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -48,7 +46,7 @@ const SocialIcons = () => {
           />
         </a>
         <a
-          href="https://twitter.com/your-profile"
+          href="https://x.com/mellycrochets?s=21"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -64,7 +62,7 @@ const SocialIcons = () => {
             }}
           />
         </a>
-        <a href="mailto:your-email@gmail.com">
+        {/* <a href="mailto:your-email@gmail.com">
           <BiLogoGmail
             className="social-icon gmail"
             style={{
@@ -80,9 +78,9 @@ const SocialIcons = () => {
                 "linear-gradient(45deg, #ea4335, #4285f4, #fbbc05, #34a853)",
             }}
           />
-        </a>
+        </a> */}
         <a
-          href="https://www.tiktok.com/@your-profile"
+          href="https://www.tiktok.com/@mellycrochets_?_t=ZM-8uhxGqcniqN&_r=1"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -98,6 +96,23 @@ const SocialIcons = () => {
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundImage: "linear-gradient(45deg, #69C9D0, #EE1D52)",
+            }}
+          />
+        </a>
+        <a
+          href="https://www.facebook.com/mellynchindo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FaFacebook
+            className="social-icon facebook"
+            style={{
+              padding: 5,
+              border: "none",
+              background: "#005bce", // Alternative Facebook Blue
+              color: "#ffffff", // White icon
+              borderRadius: 30,
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
             }}
           />
         </a>

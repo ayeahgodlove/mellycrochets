@@ -31,6 +31,10 @@ module.exports = {
           key: "id",
         },
       },
+      price: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+      },
       quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -39,14 +43,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      discountPercentage: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      discountedPrice: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      }, 
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

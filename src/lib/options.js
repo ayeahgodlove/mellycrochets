@@ -1,12 +1,10 @@
 import Auth0Provider from "next-auth/providers/auth0";
 import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { UserRepository } from "../data/repositories/user.repository";
-import { emptyUser } from "../data/models/index";
+import { emptyUser } from "../data/models";
 import { nanoid } from "nanoid";
-
-const userRepository = new UserRepository();
+import bcrypt from "bcryptjs";
+import { User } from "../data/entities";
 
 const authOptions = {
   providers: [
@@ -19,53 +17,56 @@ const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-    FacebookProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-    }),
-    // Credentials (Email/Password)
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "you@example.com",
+          value: "ayeahchanser@gmail.com",
         },
-        password: { label: "Password", type: "password" },
+        password: { label: "Password", type: "password", value: "Admin@2024" },
       },
       async authorize(credentials) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: credentials?.email,
-                password: credentials?.password,
-              }),
-            }
-          );
-
-          if (!response.ok) throw new Error("Invalid credentials");
-
-          const user = await response.json();
-          return user; // User must contain { id, name, email, image }.
-        } catch (error) {
-          throw new Error(
-            "Login failed. Please check your email and password."
-          );
+        if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials");
+          return null;
         }
+
+        const currentUser = await User.findOne({
+          where: { email: credentials.email },
+        });
+        if (!currentUser) {
+          console.log("Login failed. Invalud Credentials.");
+          return null;
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials?.password,
+          currentUser.password
+        );
+        if (!isPasswordValid) {
+          console.log("Login failed. Invalid credentials");
+          return null;
+        }
+
+        const { password, ...userWithoutPassword } = currentUser.toJSON();
+        console.log("userWithoutPassword: ", userWithoutPassword);
+        return userWithoutPassword; // User must contain { id, name, email, image }.
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      // If user signs in, add their info to the token
       if (user) {
-        const userItem = await userRepository.findByEmail(user.email);
-        token.role = userItem.role;
+        const userItem = await User.findOne({
+          where: { email: user.email },
+        });
+        token.id = userItem.id;
+        token.name = userItem.username;
+        token.email = userItem.email;
+        token.provider = account?.provider;
+        token.role = userItem.role || "user";
       }
       return token;
     },
@@ -84,14 +85,16 @@ const authOptions = {
     },
 
     async signIn({ user, account, profile }) {
-      console.log(user, account, profile);
+      console.log("callback: ", account, profile);
       if (account?.provider !== "credentials") {
         try {
           // find user by email
-          const existingUser = await userRepository.findByEmail(user.email);
+          const existingUser = await User.findOne({
+            where: { email: user.email },
+          });
           if (!existingUser) {
             console.log("Creating new user...");
-            await userRepository.createUser({
+            await User.create({
               ...emptyUser,
               id: nanoid(20),
               username: user.name,
@@ -111,6 +114,10 @@ const authOptions = {
     },
   },
   secret: process.env.AUTH0_SECRET,
+  pages: {
+    signIn: "/login",
+    newUser: "/",
+  },
 };
 
 export default authOptions;
