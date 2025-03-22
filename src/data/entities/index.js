@@ -1,4 +1,4 @@
-const sequelize = require("../../database/db-sequelize.config");
+const sequelize = require("../../database/db-sequelize.config").default;
 const { DataTypes } = require("sequelize");
 
 const User = require("./user")(sequelize, DataTypes);
@@ -108,7 +108,7 @@ CartItem.belongsTo(User, { foreignKey: "userId", as: "user" });
 User.hasMany(Payment, { foreignKey: "userId", as: "payments" });
 Payment.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-module.exports = {
+export {
   User,
   Media,
   Crochet,

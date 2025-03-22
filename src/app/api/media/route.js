@@ -1,7 +1,7 @@
 import { MediaRepository } from "../../../data/repositories/media.repository";
 import { validate } from "class-validator";
 import { NextResponse } from "next/server";
-import MediaRequestDto from "../../../data/dtos/media-request.dto";
+import { MediaRequestDto } from "../../../data/dtos/media-request.dto";
 
 const mediaRepository = new MediaRepository();
 

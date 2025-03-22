@@ -1,4 +1,4 @@
-import MediaRequestDto from "../../../../data/dtos/media-request.dto";
+import { MediaRequestDto } from "../../../../data/dtos/media-request.dto";
 import { MediaRepository } from "../../../../data/repositories/media.repository";
 import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";

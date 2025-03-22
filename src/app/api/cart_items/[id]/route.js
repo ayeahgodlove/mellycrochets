@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import authOptions from "../../../../lib/options";
 import { emptyCartItem } from "../../../../data/models";
-import initializeSocket from "../../../../lib/socket";
+import { initializeSocket } from "../../../../lib/socket";
 
 const cartItemRepository = new CartItemRepository();
 // const cartItemMapper = new CartItemMapper();

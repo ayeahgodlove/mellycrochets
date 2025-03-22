@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/constants/api-url";
+import { BASE_URL } from "../constants/api-url";
 
 export const authService = {
   register: async (user) => await instance.post(`${BASE_URL}/users`, user),

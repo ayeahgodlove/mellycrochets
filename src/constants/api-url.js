@@ -1,9 +1,5 @@
 // export const API_URL = "https://www.cumitech.com";
 export const API_URL_UPLOADS_POSTS = `/uploads/posts`;
-export const API_URL_UPLOADS_DOCUMENTS = `/uploads/document`;
-export const API_URL_UPLOADS_EVENTS = `/uploads/events`;
-export const API_URL_UPLOADS_PROJECTS = `/uploads/projects`;
-export const API_URL_UPLOADS_BANNERS = `/uploads/banners`;
 export const API_URL_UPLOADS_MEDIA = `/uploads/media`;
 export const API_URL_UPLOADS_CROCHETS = `/uploads/crochets`;
 

@@ -2,7 +2,7 @@ import slugify from "slugify";
 import { nanoid } from "nanoid";
 import { emptyCategory } from "../models";
 
-class CategoryRequestDto {
+class CrochetTypeRequestDto {
   constructor(data) {
     if (!data || typeof data !== "object") {
       throw new Error("Invalid category data.");
@@ -51,4 +51,4 @@ class CategoryRequestDto {
   }
 }
 
-export { CategoryRequestDto };
+export { CrochetTypeRequestDto };

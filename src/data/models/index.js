@@ -112,7 +112,21 @@ const emptySize = {
   id: "",
   label: "",
 };
-module.exports = {
+
+const emptyPost = {
+  id: "",
+  title: "",
+  summary: "",
+  slug: "",
+  content: "",
+  imageUrl: "",
+  readTime: "",
+  publishedAt: null,
+  authorId: "",
+  crochetTypeId: "",
+};
+
+export {
   emptyCartItem,
   emptyCrochetType,
   emptyOrderItem,
@@ -126,4 +140,5 @@ module.exports = {
   emptySubscriber,
   emptyAfterCare,
   emptySize,
+  emptyPost,
 };

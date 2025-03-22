@@ -1,9 +1,9 @@
 // sequelize.ts
-const { Sequelize } = require("sequelize");
-const mysql2 = require("mysql2");
-const dotenv = require("dotenv");
+import { Sequelize } from "sequelize";
+import mysql2 from "mysql2";
+import { config } from "dotenv";
 
-dotenv.config();
+config();
 
 const sequelize = new Sequelize(
   process.env.MYSQL_DATABASE,
@@ -28,4 +28,4 @@ const sequelize = new Sequelize(
   }
 })();
 
-module.exports = sequelize;
+export default sequelize;
