@@ -1,4 +1,4 @@
-import UserRequestDto from "../../../../data/dtos/user-request.dto";
+import { UserRequestDto } from "../../../../data/dtos/user-request.dto";
 import { UserRepository } from "../../../../data/repositories/user.repository";
 import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";

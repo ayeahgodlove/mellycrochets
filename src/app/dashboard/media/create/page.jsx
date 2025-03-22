@@ -1,8 +1,7 @@
 "use client";
 
-import { useSelect } from "@refinedev/core";
 import PageBreadCrumbs from "../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { API_URL } from "../../../../constants/api-url";
+import { BASE_URL } from "../../../../constants/api-url";
 import { Create, getValueFromEvent, useForm } from "@refinedev/antd";
 import { Form, Input, Select, Upload } from "antd";
 
@@ -34,7 +33,7 @@ export default function MediaCreate() {
           >
             <Upload.Dragger
               name="file"
-              action={`${API_URL}/api/uploads`}
+              action={`${BASE_URL}/api/uploads`}
               listType="picture"
               maxCount={1}
               multiple={false}

@@ -1,6 +1,6 @@
 import slugify from "slugify";
 import { nanoid } from "nanoid";
-import { emptyCategory } from "../models";
+import { emptyCrochetType } from "../models";
 
 class CrochetTypeRequestDto {
   constructor(data) {
@@ -29,7 +29,7 @@ class CrochetTypeRequestDto {
 
   toData() {
     return {
-      ...emptyCategory,
+      ...emptyCrochetType,
       id: nanoid(10),
       slug: slugify(this.name, { lower: true, replacement: "-" }),
       name: this.name,

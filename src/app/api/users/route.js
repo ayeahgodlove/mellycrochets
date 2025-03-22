@@ -1,10 +1,8 @@
 import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 import { UserRepository } from "../../../data/repositories/user.repository";
-import UserRequestDto from "../../../data/dtos/user-request.dto";
+import { UserRequestDto } from "../../../data/dtos/user-request.dto";
 import { displayValidationErrors } from "../../../lib/displayValidationErrors";
-;
-
 const userRepository = new UserRepository();
 
 export async function GET(request) {
