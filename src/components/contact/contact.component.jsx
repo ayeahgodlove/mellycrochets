@@ -8,13 +8,14 @@ const ContactSection = () => {
         <div className="space-y-6 text-center md:text-left">
           <h2 className="text-3xl font-bold text-[#28041b]">Get in Touch</h2>
           <p className="text-gray-700">
-            We are here to assist you with all your car sales and rental needs.
+            We are here to assist you with all your crochet orders, custom
+            designs, and inquiries.
           </p>
           <div>
             <p className="text-lg font-semibold text-red-950">Location:</p>
             <div className="flex items-center justify-start">
               <FaMapMarkerAlt className="text-xl text-gray-700 mr-2 mb-3" />
-              <p className="text-gray-700">Yaoundé, Cameroon</p>
+              <p className="text-gray-700">Bamenda, Cameroon</p>
             </div>
           </div>
           <div>
@@ -22,12 +23,12 @@ const ContactSection = () => {
             <div className="flex items-center justify-start">
               <FaPhoneAlt className="text-xl text-gray-700 mr-2 mb-3" />
               <p className="text-gray-700 font-semibold">
-                +237 674 75 72 43
+                237681077051 / 237640922135
               </p>
             </div>
           </div>
           <a
-            href="https://wa.me/237674757243"
+            href="https://wa.me/237681077051"
             target="_blank"
             className="contact-link"
           >
@@ -40,6 +41,10 @@ const ContactSection = () => {
           <h3 className="text-2xl font-bold text-[#28041b] mb-4 text-center">
             Send Us a Message
           </h3>
+          <p className="text-gray-700 text-center mb-4">
+            Have a custom crochet design in mind? Need help choosing a size or
+            color? Drop us a message!
+          </p>
           <form className="space-y-10">
             <div className="mb-5">
               <input
@@ -59,7 +64,7 @@ const ContactSection = () => {
 
             <div className="mb-5">
               <textarea
-                placeholder="Your Message"
+                placeholder="Tell us about your crochet needs (custom orders, sizes, colors, etc.)"
                 rows="4"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#fdf3f3]"
               ></textarea>
