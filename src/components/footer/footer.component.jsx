@@ -118,7 +118,7 @@ const Footer = () => {
           <ul className="space-y-2">
             <li className="flex items-center gap-2">
               <FiMapPin className="text-red-400" />
-              <span className="text-lg">Douala, Cameroon</span>
+              <span className="text-lg">Bamenda, Cameroon</span>
             </li>
             <li className="flex items-center gap-2">
               <FiPhone className="text-green-400" />
@@ -129,10 +129,10 @@ const Footer = () => {
             <li className="flex items-center gap-2">
               <FiMail className="text-blue-400" />
               <Link
-                href="mailto:info@mellycrochets.org"
+                href="mailto:support@mellycrochets.org"
                 className="footer-link"
               >
-                info@mellycrochets.org
+                support@mellycrochets.org
               </Link>
             </li>
           </ul>

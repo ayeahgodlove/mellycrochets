@@ -53,6 +53,7 @@ const CrochetTypeSelect = ({
       isLoading={isLoading}
       isClearable={true}
       isDisabled={loading}
+      placeholder="Select Crochet Designs"
     />
   );
 };

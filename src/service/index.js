@@ -11,9 +11,6 @@ const apiHeaders = {
 };
 
 const apiConfig = () => {
-  // const token = JSON.parse(window.localStorage.getItem(TOKEN_KEY));
-
-  // apiHeaders.headers["Authorization"] = `Bearer ${token}`;
   return apiHeaders;
 };
 

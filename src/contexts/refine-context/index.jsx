@@ -9,6 +9,7 @@ import {
   WhatsAppOutlined,
 } from "@ant-design/icons";
 import { ColorModeContextProvider } from "../color-mode";
+import { SocketProvider } from "../../providers/socket";
 
 export const RefineContext = (props) => {
   const defaultMode = props?.defaultMode;
@@ -16,6 +17,7 @@ export const RefineContext = (props) => {
   return (
     <SessionProvider>
       <ColorModeContextProvider defaultMode={defaultMode}>
+      <SocketProvider>
         <App {...props} />
         <FloatButton.Group
           shape="circle"
@@ -48,6 +50,7 @@ export const RefineContext = (props) => {
             className="contact-us"
           />
         </FloatButton.Group>
+        </SocketProvider>
       </ColorModeContextProvider>
     </SessionProvider>
   );

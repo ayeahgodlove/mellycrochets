@@ -85,7 +85,7 @@ const AppHero = () => {
           </Swiper>
         </div>
 
-        <div className="absolute bottom-[40%] w-full z-10 px-2 flex items-center justify-between text-center space-x-4 mt-6">
+        <div className="absolute bottom-[40%] w-full z-[2] px-2 flex items-center justify-between text-center space-x-4 mt-6">
           <button className="featured-prev__active bg-[#fdf3f3] p-2 rounded-full hover:bg-red-200 hover:text-white">
             <FaRegArrowAltCircleLeft size={25} />
           </button>

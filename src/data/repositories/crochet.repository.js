@@ -1,5 +1,5 @@
 import { NotFoundException } from "../../exceptions/not-found.exception";
-import { Crochet, CrochetType } from "../entities";
+import { Crochet, CrochetSize, CrochetType, Size } from "../entities";
 
 export class CrochetRepository {
   constructor() {}
@@ -30,6 +30,13 @@ export class CrochetRepository {
             model: CrochetType,
             as: "crochetType",
           },
+          {
+            model: Size,
+            as: "sizes",
+            through: {
+              attributes: ["price", "stock"],
+            },
+          },
         ],
       });
 
@@ -40,6 +47,12 @@ export class CrochetRepository {
       const formatedCrochetItem = {
         ...crochetItem.get(), // Get plain JSON
         imageUrls: JSON.parse(crochetItem.imageUrls), // Convert string to array
+        sizes: crochetItem.sizes.map((size) => ({
+          id: size.id,
+          label: size.label,
+          price: size.CrochetSize?.price,
+          stock: size.CrochetSize?.stock,
+        })),
       };
 
       return formatedCrochetItem;
@@ -55,10 +68,31 @@ export class CrochetRepository {
    */
   async findByTitle(title) {
     try {
-      const crochetItem = await Crochet.findOne({ where: { title } });
+      const crochetItem = await Crochet.findOne({
+        where: { title },
+        include: [
+          {
+            model: CrochetType,
+            as: "crochetType",
+          },
+          {
+            model: Size,
+            as: "sizes",
+            through: {
+              attributes: ["price", "stock"],
+            },
+          },
+        ],
+      });
       const formatedCrochetItem = {
         ...crochetItem.get(), // Get plain JSON
         imageUrls: JSON.parse(crochetItem.imageUrls), // Convert string to array
+        sizes: crochetItem.sizes.map((size) => ({
+          id: size.id,
+          label: size.label,
+          price: size.CrochetSize?.price,
+          stock: size.CrochetSize?.stock,
+        })),
       };
       return formatedCrochetItem;
     } catch (error) {
@@ -77,12 +111,26 @@ export class CrochetRepository {
             model: CrochetType,
             as: "crochetType",
           },
+          {
+            model: Size,
+            as: "sizes",
+            through: {
+              attributes: ["price", "stock"],
+            },
+          },
         ],
       });
+
       // Convert imageUrls to an array if it's stored as a string
       const formattedCrochets = crochets.map((crochet) => ({
-        ...crochet.get(), // Get plain JSON
-        imageUrls: JSON.parse(crochet.imageUrls), // Convert string to array
+        ...crochet.get(),
+        imageUrls: JSON.parse(crochet.imageUrls),
+        sizes: crochet.sizes.map((size) => ({
+          id: size.id,
+          label: size.label,
+          price: size.CrochetSize?.price,
+          stock: size.CrochetSize?.stock,
+        })),
       }));
       return formattedCrochets;
     } catch (error) {
@@ -93,13 +141,13 @@ export class CrochetRepository {
    * Returns an array of Car
    */
   async filter(params) {
-    const { brand, crochetTypeId, specie, tag } = params;
+    const { color, crochetTypeId, sizeId } = params;
     const whereCondition = {};
 
-    if (brand) whereCondition.brand = brand;
+    if (color) whereCondition.color = color;
     if (crochetTypeId) whereCondition.crochetTypeId = crochetTypeId;
-    if (specie) whereCondition.specie = specie;
-    if (tag) whereCondition.tag = tag;
+    // if (sizeId) whereCondition.sizeId = sizeId;
+
     try {
       const crochets = await Crochet.findAll({
         where: whereCondition,
@@ -108,11 +156,25 @@ export class CrochetRepository {
             model: CrochetType,
             as: "crochetType",
           },
+          {
+            model: Size,
+            as: "sizes",
+            through: {
+              attributes: ["price", "stock"],
+            },
+            ...(sizeId ? { where: { id: sizeId } } : {}),
+          },
         ],
       });
       const formattedCrochets = crochets.map((crochet) => ({
         ...crochet.get(), // Get plain JSON
         imageUrls: JSON.parse(crochet.imageUrls), // Convert string to array
+        sizes: crochet.sizes.map((size) => ({
+          id: size.id,
+          label: size.label,
+          price: size.CrochetSize?.price,
+          stock: size.CrochetSize?.stock,
+        })),
       }));
       return formattedCrochets;
     } catch (error) {

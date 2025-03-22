@@ -33,7 +33,7 @@ export default async function IndexPage() {
           </div>
           <div className="lg:w-1/4 text-left lg:text-right mt-3 lg:mt-0">
             <Link
-              href="/cars"
+              href="/crochets"
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             >
               <Space>
@@ -52,56 +52,56 @@ export default async function IndexPage() {
         <CrochetList />
       </div>
 
-      <section class="bg-white py-10 px-4">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-          <div class="grid grid-cols-2 gap-2">
+      <section className="bg-white py-10 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <img
               src="/mellycrochets/dd/ten.png"
               alt="Crochet 1"
-              class="rounded-lg border-4 border-pink-200 w-full h-auto object-cover"
+              className="rounded-lg border-4 border-pink-200 w-full h-auto object-cover"
               style={{ width: 245, height: 220 }}
             />
             <img
               src="/mellycrochets/dd/product-jpeg-1.png"
               alt="Crochet 2"
-              class="rounded-lg border-2 border-black w-full h-auto object-cover"
+              className="rounded-lg border-2 border-black w-full h-auto object-cover"
               style={{ width: 245, height: 220 }}
             />
             <img
               src="/mellycrochets/dd/product-jpeg-2.png"
               alt="Crochet 3"
-              class="rounded-lg border-2 border-black w-full h-auto object-cover"
+              className="rounded-lg border-2 border-black w-full h-auto object-cover"
               style={{ width: 245, height: 220 }}
             />
             <img
               src="/mellycrochets/dd/product-jpeg-3.png"
               alt="Crochet 4"
-              class="rounded-lg border-4 border-pink-200 w-full h-auto object-cover"
+              className="rounded-lg border-4 border-pink-200 w-full h-auto object-cover"
               style={{ width: 245, height: 220 }}
             />
           </div>
 
-          <div class="text-center max-w-lg mt-20 md:mt-0">
+          <div className="text-center max-w-lg mt-20 md:mt-0">
             <h2
-              class="text-2xl font-semibold text-gray-800"
+              className="text-2xl font-semibold text-gray-800"
               style={{ marginBottom: 30 }}
             >
               Crochets Aftercare
             </h2>
-            <p class="text-gray-700 mb-3">
+            <p className="text-gray-700 mb-3">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
               eget eleifend lectus. Sed quis nisi lectus. Quisque vel leo diam.
               Lorem ipsum, dolor sit amet consectetur adipisicing elit.
               Inventore libero dicta vel dolorum doloremque saepe distinctio
               corporis vero.
             </p>
-            <p class="text-sm text-gray-600" style={{ marginBottom: 30 }}>
+            <p className="text-sm text-gray-600" style={{ marginBottom: 30 }}>
               Stay inspired with exclusive crochet fashion tips & updates!
             </p>
 
             <Button
               href="#"
-              class="bg-red-900 text-white rounded-2xl hover:text-white text-sm font-semibold transition-all duration-300"
+              className="bg-red-900 text-white rounded-2xl hover:text-white text-sm font-semibold transition-all duration-300"
               style={{
                 borderRadius: 50,
                 padding: "20px 15px",

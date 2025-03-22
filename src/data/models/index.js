@@ -1,11 +1,11 @@
 const emptyCartItem = {
   id: "",
   crochetId: "",
+  sizeId: "",
   userId: "",
   quantity: 0,
   total: 0,
-  discountPercentage: 0,
-  discountedPrice: 0,
+  price: 0,
 };
 
 const emptyCrochetType = {
@@ -108,6 +108,10 @@ const emptyAfterCare = {
   description: "",
 };
 
+const emptySize = {
+  id: "",
+  label: "",
+};
 module.exports = {
   emptyCartItem,
   emptyCrochetType,
@@ -121,4 +125,5 @@ module.exports = {
   emptyReview,
   emptySubscriber,
   emptyAfterCare,
+  emptySize,
 };

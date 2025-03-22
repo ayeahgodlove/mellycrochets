@@ -10,23 +10,27 @@ import { useNotification } from "@refinedev/core";
 import CrochetTypeSelect from "./filter-product/crochet-type-select.component";
 import ColorSelect from "./filter-product/color.component";
 import SizeSelect from "./filter-product/size.component";
-import PriceSelect from "./filter-product/price.component";
+// import PriceSelect from "./filter-product/price.component";
 import { crochetTypeAPI } from "../store/api/crochet_type_api";
+import { sizeAPI } from "../store/api/size_api";
 
 const FilterCrochets = () => {
   const { open } = useNotification();
   const { setFilteredCrochets, resetFilter } = useFilter();
-  const { fetchFilteredCrochets } = crochetAPI.useFetchFilteredCrochetsQuery();
+  const [fetchFilteredCrochets] = crochetAPI.useLazyFetchFilteredCrochetsQuery();
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const [crochetTypeId, setCrochetTypeId] = useState("");
-  const [price, setPrice] = useState("");
+  // const [price, setPrice] = useState("");
 
   const { data: crochets, isLoading: isLoadingCrochet } =
     crochetAPI.useFetchAllCrochetsQuery(1);
 
   const { data: crochetTypes, isLoading: isLoadingCrochetType } =
     crochetTypeAPI.useFetchAllCrochetTypesQuery(1);
+
+  const { data: sizes, isLoading: isLoadingSize } =
+    sizeAPI.useFetchAllSizesQuery(1);
 
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +39,7 @@ const FilterCrochets = () => {
     setColor("");
     setSize("");
     setCrochetTypeId("");
-    setPrice("");
+    // setPrice("");
     resetFilter();
   };
 
@@ -49,25 +53,21 @@ const FilterCrochets = () => {
       if (color) filters.color = color;
       if (size) filters.size = size;
       if (crochetTypeId) filters.crochetTypeId = crochetTypeId;
-      if (price) filters.price = price;
+      // if (price) filters.price = price;
 
       const { data } = await fetchFilteredCrochets(filters);
       if (data && data.length > 0) {
         setFilteredCrochets(data);
         open?.({
           type: "success",
-          message: "Crochets avialable!",
-          description:
-            "We have compiled a list of vehicles that match your requirements.",
+          message: "Crochets returned!",
           key: "notification-key-open",
           placement: "bottomRight",
         });
       } else {
         open?.({
           type: "error",
-          message: "No filtered data received",
-          description:
-            "So sorry at the moment we don't have your desired vehicle",
+          message: "No crochets returned!",
           key: "notification-key-error",
           placement: "bottomRight",
         });
@@ -105,9 +105,12 @@ const FilterCrochets = () => {
             onSubmit={handleSubmit}
             className="w-full max-w-6xl mx-auto"
           >
-            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {/* <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4"> */}
+            <div className="grid md:grid-cols-4 lg:grid-cols-4 gap-4">
               <div>
-                <label className="text-left font-semibold">Crochet Designs</label>
+                <label className="text-left font-semibold">
+                  Crochet Designs
+                </label>
                 <CrochetTypeSelect
                   setCrochetTypeId={setCrochetTypeId}
                   crochetTypeId={crochetTypeId}
@@ -134,15 +137,15 @@ const FilterCrochets = () => {
                   setSize={setSize}
                   size={size}
                   loading={loading}
-                  crochets={crochets}
-                  isLoading={isLoadingCrochet}
+                  sizes={sizes}
+                  isLoading={isLoadingSize}
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label className="text-left font-semibold">Price</label>
                 <PriceSelect min={50} max={5000} setPrice={setPrice} />
-              </div>
+              </div> */}
 
               <Space className="mb-0 mt-5">
                 <Button

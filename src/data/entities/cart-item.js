@@ -24,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
+      sizeId: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        references: {
+          model: "sizes",
+          key: "id",
+        },
+      },
       price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,

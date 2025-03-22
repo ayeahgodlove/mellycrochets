@@ -6,40 +6,31 @@ class CartItemRequestDto {
     if (!data || typeof data !== "object") {
       throw new Error("Invalid cart item data");
     }
-
-    if (!data.crochetId || typeof data.crochetId !== "string") {
+    const { crochetId, userId, sizeId, quantity, price } = data;
+    if (!crochetId || typeof crochetId !== "string") {
       throw new Error("Valid crochetId is required.");
     }
 
-    if (!data.userId || typeof data.userId !== "string") {
+    if (!userId || typeof userId !== "string") {
       throw new Error("Valid userId is required.");
     }
 
-    if (typeof data.quantity !== "number" || data.quantity <= 0) {
+    if (!sizeId || typeof sizeId !== "string") {
+      throw new Error("Valid sizeId is required.");
+    }
+    if (typeof quantity !== "number" || quantity <= 0) {
       throw new Error("Valid quantity is required.");
     }
 
-    if (typeof data.total !== "number" || data.total < 0) {
-      throw new Error("Valid total price is required.");
-    }
-
-    if (
-      typeof data.discountPercentage !== "number" ||
-      data.discountPercentage < 0
-    ) {
-      throw new Error("Valid discount percentage is required.");
-    }
-
-    if (typeof data.discountedPrice !== "number" || data.discountedPrice < 0) {
+    if (typeof price !== "number" || price < 0) {
       throw new Error("Valid discounted price is required.");
     }
 
     this.crochetId = data.crochetId;
     this.userId = data.userId;
+    this.sizeId = data.sizeId;
     this.quantity = data.quantity;
-    this.total = data.total;
-    this.discountPercentage = data.discountPercentage;
-    this.discountedPrice = data.discountedPrice;
+    this.price = data.price;
   }
 
   toData() {
@@ -48,10 +39,10 @@ class CartItemRequestDto {
       id: nanoid(20),
       crochetId: this.crochetId,
       userId: this.userId,
+      sizeId: this.sizeId,
       quantity: this.quantity,
-      total: this.total,
-      discountPercentage: this.discountPercentage,
-      discountedPrice: this.discountedPrice,
+      price: this.price,
+      total: this.price * this.quantity,
     };
   }
 
@@ -61,13 +52,7 @@ class CartItemRequestDto {
     }
 
     return {
-      id: data.id,
-      crochetId: data.crochetId,
-      userId: data.userId,
-      quantity: data.quantity,
-      total: data.total,
-      discountPercentage: data.discountPercentage,
-      discountedPrice: data.discountedPrice,
+      ...data,
     };
   }
 }

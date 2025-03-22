@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { API_URL_UPLOADS_CROCHETS } from "../../../constants/api-url";
 import { crochetAPI } from "../../../store/api/crochet_api";
 import {
@@ -19,6 +19,8 @@ import {
 } from "antd";
 import SpinnerList from "../../../components/spinner-list";
 import CustomImage from "../../../components/shared/custom-image.component";
+import { useIsAuthenticated, useNotification } from "@refinedev/core";
+import { useCart } from "../../../hooks/cart.hook";
 
 const buttonStyles = {
   width: 35,
@@ -35,27 +37,17 @@ const inputStyles = {
 
 export default function IndexPage({ params }) {
   const [cartQty, setCartQty] = useState(1);
-  const [loadingCheckOut, setLoadingCheckOut] = useState(false);
   const [loadingAddToCart, setLoadingAddToCart] = useState(false);
-
+  const [selectedSize, setSelectedSize] = useState(null);
+  const { open } = useNotification();
+  const { data: user } = useIsAuthenticated();
   const { id } = params;
   const {
     data: crochet,
     isFetching,
     isLoading,
   } = crochetAPI.useGetSingleCrochetQuery(id);
-
-  const handleAddToCart = () => {
-    setLoadingAddToCart(true);
-
-    message.success(`${data?.name} has been added to cart 👌`);
-    if (data) {
-      let addedItems = Array.from({ length: cartQty }, () => data);
-    }
-    setTimeout(() => {
-      setLoadingAddToCart(false);
-    }, 1500);
-  };
+  const { addToCart } = useCart();
 
   if (isLoading || isFetching) {
     return (
@@ -71,11 +63,76 @@ export default function IndexPage({ params }) {
       </div>
     );
   }
+
+  // Extract available sizes from crochet
+  const availableSizes = crochet.sizes.map((size) => size.label);
+
+  // Define all possible sizes
+  const allSizes = ["S", "M", "L", "XL", "XXL"];
+
+  // Find the selected size object for price display
+  const selectedSizeObj = crochet.sizes.find(
+    (size) => size.label === selectedSize
+  );
+
+
+  const handleAddToCart = async () => {
+    if (!selectedSize) {
+      open?.({
+        type: "error",
+        message: "Please select a size before adding to cart.",
+        key: "notification-key-open",
+        placement: "bottomRight",
+      });
+      // return;
+    }
+    setLoadingAddToCart(true);
+
+    open?.({
+      type: "success",
+      message: `${crochet?.name} has been added to cart 👌`,
+      key: "notification-key-open",
+      placement: "bottomRight",
+    });
+    if (user?.authenticated) {
+      const updatedCartItem = await addToCart(
+        crochet ? crochet.id : "",
+        selectedSizeObj.id,
+        cartQty
+      );
+      console.log("cart-items", updatedCartItem);
+      if (updatedCartItem && updatedCartItem.length > 0) {
+        window.location.reload();
+      } else {
+        open?.({
+          type: "error",
+          message: `Crochet not added to cart`,
+          key: "notification-key-open",
+          placement: "bottomRight",
+        });
+      }
+    } else {
+      open?.({
+        type: "progress",
+        message: `Please you need to sigin to continue`,
+        key: "notification-key-open",
+        placement: "bottomRight",
+      });
+    }
+    setTimeout(() => {
+      setLoadingAddToCart(false);
+    }, 1500);
+  };
+
   return (
     <>
       <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg my-8">
         {/* Car Image & Header */}
-        <Card bordered={false} className="rounded-lg">
+        <Card
+          bordered={false}
+          className="rounded-lg"
+          style={{ boxShadow: "none" }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="relative py-3">
               <Image.PreviewGroup
@@ -109,7 +166,10 @@ export default function IndexPage({ params }) {
                 </h1>
                 <p className="text-md font-semibold text-gray-700">
                   <span className="text-red-500">
-                    {crochet.price}
+                    {/* Show price when a size is selected */}
+                    {selectedSize && selectedSizeObj
+                      ? selectedSizeObj.price
+                      : crochet.sizes[0].price}
                     XAF
                   </span>
                 </p>
@@ -119,7 +179,7 @@ export default function IndexPage({ params }) {
               <div className="mt-8">
                 <p className="text-md text-gray-700">
                   <span className="font-semibold">Quantity</span> <br />
-                  <span>{crochet.stock} Pieces</span>
+                  <span>{crochet.sizes[0].stock} Pieces</span>
                 </p>
               </div>
 
@@ -128,52 +188,31 @@ export default function IndexPage({ params }) {
                   <span className="font-semibold">Sizes</span> <br />
                 </p>
                 <Space>
-                  <Button
-                    style={{
-                      borderRadius: 50,
-                      padding: "0 15px",
-                      background: "#fdf3f3",
-                      border: "2px solid #cb384e",
-                    }}
-                  >
-                    S
-                  </Button>
-                  <Button
-                    style={{
-                      borderRadius: 50,
-                      padding: "0 15px",
-                      background: "#fdf3f3",
-                    }}
-                  >
-                    M
-                  </Button>
-                  <Button
-                    style={{
-                      borderRadius: 50,
-                      padding: "0 15px",
-                      background: "#fdf3f3",
-                    }}
-                  >
-                    L
-                  </Button>
-                  <Button
-                    style={{
-                      borderRadius: 50,
-                      padding: "0 15px",
-                      background: "#fdf3f3",
-                    }}
-                  >
-                    Xl
-                  </Button>
-                  <Button
-                    style={{
-                      borderRadius: 50,
-                      padding: "0 15px",
-                      background: "#fdf3f3",
-                    }}
-                  >
-                    XXl
-                  </Button>
+                  {allSizes.map((size) => {
+                    const isAvailable = availableSizes.includes(size);
+                    const isActive = selectedSize === size;
+
+                    return (
+                      <Button
+                        key={size}
+                        style={{
+                          borderRadius: 50,
+                          padding: "0 15px",
+                          background: isActive
+                            ? "#cb384e"
+                            : isAvailable
+                            ? "#fdf3f3"
+                            : "#e0e0e0",
+                          border: isAvailable ? "2px solid #cb384e" : "none",
+                          color: isActive ? "white" : "black",
+                        }}
+                        disabled={!isAvailable}
+                        onClick={() => isAvailable && setSelectedSize(size)}
+                      >
+                        {size}
+                      </Button>
+                    );
+                  })}
                 </Space>
               </div>
 
@@ -246,7 +285,11 @@ export default function IndexPage({ params }) {
         </Card>
 
         {/* Car Specifications */}
-        <Card className="mt-6" bordered={false} style={{ marginTop: 10 }}>
+        <Card
+          className="mt-6"
+          bordered={false}
+          style={{ marginTop: 10, boxShadow: "none" }}
+        >
           <Descriptions
             column={{ xs: 1, sm: 1, md: 2, lg: 3 }}
             title={`Crochet Details`}
@@ -259,14 +302,15 @@ export default function IndexPage({ params }) {
             <Descriptions.Item label="Crochet Type">
               {crochet?.crochetType?.name}
             </Descriptions.Item>
-            <Descriptions.Item label="Color">
-              <ColorPicker value={crochet.color.toLowerCase()} />
-            </Descriptions.Item>
+            <Descriptions.Item label="Color">{crochet.color}</Descriptions.Item>
             <Descriptions.Item label="Description">
               {crochet.description}
             </Descriptions.Item>
             <Descriptions.Item label="Price">
-              {crochet.price} XAF
+              {selectedSize && selectedSizeObj
+                ? selectedSizeObj.price
+                : crochet.sizes[0].price}{" "}
+              XAF
             </Descriptions.Item>
             <Descriptions.Item label="Quantity">
               {crochet.stock}

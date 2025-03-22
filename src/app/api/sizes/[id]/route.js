@@ -1,13 +1,13 @@
-import { CrochetRequestDto } from "../../../../data/dtos/crochet-request.dto";
-import { CrochetRepository } from "../../../../data/repositories/crochet.repository";
+import { SizeRequestDto } from "../../../../data/dtos/size-request.dto";
+import { SizeRepository } from "../../../../data/repositories/size.repository";
 import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import authOptions from "../../../../lib/options";
-import { emptyCrochet } from "../../../../data/models";
+import { emptySize } from "../../../../data/models";
 
-const crochetRepository = new CrochetRepository();
+const sizeRepository = new SizeRepository();
 
 export async function PATCH(req, { params }) {
   const session = await getServerSession(authOptions); //get session info
@@ -35,8 +35,10 @@ export async function PATCH(req, { params }) {
     );
   }
 
+  const userId = session.user.id;
+
   try {
-    const dto = new CrochetRequestDto(await req.json());
+    const dto = new SizeRequestDto(await req.json());
     const validationErrors = await validate(dto);
 
     if (validationErrors.length > 0) {
@@ -54,16 +56,17 @@ export async function PATCH(req, { params }) {
     const id = params.id;
 
     const obj = {
-      ...emptyCrochet,
+      ...emptySize,
       ...dto.toData(),
       id: id,
+      userId,
     };
-    const updatedCrochet = await crochetRepository.update(obj);
+    const updatedSize = await sizeRepository.update(obj);
 
     return NextResponse.json(
       {
-        data: updatedCrochet,
-        message: "Crochet Updated Successfully!",
+        data: updatedSize,
+        message: "Size Updated Successfully!",
         validationErrors: [],
         success: true,
       },
@@ -92,9 +95,10 @@ export async function GET(req, { params }) {
 
   try {
     const id = params.id;
-
-    const crochet = await crochetRepository.findById(id);
-    return NextResponse.json(crochet);
+    console.log("id ", id);
+    const size = await sizeRepository.findById(id);
+    // const sizeDTO = sizeMapper.toDTO(size);
+    return NextResponse.json(size);
   } catch (error) {
     return NextResponse.json(
       {
@@ -126,7 +130,7 @@ export async function DELETE(req, { params }) {
   try {
     const id = params.id;
 
-    await crochetRepository.delete(id);
+    await sizeRepository.delete(id);
 
     return NextResponse.json({
       message: `Operation successfully completed!`,

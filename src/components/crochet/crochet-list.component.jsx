@@ -19,7 +19,6 @@ const CrochetList = () => {
       ? filteredCrochets
       : crochets;
 
-  console.log("crochets: ", crochets);
   return (
     <>
       {(isLoading || isFetching) && (

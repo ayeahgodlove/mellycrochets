@@ -3,20 +3,65 @@
 import { Image } from "antd";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiMenu } from "react-icons/bi";
 import AppLanguage from "./shared/language.component";
 import ShoppingCart from "./shopping-cart/shopping-cart";
 import { useTranslations } from "next-intl";
 import { useGetIdentity } from "@refinedev/core";
+import { useSocket } from "../providers/socket";
+import { CartService } from "../service/cart.service";
+
+export const emptyCartItem = {
+  id: "",
+  name: "",
+  quantity: 0,
+  imageUrl: "",
+  total: 0,
+  price: 0,
+  size: "",
+};
 
 const AppNavigation = () => {
   const [isOpen, setOpen] = useState(false);
   const { data: user } = useGetIdentity({});
+  const [visible, setVisible] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
 
   const pathname = usePathname();
-  // const t = useTranslations('HomePage');
   const t = useTranslations("navigation");
+
+  const role = user?.role;
+
+  const socket = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    console.log("Attempting to connect to Socket.IO...");
+
+    const handleCartEvent = (data) => {
+      console.log("✅ Cart Event Received:", data);
+      setCartItems(data);
+      setCartCount(data.length);
+    };
+
+    socket.on("cart-updated", handleCartEvent);
+
+    return () => {
+      socket.off("cart-updated", handleCartEvent); // Cleanup
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    CartService.list()
+      .then((res) => {
+        setCartItems(res);
+        setCartCount(res.length);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <nav className="bg-[#fdf3f3] py-1 px-10 md:px-30 lg:px-50 shadow-md">
@@ -26,8 +71,8 @@ const AppNavigation = () => {
             <Image
               src="/logo.png"
               preview={false}
-              width={130}
-              height={75}
+              width={120}
+              height={85}
               alt="logo"
               className="w-full h-auto object-cover"
             />
@@ -52,6 +97,15 @@ const AppNavigation = () => {
             }`}
           >
             After Care
+          </Link>
+
+          <Link
+            href="/crochets"
+            className={`nav-link font-playfair  ${
+              pathname === "/crochets" ? "active" : ""
+            }`}
+          >
+            Crochet Listings
           </Link>
 
           <Link
@@ -84,10 +138,20 @@ const AppNavigation = () => {
           <AppLanguage />
 
           <div className="shoppingCart">
-            <ShoppingCart cartCount={10} />
+            <ShoppingCart cartCount={cartCount} cartItems={cartItems} />
           </div>
+          {!user && (
+            <Link
+              href="/login"
+              className={`nav-link font-playfair  ${
+                pathname === "/login" ? "active" : ""
+              }`}
+            >
+              Signin
+            </Link>
+          )}
 
-          {user && (
+          {role === "admin" && (
             <Link
               href="/dashboard"
               className={`nav-link font-playfair  ${
@@ -131,6 +195,15 @@ const AppNavigation = () => {
               </Link>
 
               <Link
+                href="/crochets"
+                className={`nav-link font-playfair  ${
+                  pathname === "/crochets" ? "active" : ""
+                }`}
+              >
+                Crochet Listings
+              </Link>
+
+              <Link
                 href="/about"
                 className={`nav-link font-playfair  ${
                   pathname === "/about" ? "active" : ""
@@ -159,8 +232,8 @@ const AppNavigation = () => {
 
               <AppLanguage />
 
-              <div className="shoppingCart">
-                <ShoppingCart cartCount={10} />
+              <div className="shoppingCart" style={{ marginTop: 10, marginLeft:0}}>
+                <ShoppingCart cartCount={cartCount} cartItems={cartItems} />
               </div>
             </div>
           </div>

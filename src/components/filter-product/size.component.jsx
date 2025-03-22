@@ -18,13 +18,13 @@ const customStyles = {
   }),
 };
 
-const SizeSelect = ({ size, setSize, loading, crochets, isLoading }) => {
+const SizeSelect = ({ size, setSize, loading, sizes, isLoading }) => {
   const options =
-    crochets && crochets.length
-      ? crochets.map((crochet) => {
+    sizes && sizes.length
+      ? sizes.map((crochet) => {
           return {
-            value: crochet.size,
-            label: crochet.size,
+            value: crochet.id,
+            label: crochet.label,
           };
         })
       : [];

@@ -8,7 +8,7 @@ const { Meta } = Card;
 const CrochetCard = ({ crochet }) => {
   return (
     <>
-      <Col xs={24} sm={8} md={6} lg={8} key={crochet.id}>
+      <Col xs={24} md={12} lg={8} key={crochet.id}>
         <Card
           hoverable
           cover={
@@ -25,7 +25,7 @@ const CrochetCard = ({ crochet }) => {
                   }`}
                   alt={crochet.description}
                   preview={true}
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "cover", height: 400 }}
                 />
               </Image.PreviewGroup>
 
@@ -49,13 +49,10 @@ const CrochetCard = ({ crochet }) => {
                   style={{ border: "2px solid #e3b1b1" }}
                   className="rounded-3xl px-3 py-1 border-[#e3b1b1] font-normal text-sm hover:bg-[#e3b1b1] hover:font-medium"
                 >
-                  {format.number(crochet.price) + " XAF"}
+                  {format.number(crochet.sizes[0].price) + " XAF"}
                 </span>
               </div>
             }
-            // description={
-
-            // }
           />
         </Card>
       </Col>

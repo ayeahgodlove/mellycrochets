@@ -28,4 +28,8 @@ function initializeSocket(server) {
   return io;
 }
 
-module.exports = initializeSocket;
+function getSocketInstance() {
+  return io;
+}
+
+module.exports = { initializeSocket, getSocketInstance };

@@ -4,9 +4,10 @@ import axios from "axios";
 
 export const CartService = {
   list: () => requestType.get(`/cart_items`),
-  create: (crochetId, quantity) =>
-    requestType.post(`/cart_items`, { crochetId, quantity }),
-  remove: (itemId) => requestType.del(`/cart_items/${itemId}`, {}),
+  create: (crochetId, sizeId, quantity) =>
+    requestType.post(`/cart_items`, { crochetId, sizeId, quantity }),
+  remove: (crochetId, sizeId) =>
+    requestType.del(`/cart_items/${(crochetId, sizeId)}`, {}),
   clear: () => requestType.del(`/cart_items`, {}),
 };
 

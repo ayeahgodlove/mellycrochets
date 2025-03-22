@@ -6,17 +6,16 @@ const crochetRepository = new CrochetRepository();
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
 
-  const brand = searchParams.get("brand");
-  const categoryId = searchParams.get("categoryId");
-  const specie = searchParams.get("specie");
-  const tag = searchParams.get("tag");
+  const color = searchParams.get("color");
+  const crochetTypeId = searchParams.get("crochetTypeId");
+  const sizeId = searchParams.get("sizeId");
 
+  console.log("searchParams: ", searchParams);
   try {
     const crochets = await crochetRepository.filter({
-      brand,
-      categoryId,
-      specie,
-      tag,
+      crochetTypeId,
+      sizeId,
+      color,
     });
 
     return NextResponse.json(crochets);

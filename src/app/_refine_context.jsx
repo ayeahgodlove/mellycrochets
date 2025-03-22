@@ -48,10 +48,12 @@ export const App = (props) => {
 
   const authProvider = {
     login: async () => {
-      signIn("auth0", {
+      const res = await signIn("auth0", {
         callbackUrl: to ? to.toString() : "/",
         redirect: true,
       });
+
+      console.log("res: ", res);
 
       return {
         success: true,
@@ -109,6 +111,7 @@ export const App = (props) => {
           name: user.name,
           email: user.email,
           avatar: user.image,
+          role: data.user.role ?? "user",
         };
       }
 

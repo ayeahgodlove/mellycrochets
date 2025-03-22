@@ -16,7 +16,7 @@ module.exports = {
         primaryKey: true,
       },
       crochetId: {
-        type: Sequelize.STRING(128),
+        type: Sequelize.STRING(20),
         allowNull: false,
         references: {
           model: "crochets",
@@ -24,10 +24,18 @@ module.exports = {
         },
       },
       userId: {
-        type: Sequelize.STRING(128),
+        type: Sequelize.STRING(20),
         allowNull: false,
         references: {
           model: "users",
+          key: "id",
+        },
+      },
+      sizeId: {
+        type: Sequelize.STRING(20),
+        allowNull: false,
+        references: {
+          model: "sizes",
           key: "id",
         },
       },

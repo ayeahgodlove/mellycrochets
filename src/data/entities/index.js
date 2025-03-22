@@ -95,7 +95,7 @@ Payment.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 // crochet <=> cartItem
 Crochet.hasMany(CartItem, { foreignKey: "crochetId", as: "cartItems" });
 CartItem.belongsTo(Crochet, { foreignKey: "crochetId", as: "crochet" });
-
+CartItem.belongsTo(Size, { foreignKey: "sizeId", as: "size" });
 // cartItem <=> User
 User.hasMany(CartItem, {
   foreignKey: "userId",

@@ -1,6 +1,7 @@
 const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
+const { initializeSocket } = require("./src/lib/socket");
 
 const dev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
@@ -39,6 +40,8 @@ app.prepare().then(() => {
       res.end("Internal Server Error");
     }
   });
+
+  initializeSocket(server);
 
   server.listen(port, () => {
     console.log(`> Server ready on port ${port}`);
