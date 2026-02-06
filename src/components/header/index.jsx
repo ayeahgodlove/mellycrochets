@@ -1,29 +1,20 @@
 "use client";
 
 import { useGetIdentity } from "@refinedev/core";
-import {
-  Layout as AntdLayout,
-  Avatar,
-  Dropdown,
-  Space,
-  Switch,
-  theme,
-  Typography,
-} from "antd";
+import { Avatar, Dropdown, Space, Switch, Typography } from "@/components/ui";
 import React from "react";
 import { useColorMode } from "../../contexts/color-mode";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 
 const { Text } = Typography;
-const { useToken } = theme;
 
 export const Header = ({ sticky = true }) => {
-  const { token } = useToken();
   const { data: user } = useGetIdentity({});
   const { mode, setMode } = useColorMode();
 
   const headerStyles = {
-    backgroundColor: token.colorBgElevated,
+    backgroundColor: "#ffffff",
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
@@ -44,22 +35,28 @@ export const Header = ({ sticky = true }) => {
     },
     {
       key: "profile",
-      label: <Link href="/profile">Profile</Link>,
+      label: <Link href="/dashboard/profile">Profile</Link>,
     },
     {
       key: "logout",
-      label: <Link href="/logout">Logout</Link>,
+      label: (
+        <button
+          type="button"
+          className="text-left w-full"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+        >
+          Logout
+        </button>
+      ),
     },
   ];
 
   return (
-    <AntdLayout.Header style={headerStyles} title="EMS">
+    <header style={headerStyles} title="EMS">
       <Space>
         <Switch
-          checkedChildren="🌛"
-          unCheckedChildren="🔆"
+          checked={mode === "dark"}
           onChange={() => setMode(mode === "light" ? "dark" : "light")}
-          defaultChecked={mode === "dark"}
         />
         {(user?.name || user?.avatar) && (
           <Dropdown
@@ -75,6 +72,6 @@ export const Header = ({ sticky = true }) => {
           </Dropdown>
         )}
       </Space>
-    </AntdLayout.Header>
+    </header>
   );
 };

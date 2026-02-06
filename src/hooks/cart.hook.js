@@ -33,7 +33,6 @@ const useCart = () => {
         return updatedCart;
       }
     } catch (error) {
-      console.error("Failed to load cart crochets:", error);
       return [];
     }
   };
@@ -56,7 +55,6 @@ const useCart = () => {
           currency,
           color
         );
-        console.log("Crochet Added to Cart Successfully!");
         return cartItem;
       } else {
         const existingCart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -75,7 +73,6 @@ const useCart = () => {
           existingCart.push(item);
         }
         localStorage.setItem(CART_KEY, JSON.stringify(existingCart));
-        console.log("Crochet added to guest cart!");
         return existingCart;
       }
     } catch (error) {
@@ -98,7 +95,6 @@ const useCart = () => {
         const { success } = response.data;
         return success ?? false;
       } else {
-        console.log("Removing from guest cart...");
         removeItemFromGuestCart(crochetId);
         return true;
       }
@@ -108,14 +104,57 @@ const useCart = () => {
     }
   };
 
+  const updateQuantity = async (cartItemId, newQuantity, crochetId, sizeId, currency, color) => {
+    try {
+      if (status === "authenticated" || data) {
+        // For authenticated users, update via API
+        const response = await CartService.update(cartItemId, {
+          crochetId,
+          sizeId,
+          quantity: newQuantity,
+          currency,
+          color,
+        });
+        return response?.data || response;
+      } else {
+        // For guest users, update localStorage
+        const guestCart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        const itemIndex = guestCart.findIndex(
+          (item) => item.crochetId === crochetId && item.sizeId === sizeId
+        );
+        
+        if (itemIndex !== -1) {
+          if (newQuantity <= 0) {
+            // Remove item if quantity is 0 or less
+            guestCart.splice(itemIndex, 1);
+          } else {
+            // Update quantity and recalculate price
+            const crochets = await CrochetsService.filterByIds([crochetId]);
+            const crochet = crochets.find((c) => c.id === crochetId);
+            if (crochet) {
+              const price = getPrice(crochet.priceInCfa, crochet.priceInUsd);
+              guestCart[itemIndex].quantity = newQuantity;
+              guestCart[itemIndex].timestamp = Date.now();
+              // Note: total will be recalculated when loadCartCrochets is called
+            }
+          }
+          localStorage.setItem(CART_KEY, JSON.stringify(guestCart));
+          return true;
+        }
+        return false;
+      }
+    } catch (error) {
+      console.error("Failed to update quantity!", error);
+      return false;
+    }
+  };
+
   const clearCrochet = async () => {
     try {
       if (status === "authenticated" || data) {
         await CartService.clear();
-        console.log("Cart Cleared Successfully!");
       } else {
         localStorage.removeItem(CART_KEY);
-        console.log("Guest Cart Cleared Successfully!");
       }
     } catch (error) {
       console.error("Cart was not removed!");
@@ -166,6 +205,7 @@ const useCart = () => {
     loadCartCrochets,
     addToCart,
     removeCrochet,
+    updateQuantity,
     clearCrochet,
     getCartTotal,
     getCartQuantity,

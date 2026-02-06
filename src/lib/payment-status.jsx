@@ -1,7 +1,7 @@
 "use client";
 
-import { FilePdfOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { FileText } from "lucide-react";
+import { Button } from "@/components/ui";
 
 export default function PaymentStatusDownloader({ data }) {
   const generateInvoicePdf = async () => {
@@ -108,7 +108,7 @@ export default function PaymentStatusDownloader({ data }) {
   };
 
   return (
-    <Button icon={<FilePdfOutlined />} type="link" onClick={generateInvoicePdf}>
+    <Button icon={<FileText size={16} />} type="link" onClick={generateInvoicePdf}>
       Print
     </Button>
   );

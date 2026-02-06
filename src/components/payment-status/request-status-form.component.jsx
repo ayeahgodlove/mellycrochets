@@ -10,7 +10,7 @@ import {
   Card,
   Spin,
   Badge,
-} from "antd";
+} from '@/components/ui';
 import { useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -94,9 +94,10 @@ export default function RequestStatusForm() {
           <Descriptions
             // title="Transaction Details"
             bordered
-            column={2}
+            // column={2}
             // className="mt-6"
             style={{ marginTop: 20 }}
+            column={{ xs: 1, md: 2 }}
           >
             <Descriptions.Item label="Request ID">
               {data.requestId}

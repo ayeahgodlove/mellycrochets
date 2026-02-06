@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Empty } from "antd";
+import { Empty } from "@/components/ui";
 import AppPost from "../../../components/posts/post.component";
 
 export default async function BlogListWrapper() {

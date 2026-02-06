@@ -3,7 +3,6 @@ export const accessControlProvider = {
     const user = params?.user; // Get user from params
 
     if (!user) {
-      console.log("User not found in params");
       return { can: false };
     }
 
@@ -24,7 +23,6 @@ export const accessControlProvider = {
 
     // Check if the user has access to the resource and action
     const canAccess = permissions[role]?.can.includes(action) ?? false;
-    // console.log(`User role "${role}" can access "${action}":`, canAccess);
 
     return { can: canAccess };
   },

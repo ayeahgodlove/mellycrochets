@@ -3,7 +3,6 @@ import { OrderRepository } from "../../../../../data/repositories/order.reposito
 
 const orderRepository = new OrderRepository();
 export async function GET(req, { params }) {
-  console.log("params", params);
   if (!params?.userId) {
     return NextResponse.json(
       { message: "USERID is required", success: false, data: null },

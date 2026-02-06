@@ -9,8 +9,8 @@ import {
   List,
   ShowButton,
   useTable,
-} from "@refinedev/antd";
-import { Image, Space, Table } from "antd";
+} from '@/components/refine';
+import { Image, Space, Table } from '@/components/ui';
 
 export default function MediaList() {
   const { tableProps } = useTable({

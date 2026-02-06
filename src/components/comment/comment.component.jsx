@@ -1,10 +1,9 @@
 "use client";
-import { Card, Input, Button, Tooltip, Typography, message } from "antd";
+import { Card, Input, Button, Tooltip, Typography, message } from "@/components/ui";
 import { useEffect, useState } from "react";
 import { commentAPI } from "../../store/api/comment_api";
 import { useGetIdentity } from "@refinedev/core";
 import { useCreate } from "@refinedev/core";
-import  Comment  from "@ant-design/compatible/lib/comment";
 import dayjs from "dayjs";
 const { TextArea } = Input;
 const { Paragraph, Text } = Typography;
@@ -129,28 +128,30 @@ const PostComments = ({ postId }) => {
           {comments && comments.length > 0 ? (
             comments.map((comment) => (
               <div key={comment.id} id={`comment-${comment.id}`}>
-                <Comment
-                  author={<a>{comment.user.username}</a>}
-                  avatar={
-                    <img
-                      src={comment.user.image}
-                      alt={comment.user.username}
-                      className="w-8 h-8 rounded-full"
-                    />
-                  }
-                  content={<p>{comment.message}</p>}
-                  datetime={
-                    <Tooltip
-                      title={dayjs(comment.createdAt).format(
-                        "YYYY-MM-DD HH:mm"
-                      )}
-                    >
-                      <span>
-                        {dayjs(comment.createdAt).format("MMM D, YYYY hh:mm A")}
+                <div className="flex gap-3">
+                  <img
+                    src={comment.user.image}
+                    alt={comment.user.username}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                      <span className="font-semibold text-gray-900">
+                        {comment.user.username}
                       </span>
-                    </Tooltip>
-                  }
-                />
+                      <Tooltip
+                        title={dayjs(comment.createdAt).format(
+                          "YYYY-MM-DD HH:mm"
+                        )}
+                      >
+                        <span className="text-gray-500">
+                          {dayjs(comment.createdAt).format("MMM D, YYYY hh:mm A")}
+                        </span>
+                      </Tooltip>
+                    </div>
+                    <p className="mt-1 text-gray-700">{comment.message}</p>
+                  </div>
+                </div>
               </div>
             ))
           ) : (

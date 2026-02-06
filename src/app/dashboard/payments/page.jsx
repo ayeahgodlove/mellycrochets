@@ -3,14 +3,13 @@
 import PageBreadCrumbs from "../../../components/page-breadcrumb/page-breadcrumb.component";
 import {
   DateField,
-  // DateField,
   DeleteButton,
   List,
   ShowButton,
   useTable,
-} from "@refinedev/antd";
+} from "@/components/refine";
 import { format } from "../../../lib/format";
-import { Space, Table } from "antd";
+import { Space, Table } from "@/components/ui";
 
 export default function PaymentList() {
   const { tableProps } = useTable({

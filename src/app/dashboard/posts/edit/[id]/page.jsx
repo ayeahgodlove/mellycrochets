@@ -2,8 +2,8 @@
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
 import { API_URL_UPLOADS_MEDIA } from "../../../../../constants/api-url";
-import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Col, Form, Image, Input, Row, Select, Space, Typography } from "antd";
+import { Edit, useForm, useSelect } from '@/components/refine';
+import { Col, Form, Image, Input, Row, Select, Space, Typography } from '@/components/ui';
 import { EditorComponent } from "../../../../../components/editor/editor.component";
 
 export default function BlogPostEdit() {

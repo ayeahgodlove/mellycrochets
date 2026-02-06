@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 
 const crochetRepository = new CrochetRepository();
 export async function GET(req, { params }) {
-  if (!params?.slug) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.slug) {
     return NextResponse.json(
       { message: "Slug is required", success: false, data: null },
       { status: 400 }
@@ -11,7 +12,7 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const slug = params.slug;
+    const slug = resolvedParams.slug;
 
     const crochet = await crochetRepository.findBySlug(slug);
     return NextResponse.json(crochet);

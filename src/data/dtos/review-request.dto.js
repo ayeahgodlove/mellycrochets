@@ -11,6 +11,7 @@ class ReviewRequestDto {
     this.crochetId = data.crochetId;
     this.comment = data.comment;
     this.rating = data.rating;
+    this.username = data.username;
   }
 
   toData() {
@@ -22,6 +23,7 @@ class ReviewRequestDto {
       comment: this.comment,
       rating: this.rating,
       toggle: false,
+      username: this.username
     };
   }
 

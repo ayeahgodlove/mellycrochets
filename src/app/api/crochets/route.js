@@ -14,14 +14,15 @@ export async function GET(request) {
 
     return NextResponse.json(crochets);
   } catch (error) {
+    console.error("Error fetching crochets:", error);
     return NextResponse.json(
       {
         data: null,
-        message: error.message,
-        validationErrors: [error],
+        message: error.message || "Internal server error",
+        validationErrors: [],
         success: false,
       },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }

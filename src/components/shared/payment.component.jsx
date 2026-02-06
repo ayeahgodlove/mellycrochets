@@ -1,11 +1,7 @@
 "use client";
 
-import { Card, Image, Typography } from "antd";
-import {
-  CheckCircleOutlined,
-  SafetyCertificateOutlined,
-  UndoOutlined,
-} from "@ant-design/icons";
+import { Card, Image, Typography } from "@/components/ui";
+import { CheckCircle, ShieldCheck, Undo2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 // import { MdOutlineAccountBalance } from "react-icons/md";
 
@@ -25,7 +21,7 @@ export const TrustBadge = () => {
             variant="borderless"
             className="flex items-center gap-4 p-4 shadow-md"
           >
-            <SafetyCertificateOutlined className="text-green-600 text-2xl" />
+            <ShieldCheck className="text-green-600" size={28} />
             <div>
               <Text strong>{t("title1")}</Text>
               <p className="text-gray-500 text-sm">{t("desc1")}</p>
@@ -37,7 +33,7 @@ export const TrustBadge = () => {
             variant="borderless"
             className="flex items-center gap-4 p-4 shadow-md"
           >
-            <UndoOutlined className="text-blue-600 text-2xl" />
+            <Undo2 className="text-blue-600" size={28} />
             <div>
               <Text strong>{t("title2")}</Text>
               <p className="text-gray-500 text-sm">{t("desc2")}</p>
@@ -49,7 +45,7 @@ export const TrustBadge = () => {
             variant="borderless"
             className="flex items-center gap-4 p-4 shadow-md"
           >
-            <CheckCircleOutlined className="text-purple-600 text-2xl" />
+            <CheckCircle className="text-purple-600" size={28} />
             <div>
               <Text strong>{t("title3")}</Text>
               <p className="text-gray-500 text-sm">{t("desc3")}</p>

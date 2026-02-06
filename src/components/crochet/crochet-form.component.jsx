@@ -8,8 +8,8 @@ import {
   Select,
   Upload,
   message,
-} from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+} from "@/components/ui";
+import { Plus } from "lucide-react";
 import { useCreate } from "@refinedev/core";
 import { emptyCrochet } from "../../data/models";
 import { BASE_URL } from "../../constants/api-url";
@@ -178,7 +178,7 @@ export default function CrochetForm({ formProps, crochetTypes, selectProps }) {
           >
             {fileList.length < 5 && (
               <div>
-                <PlusOutlined />
+                <Plus size={16} />
                 <div style={{ marginTop: 8 }}>Upload</div>
               </div>
             )}

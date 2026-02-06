@@ -1,4 +1,4 @@
-import { Breadcrumb } from "antd";
+import { Breadcrumb } from "@/components/ui";
 import React from "react";
 import { FiHome } from "react-icons/fi";
 

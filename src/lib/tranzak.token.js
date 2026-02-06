@@ -29,7 +29,7 @@ const initiateMomoPayment = async (amount, description, returnUrl) => {
       description,
       mchTransactionRef: nanoid(30),
       returnUrl,
-      payerNote: "Linkavet Platform Payment",
+      payerNote: description,
     },
     {
       headers: {

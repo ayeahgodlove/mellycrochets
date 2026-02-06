@@ -1,5 +1,5 @@
 import { format } from "../../lib/format";
-import { Typography } from "antd";
+import { Typography } from '@/components/ui';
 
 export const getCartSummary = (cartItems) => {
   const data = cartItems && cartItems.length > 0 ? cartItems : [];

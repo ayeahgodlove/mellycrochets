@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Dropdown } from "@/components/ui";
 
 const CrochetDropdownV2 = ({ crochetTypes }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,49 +21,58 @@ const CrochetDropdownV2 = ({ crochetTypes }) => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isOpen]);
+
+  const menuItems = crochetTypes?.map((type) => ({
+    key: type.id,
+    label: (
+      <Link
+        href={`/crochet_designs/${type.slug}`}
+        className={cn(
+          "block px-3 py-2 text-sm rounded-md transition-colors",
+          pathname === `/crochet_designs/${type.slug}`
+            ? "text-red-800 bg-red-50"
+            : "text-gray-700 hover:text-red-800 hover:bg-red-50"
+        )}
+        onClick={() => setIsOpen(false)}
+      >
+        {type.name}
+      </Link>
+    ),
+  }));
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Dropdown Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`px-4 py-2 font-playfair rounded-md transition ${isDropdownActive ? "active" : ""}`}
+      <Dropdown
+        menu={{ items: menuItems }}
+        placement="bottomLeft"
+        trigger={["hover", "click"]}
+        onOpenChange={setIsOpen}
       >
-        Crochet Designs
-      </button>
-
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <div className="absolute left-0 mt-2 bg-[#fdf3f3] rounded-md overflow-hidden z-50">
-          <ul>
-            {crochetTypes.length > 0 ? (
-              crochetTypes.map((type) => {
-                const isActive = pathname === `/crochet_designs/${type.slug}`;
-                return (
-                  <li key={type.id}>
-                    <Link
-                      href={`/crochet_designs/${type.slug}`}
-                      className={`block px-4 py-2 nav-link font-playfair transition ${
-                        isActive ? "active" : ""
-                      }`}
-                      onClick={() => setIsOpen(false)} // Close on select
-                    >
-                      {type.name}
-                    </Link>
-                  </li>
-                );
-              })
-            ) : (
-              <li className="px-4 py-2 text-gray-500">No types available</li>
+        <button
+          className={cn(
+            "px-4 py-2 text-sm font-medium rounded-md transition-colors flex items-center gap-1",
+            isDropdownActive
+              ? "text-red-800 bg-red-50"
+              : "text-gray-700 hover:text-red-800 hover:bg-red-50"
+          )}
+        >
+          Crochet Designs
+          <ChevronDown
+            size={16}
+            className={cn(
+              "transition-transform",
+              isOpen && "rotate-180"
             )}
-          </ul>
-        </div>
-      )}
+          />
+        </button>
+      </Dropdown>
     </div>
   );
 };

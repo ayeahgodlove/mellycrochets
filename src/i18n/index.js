@@ -5,9 +5,11 @@ import { DEFAULT_LOCALE } from "./config";
 import { I18N_COOKIE_NAME } from "./config";
 
 export async function getUserLocale() {
-  return cookies().get(I18N_COOKIE_NAME)?.value || DEFAULT_LOCALE;
+  const cookieStore = await cookies();
+  return cookieStore.get(I18N_COOKIE_NAME)?.value || DEFAULT_LOCALE;
 }
 
 export async function setUserLocale(locale) {
-  cookies().set(I18N_COOKIE_NAME, locale);
+  const cookieStore = await cookies();
+  cookieStore.set(I18N_COOKIE_NAME, locale);
 }

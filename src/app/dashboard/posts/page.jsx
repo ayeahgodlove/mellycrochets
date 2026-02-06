@@ -9,10 +9,10 @@ import {
   List,
   ShowButton,
   useTable,
-} from "@refinedev/antd";
+} from "@/components/refine";
 import { useMany } from "@refinedev/core";
 import { format } from "../../../lib/format";
-import { Image, Space, Table, Tag } from "antd";
+import { Image, Space, Table, Tag } from "@/components/ui";
 
 export default function BlogPostList() {
   const { tableProps } = useTable({

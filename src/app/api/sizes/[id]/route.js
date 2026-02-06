@@ -95,7 +95,6 @@ export async function GET(req, { params }) {
 
   try {
     const id = params.id;
-    console.log("id ", id);
     const size = await sizeRepository.findById(id);
     // const sizeDTO = sizeMapper.toDTO(size);
     return NextResponse.json(size);

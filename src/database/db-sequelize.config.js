@@ -15,8 +15,11 @@ const sequelize = new Sequelize(
     dialectModule: mysql,
     benchmark: true,
     port: parseInt(process.env.MYSQL_PORT, 10) || 3306,
-    dialectOptions: {
-      require: false, // Disable optional dependency resolution
+    logging: (msg) => {
+      // Only log the SQL query, not the entire options object
+      if (typeof msg === 'string') {
+        console.log(msg);
+      }
     },
   }
 );

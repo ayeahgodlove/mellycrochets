@@ -1,5 +1,4 @@
-import CrochetTypeHero from "../../../components/shared/crochet-type-hero.component";
-import PostList from "../../../components/posts/post-list.component";
+import TagPostsPage from "../../../page-components/tags/tag-posts-page";
 import { fetchTagBySlug } from "../../../utils/data";
 import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
@@ -19,7 +18,6 @@ const fetchTagDetails = async (slug) => {
 // 🏷️ Generate Metadata for SEO
 export async function generateMetadata({ params }) {
   if (!params?.slug) {
-    console.warn("Slug is missing in params!");
     return {}; // Avoid breaking the app
   }
   const tag = await fetchTagDetails(params.slug);
@@ -125,20 +123,5 @@ export default async function IndexPage({ params }) {
 
   const tag = await fetchTagBySlug(slug);
 
-  return (
-    <>
-      <CrochetTypeHero
-        title={tag.name}
-        description={tag.description}
-        breadcrumbs={[
-          { title: "Posts", href: "/blog_posts" },
-          { title: tag.name, href: "#" },
-        ]}
-      />
-      <div className="w-full px-10 pb-10" data-aos="fade-up">
-        {/* listings */}
-        <PostList posts={tag?.posts} />
-      </div>
-    </>
-  );
+  return <TagPostsPage tag={tag} />;
 }

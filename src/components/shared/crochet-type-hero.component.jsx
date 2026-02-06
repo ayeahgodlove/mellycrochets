@@ -1,4 +1,4 @@
-import { Breadcrumb } from "antd";
+import { Breadcrumb } from "@/components/ui";
 
 const CrochetTypeHero = ({ title, description, breadcrumbs }) => {
   return (

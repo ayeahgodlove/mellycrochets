@@ -1,9 +1,9 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Show } from "@refinedev/antd";
+import { Show } from "@/components/refine";
 import { useShow } from "@refinedev/core";
-import { Descriptions, Image } from "antd";
+import { Descriptions, Image } from "@/components/ui";
 
 export default function CrochetShow() {
   const { query } = useShow({});

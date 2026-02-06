@@ -2,8 +2,8 @@
 
 import { API_URL_UPLOADS_POSTS } from "../../../../constants/api-url";
 import PageBreadCrumbs from "../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Create, useForm, useSelect } from "@refinedev/antd";
-import { Col, Form, Image, Input, Row, Select, Space, Typography } from "antd";
+import { Create, useForm, useSelect } from "@/components/refine";
+import { Col, Form, Image, Input, Row, Select, Space, Typography } from "@/components/ui";
 import { EditorComponent } from "../../../../components/editor/editor.component";
 
 export default function BlogPostCreate() {

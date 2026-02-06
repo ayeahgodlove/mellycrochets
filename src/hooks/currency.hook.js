@@ -28,6 +28,10 @@ export const useCurrency = () => {
 
     return convertedPrice;
   }
+
+  function convertPrice(price) {
+    return currency === CURRENCY.cfa ? price : price * 600;
+  }
   useEffect(() => {
     const fetchCurrency = async () => {
       const countryCode = await getGeolocation();
@@ -43,5 +47,11 @@ export const useCurrency = () => {
     fetchCurrency();
   }, []);
 
-  return { currency, setCurrencyFun, getConvertedPrice, getPrice };
+  return {
+    currency,
+    setCurrencyFun,
+    getConvertedPrice,
+    getPrice,
+    convertPrice,
+  };
 };

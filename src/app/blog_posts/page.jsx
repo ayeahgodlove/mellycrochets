@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import BlogListWrapper from "../../components/pages/blog/blog-list-wrapper.component";
-import BlogHero from "../../components/shared/post-hero.component";
+import BlogPostsPage from "../../page-components/blog-posts/page";
 import { keywords } from "../../constants/constant";
 
 const url = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
@@ -13,15 +12,6 @@ export const metadata = {
   },
   description:
     "Discover crochet patterns, tutorials, and creative inspiration from MellyCrochets. Perfect for crochet enthusiasts of all skill levels.",
-  keywords: [
-    "crochet blog",
-    "crochet patterns",
-    "crochet tutorials",
-    ...keywords,
-  ].join(", "),
-  authors: [{ name: "MellyCrochets", url: `${url}` }],
-  creator: "MellyCrochets",
-  publisher: "MellyCrochets",
   alternates: {
     canonical: `${url}/blog_posts`,
   },
@@ -29,6 +19,7 @@ export const metadata = {
     title: "Crochet Blog - Tips, Patterns & Inspiration",
     description:
       "Discover crochet patterns, tutorials, and creative inspiration from MellyCrochets. Perfect for crochet enthusiasts of all skill levels.",
+    type: "article",
     url: `${url}/blog_posts`,
     siteName: "MellyCrochets",
     images: [
@@ -39,7 +30,7 @@ export const metadata = {
         alt: "Crochet blog header image",
       },
     ],
-    type: "website",
+    type: "article",
     locale: "en_US",
   },
   twitter: {
@@ -51,6 +42,15 @@ export const metadata = {
     site: "@mellycrochets", // Replace with actual Twitter handle if exists
     creator: "@mellycrochets",
   },
+  keywords: [
+    "crochet blog",
+    "crochet patterns",
+    "crochet tutorials",
+    ...keywords,
+  ].join(", "),
+  authors: [{ name: "MellyCrochets", url: `${url}` }],
+  creator: "MellyCrochets",
+  publisher: "MellyCrochets",
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -79,10 +79,5 @@ export const metadata = {
 
 export default async function IndexPage() {
   const t = await getTranslations("blog_posts");
-  return (
-    <>
-      <BlogHero title={t("title")} description={t("description")} />
-      <BlogListWrapper />
-    </>
-  );
+  return <BlogPostsPage title={t("title")} description={t("description")} />;
 }

@@ -1,5 +1,5 @@
 "use client";
-import { Skeleton, Card, Space, Row, Col } from "antd";
+import { Skeleton, Card, Space, Row, Col } from '@/components/ui';
 
 const TableSkeleton = () => {
   const rows = Array.from({ length: 5 });

@@ -1,79 +1,77 @@
-import { Button, Dropdown, Image } from "antd";
+"use client";
+
+import { Button, Dropdown, Image } from '@/components/ui';
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "@refinedev/core";
+import { Globe } from "lucide-react";
 
 const AppLanguage = () => {
   const { changeLocale } = useTranslation();
-  const [menu, setMenu] = useState({
-    key: "en",
-    label: "ENG",
-    extra: (
-      <Image
-        src="./en.png"
-        alt="english locale"
-        width={12}
-        height={12}
-        preview={false}
-      />
-    ),
-  });
+  const [currentLang, setCurrentLang] = useState("en");
 
   const items = [
     {
-      label: "ENG",
+      label: "English",
       key: "en",
       extra: (
         <Image
-          src="./en.png"
+          src="/en.png"
           alt="english locale"
-          width={12}
-          height={12}
+          width={16}
+          height={16}
           preview={false}
+          className="rounded-sm"
         />
       ),
     },
     {
-      label: "FREN",
+      label: "Français",
       key: "fr",
       extra: (
         <Image
-          src="./fr.png"
+          src="/fr.png"
           alt="french locale"
-          width={10}
-          height={10}
+          width={16}
+          height={16}
           preview={false}
+          className="rounded-sm"
         />
       ),
     },
   ];
 
   const handleMenuClick = (e) => {
-    const selectedLanguage = items.find((item) => item.key === e.key);
-    if (selectedLanguage) {
-      setMenu(selectedLanguage);
-      changeLocale(e.key); // Switch language (if using i18next)
+    if (e?.key) {
+      setCurrentLang(e.key);
+      changeLocale(e.key);
     }
   };
 
   useEffect(() => {
-    changeLocale(menu.key); // Set language on mount
+    // Set initial language
+    changeLocale(currentLang);
   }, []);
+
+  const currentItem = items.find(item => item.key === currentLang) || items[0];
+
   return (
-    <>
-      {/* language selector */}
-      <Dropdown
-        menu={{
-          items,
-          onClick: handleMenuClick,
-        }}
-        placement="bottomLeft"
-        className="cursor-pointer font-medium"
+    <Dropdown
+      menu={{
+        items,
+        onClick: handleMenuClick,
+      }}
+      placement="bottomLeft"
+    >
+      <Button 
+        type="text" 
+        size="sm" 
+        className="h-9 px-2 gap-1.5"
+        icon={<Globe size={16} />}
       >
-        <Button size="middle" style={{ width: "40px" }}>
-          {menu.label}
-        </Button>
-      </Dropdown>
-    </>
+        <span className="hidden sm:inline">{currentItem.label}</span>
+        <span className="sm:hidden">{currentItem.key.toUpperCase()}</span>
+      </Button>
+    </Dropdown>
   );
 };
 

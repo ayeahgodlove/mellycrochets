@@ -1,31 +1,34 @@
-// components/view-more-button.js
 "use client";
 
-import { FiArrowRight } from "react-icons/fi";
-import { Button } from "antd";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export default function ViewMoreButton({ href, text}) {
+export default function ViewMoreButton({ href, text }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
     >
       <Button
         type="primary"
         href={href || "/shop"}
-        size="large"
-        className="text-sm font-semibold transition-all duration-300"
-        style={{
-          borderRadius: 50,
-          padding: "20px 25px",
-          fontWeight: 500,
-        }}
-        icon={<FiArrowRight />}
+        size="default"
+        className={cn(
+          "group inline-flex items-center gap-2",
+          "px-6 py-3",
+          "text-sm font-semibold",
+          "rounded-full",
+          "transition-all duration-300",
+          "hover:gap-3 hover:shadow-lg"
+        )}
+        icon={<ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />}
         iconPosition="end"
       >
-        {text}
+        {text || "View More"}
       </Button>
     </motion.div>
   );

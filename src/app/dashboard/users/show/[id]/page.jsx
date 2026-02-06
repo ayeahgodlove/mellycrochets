@@ -1,9 +1,9 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Show } from "@refinedev/antd";
+import { Show } from '@/components/refine';
 import { useShow } from "@refinedev/core";
-import { Descriptions, Image } from "antd";
+import { Descriptions, Image } from '@/components/ui';
 
 export default function UserShow() {
   const { query } = useShow({});
@@ -28,7 +28,11 @@ export default function UserShow() {
             {record?.verified ? "Yes" : "No"}
           </Descriptions.Item>
           <Descriptions.Item label="Image">
-            <Image src={record?.image} alt="User" width={100} />
+            {record?.image && record.image.trim() !== "" ? (
+              <Image src={record.image} alt="User" width={100} />
+            ) : (
+              <span className="text-muted-foreground">No image</span>
+            )}
           </Descriptions.Item>
         </Descriptions>
       </Show>

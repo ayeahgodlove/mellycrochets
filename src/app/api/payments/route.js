@@ -28,7 +28,6 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const dto = new PaymentRequestDto(body);
-    console.log("dto: ", dto);
     const validationErrors = await validate(dto);
 
     if (validationErrors.length > 0) {
@@ -56,7 +55,6 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (error) {
-    console.log("Error creating payment: ", error);
     return NextResponse.json(
       {
         data: null,

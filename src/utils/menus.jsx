@@ -11,7 +11,7 @@ import { GrUserSettings, GrDashboard  } from "react-icons/gr";
 import { FaUserShield } from "react-icons/fa";
 import { FaUsersViewfinder } from "react-icons/fa6";
 import { BiCategory } from "react-icons/bi";
-import { RiFolderHistoryLine, RiSecurePaymentLine } from "react-icons/ri";
+// import { RiFolderHistoryLine, RiSecurePaymentLine } from "react-icons/ri";
 
 export const useMenu = () => {
   const menus = [
@@ -59,14 +59,14 @@ export const useMenu = () => {
       },
       icon: <GiShoppingCart />,
     },
-    {
-      name: "verify-payments",
-      list: "/dashboard/verify-payments", // <-- This is needed
-      meta: {
-        canAccess: ["admin"],
-      },
-      icon: <RiSecurePaymentLine />,
-    },
+    // {
+    //   name: "verify-payments",
+    //   list: "/dashboard/verify-payments", // <-- This is needed
+    //   meta: {
+    //     canAccess: ["admin"],
+    //   },
+    //   icon: <RiSecurePaymentLine />,
+    // },
     // {
     //   name: "payment-history",
     //   list: "/dashboard/payment-history", // <-- This is needed
@@ -75,18 +75,18 @@ export const useMenu = () => {
     //   },
     //   icon: <RiFolderHistoryLine />,
     // },
-    {
-      name: "payments",
-      list: "/dashboard/payments",
-      create: "/dashboard/payments/create",
-      edit: "/dashboard/payments/edit/:id",
-      show: "/dashboard/payments/show/:id",
-      meta: {
-        // canDelete: true,
-        canAccess: ["admin"],
-      },
-      icon: <MdPayments />,
-    },
+    // {
+    //   name: "payments",
+    //   list: "/dashboard/payments",
+    //   create: "/dashboard/payments/create",
+    //   edit: "/dashboard/payments/edit/:id",
+    //   show: "/dashboard/payments/show/:id",
+    //   meta: {
+    //     // canDelete: true,
+    //     canAccess: ["admin"],
+    //   },
+    //   icon: <MdPayments />,
+    // },
     {
       name: "subscribers",
       list: "/dashboard/subscribers",

@@ -1,8 +1,8 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Edit, useForm } from "@refinedev/antd";
-import { Form, Input, Select } from "antd";
+import { Edit, useForm } from '@/components/refine';
+import { Form, Input, Select } from '@/components/ui';
 
 export default function UserEdit() {
   const { formProps, saveButtonProps } = useForm({});

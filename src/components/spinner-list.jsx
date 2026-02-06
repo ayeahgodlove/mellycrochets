@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, Row, Skeleton, Space } from "antd";
+import { Card, Col, Row, Skeleton, Space } from '@/components/ui';
 
 const SpinnerList = () => {
   return (

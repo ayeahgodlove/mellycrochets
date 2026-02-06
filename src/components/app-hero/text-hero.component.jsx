@@ -14,9 +14,9 @@ export default function HeroSection({
         <p className="mt-4 text-lg md:text-2xl max-w-2xl mx-auto text-[#101828]">
           {description}
         </p>
-        <p>
+        {/* <p>
           Check out our <a href="/shop">shop</a> for more crochet items.
-        </p>
+        </p> */}
       </div>
     </section>
   );

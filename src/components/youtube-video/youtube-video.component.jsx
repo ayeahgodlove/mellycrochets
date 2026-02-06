@@ -1,6 +1,6 @@
 import React from "react";
-import { Card } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { Card } from "@/components/ui";
+import { PlayCircle } from "lucide-react";
 import { useState } from "react";
 
 const extractVideoId = (url) => {
@@ -49,9 +49,9 @@ const YoutubeVideo = ({ videoUrl, title }) => {
                 width: "100%"
               }}
             ></div>
-            <PlayCircleOutlined
-              style={{ fontSize: "48px", color: "#82181a" }}
-              className="relative z-10 text-white text-6xl sm:text-7xl md:text-8xl hover:text-gray-300 transition-colors"
+            <PlayCircle
+              size={48}
+              className="relative z-10 text-[#82181a] text-6xl sm:text-7xl md:text-8xl hover:text-gray-300 transition-colors"
             />
           </div>
         ) : (

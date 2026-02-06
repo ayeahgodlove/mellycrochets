@@ -1,9 +1,7 @@
 "use client";
 
-import { App as AntdApp, ConfigProvider, theme } from "antd";
 import Cookies from "js-cookie";
 import { createContext, useEffect, useState, useContext } from "react";
-import { themeConfig } from "../../utils/theme";
 
 export const ColorModeContext = createContext({});
 
@@ -32,8 +30,6 @@ export const ColorModeContextProvider = ({ children, defaultMode }) => {
     }
   };
 
-  const { darkAlgorithm, defaultAlgorithm } = theme;
-
   return (
     <ColorModeContext.Provider
       value={{
@@ -41,17 +37,7 @@ export const ColorModeContextProvider = ({ children, defaultMode }) => {
         mode,
       }}
     >
-      <ConfigProvider
-        // you can change the theme colors here. example: ...RefineThemes.Magenta,
-        theme={{
-          ...themeConfig,
-          algorithm: mode === "light" ? defaultAlgorithm : darkAlgorithm,
-        }}
-        // popupMatchSelectWidth={false}
-        // popupOverflow="viewport"
-      >
-        <AntdApp>{children}</AntdApp>
-      </ConfigProvider>
+      {children}
     </ColorModeContext.Provider>
   );
 };

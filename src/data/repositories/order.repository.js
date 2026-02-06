@@ -15,8 +15,6 @@ export class OrderRepository {
   async create(order) {
     const { items, ...orderDetails } = order;
     const transaction = await sequelize.transaction();
-    console.log("orderDetails", orderDetails);
-    console.log("items", items);
     try {
       const newOrder = await Order.create({ ...orderDetails }, { transaction });
       const { id, userId } = newOrder.toJSON();

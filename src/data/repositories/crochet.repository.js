@@ -165,16 +165,46 @@ export class CrochetRepository {
       });
 
       // Convert imageUrls to an array if it's stored as a string
-      const formattedCrochets = crochets.map((crochet) => ({
-        ...crochet.get(),
-        imageUrls: JSON.parse(crochet.imageUrls),
-        sizes: crochet.sizes.map((size) => ({
-          id: size.id,
-          label: size.label,
-          price: size.CrochetSize?.price,
-          stock: size.CrochetSize?.stock,
-        })),
-      }));
+      const formattedCrochets = crochets.map((crochet) => {
+        const crochetData = crochet.get();
+        let imageUrls = [];
+        
+        try {
+          if (typeof crochetData.imageUrls === 'string') {
+            imageUrls = JSON.parse(crochetData.imageUrls);
+          } else if (Array.isArray(crochetData.imageUrls)) {
+            imageUrls = crochetData.imageUrls;
+          }
+        } catch (e) {
+          console.error("Error parsing imageUrls:", e);
+          imageUrls = [];
+        }
+
+        // Ensure crochetType is a plain object
+        const crochetTypeData = crochet.crochetType ? crochet.crochetType.get() : crochetData.crochetType;
+
+        return {
+          ...crochetData,
+          imageUrls,
+          crochetType: crochetTypeData ? {
+            id: crochetTypeData.id,
+            name: crochetTypeData.name,
+            slug: crochetTypeData.slug,
+            description: crochetTypeData.description,
+            createdAt: crochetTypeData.createdAt,
+            updatedAt: crochetTypeData.updatedAt,
+          } : null,
+          sizes: (crochet.sizes || []).map((size) => {
+            const sizeData = size.get ? size.get() : size;
+            return {
+              id: sizeData.id,
+              label: sizeData.label,
+              price: size.CrochetSize?.price,
+              stock: size.CrochetSize?.stock,
+            };
+          }),
+        };
+      });
       return formattedCrochets;
     } catch (error) {
       throw error;

@@ -1,10 +1,6 @@
 // app/page.js
 import { getTranslations } from "next-intl/server";
-import HeroSection from "../components/app-hero/text-hero.component";
-import GallerySection from "../components/pages/home/gallery.component";
-import CrochetListWrapper from "../components/pages/home/list-wrapper.component";
-import ViewMoreButton from "../components/pages/home/view-more-button.component";
-import SignupPrompt from "../components/signup/signup.component";
+import HomePage from "../page-components/home/page";
 import { keywords } from "../constants/constant";
 
 const url = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
@@ -25,6 +21,10 @@ export const metadata = {
     ...keywords,
   ].join(", "),
   manifest: `${url}/site.webmanifest`,
+  robots: {
+    index: true,
+    follow: true,
+  },
   appleWebApp: {
     title: "MellyCrochets",
     statusBarStyle: "default",
@@ -37,16 +37,24 @@ export const metadata = {
     description:
       "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
     images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
+    site: "@mellycrochets",
     creator: "@mellycrochets",
   },
-  // alternates: {
-  //   canonical: `${url}`,
-  // },
+  alternates: {
+    canonical: `${url}`,
+  },
   openGraph: {
     title: "MellyCrochets",
     description:
       "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
-    images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
+    images: [
+      {
+        url: `${url}/uploads/crochets/crochet-dress-main.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "MellyCrochets crochet dress",
+      },
+    ],
     siteName: "MellyCrochets",
     locale: "en_US",
     url: url,
@@ -65,43 +73,5 @@ export const metadata = {
 export default async function IndexPage() {
   const t = await getTranslations("social");
 
-  return (
-    <>
-      <HeroSection
-        heroInit={t("heroInit")}
-        heroMiddle={t("heroMiddle")}
-        heroLast={t("heroLast")}
-        description={t("heroDescription")}
-      />
-
-      {/* Listings Section */}
-      <section className="w-full px-10 md:pt-10" data-aos="fade-up">
-        <div className="flex flex-col lg:flex-row items-center justify-between">
-          <div className="lg:w-3/4">
-            <h2 className="text-2xl text-gray-950 font-extrabold font-playfair">
-              {t("listing")}
-            </h2>
-            <p className="text-gray-800">{t("message")}</p>
-          </div>
-          <div className="lg:w-1/4 text-left lg:text-right mt-3 lg:mt-0">
-            <ViewMoreButton text={t("view-more")} href="/shop" />
-          </div>
-        </div>
-      </section>
-
-      {/* Crochet List */}
-      <section className="w-full px-10 pb-20" data-aos="fade-up">
-        <CrochetListWrapper />
-      </section>
-
-      <GallerySection
-        title={t("crochetaftercare")}
-        subSummary={t("subSummary")}
-        buttonText={t("btn")}
-        summary={t("summary")}
-      />
-
-      <SignupPrompt />
-    </>
-  );
+  return <HomePage t={t} />;
 }

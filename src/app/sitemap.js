@@ -4,13 +4,25 @@ export default async function sitemap() {
   const baseUrl = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
 
   // Fetch both crochets and blog posts in parallel
-  const [crochetsResponse, blogsResponse] = await Promise.all([
+  const [
+    crochetsResponse,
+    blogsResponse,
+    crochetTypesResponse,
+    categoryResponse,
+    tagsResponse,
+  ] = await Promise.all([
     axios.get(`${baseUrl}/api/crochets`),
     axios.get(`${baseUrl}/api/posts`),
+    axios.get(`${baseUrl}/api/crochet_types`),
+    axios.get(`${baseUrl}/api/categories`),
+    axios.get(`${baseUrl}/api/tags`),
   ]);
 
   const crochets = crochetsResponse.data;
   const blogs = blogsResponse.data;
+  const crochetTypes = crochetTypesResponse.data;
+  const categories = categoryResponse.data;
+  const tags = tagsResponse.data;
 
   // Generate crochet URLs
   const crochetsData = crochets?.map((crochet) => ({
@@ -40,12 +52,40 @@ export default async function sitemap() {
       : [],
   }));
 
+  // generate crochet designs urls
+  const crochetTypeData = crochetTypes?.map((crochetType) => ({
+    url: `${baseUrl}/crochet_designs/${crochetType?.slug}`,
+    lastModified: new Date(crochetType?.updatedAt || crochetType?.createdAt),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  const categoryData = categories?.map((category) => ({
+    url: `${baseUrl}/categories/${category?.slug}`,
+    lastModified: new Date(category?.updatedAt || category?.createdAt),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  const tagData = tags?.map((tag) => ({
+    url: `${baseUrl}/tags/${tag?.slug}`,
+    lastModified: new Date(tag?.updatedAt || tag?.createdAt),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   return [
     {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/shop`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     // Static pages
     {
@@ -67,19 +107,28 @@ export default async function sitemap() {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/shop`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/login`,
+      url: `${baseUrl}/privacy-policy`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },
     // Dynamic content
     ...crochetsData,
+    ...crochetTypeData,
     ...blogsData,
+    ...categoryData,
+    ...tagData,
+    {
+      url: `${baseUrl}/login`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/register`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
   ];
 }

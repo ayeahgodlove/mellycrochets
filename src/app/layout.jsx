@@ -5,11 +5,9 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "../assets/css/globals.css";
 import "../assets/css/main.css";
-import { Affix, Spin } from "antd";
-import AppNavigation from "../components/nav.component";
-import Footer from "../components/footer/footer.component";
-import { LoadingOutlined } from "@ant-design/icons";
-import PrivacyConsent from "../components/privacy-policy/privacy-policy.component";
+import { Spin } from "@/components/ui";
+import { Loader2 } from "lucide-react";
+import AppShell from "../components/layout/app-shell";
 import "../lib/polyfils";
 import { keywords } from "../constants/constant";
 
@@ -66,7 +64,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const theme = cookieStore.get("theme");
   const defaultMode = theme?.value === "dark" ? "dark" : "light";
 
@@ -76,13 +74,51 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Viewport for responsiveness */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        {/* SEO metadata */}
         <meta name="robots" content="index, follow" />
+        <meta name="theme-color" content="#82181a" />
+
+        {/* PWA support */}
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="canonical" href={url} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        
+
+        {/* Font optimization */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+          rel="stylesheet"
+        />
+
+        {/* Optional content security policy (customize if needed) */}
+        {/* <meta
+          http-equiv="content-security-policy"
+          content="default-src https:; script-src 'sha256-cPpRrcp58qOLBGbg0daTQMB+cvBxtwl2c5F22Cbohzk='"
+        /> */}
+        {/* google verification */}
+        <meta
+          name="google-site-verification"
+          content="ldebmFeO6kY68u7FbCml3aurSI0q3u4SflpJm11J458"
+        />
+
+        {/* Structured data (JSON-LD) */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -107,20 +143,30 @@ export default async function RootLayout({ children }) {
             }),
           }}
         />
+        {/* Google tag (gtag.js) */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-KMES0JLGEB"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-KMES0JLGEB');
+            `,
+          }}
+        />
       </head>
+
       <body>
         <Suspense
           fallback={
             <Spin
               size="large"
-              indicator={
-                <LoadingOutlined
-                  style={{
-                    fontSize: 48,
-                  }}
-                  spin
-                />
-              }
+              indicator={<Loader2 size={48} className="animate-spin text-gray-500" />}
               style={{
                 minHeight: "65vh",
                 display: "flex",
@@ -133,13 +179,7 @@ export default async function RootLayout({ children }) {
         >
           <NextIntlClientProvider locale={locale} messages={messages}>
             <RefineContext defaultMode={defaultMode}>
-              <Affix offsetTop={0} className="sticky top-0 left-0 w-full z-100">
-                <AppNavigation />
-              </Affix>
-              {children}
-              <Footer />
-              {/* <EmailSubscriptionPopup /> */}
-              <PrivacyConsent />
+              <AppShell>{children}</AppShell>
             </RefineContext>
           </NextIntlClientProvider>
         </Suspense>

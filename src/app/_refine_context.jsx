@@ -1,21 +1,19 @@
 "use client";
 import React from "react";
-import { useNotificationProvider } from "@refinedev/antd";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import routerProvider from "@refinedev/nextjs-router";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
-import "@refinedev/antd/dist/reset.css";
 import { dataProvider } from "../providers/data-provider";
 import { useMenu } from "../utils/menus";
 
-import { Spin } from "antd";
+import { Spin } from "@/components/ui";
 import { accessControlProvider } from "../providers/access-control-provider";
 import ClientProvider from "../contexts/redux/provider";
 import { useLocale, useTranslations } from "next-intl";
 import { setUserLocale } from "../i18n/index";
+import { notificationProvider } from "../providers/notification-provider";
 
 export const App = (props) => {
   const { data, status } = useSession();
@@ -122,39 +120,37 @@ export const App = (props) => {
   return (
     <>
       <RefineKbarProvider>
-        <AntdRegistry>
-          <ClientProvider>
-            <Refine
-              routerProvider={routerProvider}
-              dataProvider={dataProvider}
-              accessControlProvider={{
-                can: async ({ resource, action }) => {
-                  const user = await authProvider.getPermissions();
-                  return accessControlProvider.can({
-                    resource,
-                    action,
-                    params: { user },
-                  });
-                },
-                options: {},
-              }}
-              notificationProvider={useNotificationProvider}
-              authProvider={authProvider}
-              i18nProvider={i18nProvider}
-              resources={filteredMenus}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                useNewQueryKeys: true,
-                projectId: "njMZZm-fu7OWZ-sdebsw",
-                breadcrumb: true,
-              }}
-            >
-              <div className="min-h-screen">{props.children}</div>
-              <RefineKbar />
-            </Refine>
-          </ClientProvider>
-        </AntdRegistry>
+        <ClientProvider>
+          <Refine
+            routerProvider={routerProvider}
+            dataProvider={dataProvider}
+            accessControlProvider={{
+              can: async ({ resource, action }) => {
+                const user = await authProvider.getPermissions();
+                return accessControlProvider.can({
+                  resource,
+                  action,
+                  params: { user },
+                });
+              },
+              options: {},
+            }}
+            notificationProvider={notificationProvider}
+            authProvider={authProvider}
+            i18nProvider={i18nProvider}
+            resources={filteredMenus}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              useNewQueryKeys: true,
+              projectId: "njMZZm-fu7OWZ-sdebsw",
+              breadcrumb: true,
+            }}
+          >
+            <main className="min-h-screen">{props.children}</main>
+            <RefineKbar />
+          </Refine>
+        </ClientProvider>
       </RefineKbarProvider>
     </>
   );

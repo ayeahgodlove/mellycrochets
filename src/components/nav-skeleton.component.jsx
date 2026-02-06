@@ -1,4 +1,4 @@
-import { Skeleton, Space } from "antd";
+import { Skeleton, Space } from '@/components/ui';
 
 const AppNavigationSkeleton = () => {
   return (

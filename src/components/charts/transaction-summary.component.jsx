@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Statistic } from 'antd';
+import { Card, Statistic } from '@/components/ui';
 // import { GrMoney } from 'react-icons/gr';
 // import { TbSum } from "react-icons/tb";
 import { format } from '../../lib/format';

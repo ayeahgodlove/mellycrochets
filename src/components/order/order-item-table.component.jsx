@@ -1,7 +1,7 @@
 import { useList } from "@refinedev/core";
 import { format } from "../../lib/format";
 import { orderItemAPI } from "../../store/api/order_item_api";
-import { Table } from "antd";
+import { Table } from '@/components/ui';
 import React from "react";
 
 const OrderItemTable = ({ record }) => {

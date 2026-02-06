@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Modal, Input, Button, Image } from "antd";
+import { Modal, Input, Button, Image } from "@/components/ui";
 import axios from "axios";
 import { BASE_URL } from "../../constants/api-url";
 import { useTranslations } from "next-intl";

@@ -1,4 +1,4 @@
-import { ErrorComponent } from "@refinedev/antd";
+import { ErrorComponent } from "@/components/refine";
 
 export default function NotFound() {
   return (

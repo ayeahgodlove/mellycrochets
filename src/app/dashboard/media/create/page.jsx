@@ -2,8 +2,8 @@
 
 import PageBreadCrumbs from "../../../../components/page-breadcrumb/page-breadcrumb.component";
 import { BASE_URL } from "../../../../constants/api-url";
-import { Create, getValueFromEvent, useForm } from "@refinedev/antd";
-import { Form, Input, Select, Upload } from "antd";
+import { Create, getValueFromEvent, useForm } from '@/components/refine';
+import { Form, Input, Select, Upload } from '@/components/ui';
 
 export default function MediaCreate() {
   const { formProps, saveButtonProps } = useForm({});

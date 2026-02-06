@@ -2,8 +2,8 @@
 
 import { format } from "../../../lib/format";
 import PageBreadCrumbs from "../../../components/page-breadcrumb/page-breadcrumb.component";
-import { DeleteButton, EditButton, List, ShowButton, useTable } from "@refinedev/antd";
-import { Space, Table } from "antd";
+import { DeleteButton, EditButton, List, ShowButton, useTable } from "@/components/refine";
+import { Space, Table } from "@/components/ui";
 
 export default function SubscriberList() {
   const { tableProps } = useTable({

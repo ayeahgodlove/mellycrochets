@@ -10,7 +10,6 @@ export const POST = async (request) => {
 
     const image = file.get("file");
 
-    console.log("image: ", image);
     const byteLength = await image.arrayBuffer();
 
     const bufferData = await Buffer.from(byteLength);
@@ -28,7 +27,6 @@ export const POST = async (request) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Upload Error:", error);
     return NextResponse.json(
       { success: false, message: "File upload failed" },
       { status: 500 }

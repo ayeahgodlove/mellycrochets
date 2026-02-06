@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button } from "@/components/ui";
 import { getTranslations } from "next-intl/server";
 import { FaMapMarkerAlt, FaPhoneAlt, FaWhatsapp } from "react-icons/fa";
 
@@ -74,12 +74,15 @@ const ContactSection = async () => {
               ></textarea>
             </div>
 
-            <button
-              type="submit"
-              className="w-full px-6 py-3 bg-[#fdf3f3] text-white font-semibold rounded-md shadow-md hover:bg-[#ffe2e2] transition"
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              size="large"
+              className="rounded-md"
             >
               {t("sendUsMessage")}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import PageBreadCrumbs from "../../components/page-breadcrumb/page-breadcrumb.component";
 import TransactionCharts from "../../components/charts/transaction.component";
 import { useList } from "@refinedev/core";
-import { Spin } from "antd";
+import { Spin } from "@/components/ui";
 import TransactionSummary from "../../components/charts/transaction-summary.component";
 import { OrderList } from "../../components/charts/order-summary.component";
 
@@ -33,11 +33,13 @@ export default function IndexPage() {
       </div>
     );
   }
+  const transactionData = transactions?.data ?? [];
+
   return (
     <>
       <PageBreadCrumbs items={["Dashboard"]} />
-      <TransactionSummary data={transactions.data} />
-      <TransactionCharts data={transactions.data} />
+      <TransactionSummary data={transactionData} />
+      <TransactionCharts data={transactionData} />
       <OrderList />
     </>
   );

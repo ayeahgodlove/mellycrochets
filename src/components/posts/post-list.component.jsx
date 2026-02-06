@@ -1,4 +1,4 @@
-import { Empty } from "antd";
+import { Empty } from "@/components/ui";
 import React from "react";
 import AppPost from "./post.component";
 

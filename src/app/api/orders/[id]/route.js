@@ -45,7 +45,6 @@ export async function PATCH(req, { params }) {
       telephone: body.telephone,
     };
 
-    console.log("obj: ", obj);
     const updatedOrder = await orderRepository.update(obj);
 
     return NextResponse.json(
@@ -124,7 +123,6 @@ export async function DELETE(req, { params }) {
       data: null,
     });
   } catch (error) {
-    console.log("error", error);
     return NextResponse.json(
       {
         message: error.message,

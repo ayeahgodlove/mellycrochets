@@ -8,8 +8,8 @@ import {
   List,
   ShowButton,
   useTable,
-} from "@refinedev/antd";
-import { Space, Table } from "antd";
+} from "@/components/refine";
+import { Space, Table } from "@/components/ui";
 import { useMany } from "@refinedev/core";
 
 export default function CrochetList() {

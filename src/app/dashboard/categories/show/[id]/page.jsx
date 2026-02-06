@@ -1,9 +1,9 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Show } from "@refinedev/antd";
+import { Show } from '@/components/refine';
 import { useShow } from "@refinedev/core";
-import { Descriptions } from "antd";
+import { Descriptions } from '@/components/ui';
 
 export default function CategoryShow() {
   const { query } = useShow({});

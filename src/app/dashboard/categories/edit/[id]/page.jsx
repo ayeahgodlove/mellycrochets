@@ -1,8 +1,8 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Edit, useForm } from "@refinedev/antd";
-import { Form, Input } from "antd";
+import { Edit, useForm } from '@/components/refine';
+import { Form, Input } from '@/components/ui';
 
 export default function categoryEdit() {
   const { formProps, saveButtonProps } = useForm({});

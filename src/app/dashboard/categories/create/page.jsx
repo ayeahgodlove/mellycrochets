@@ -1,8 +1,8 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { Create, useForm } from "@refinedev/antd";
-import { Form, Input } from "antd";
+import { Create, useForm } from '@/components/refine';
+import { Form, Input } from '@/components/ui';
 
 export default function CategoryCreate() {
   const { formProps, saveButtonProps } = useForm({});

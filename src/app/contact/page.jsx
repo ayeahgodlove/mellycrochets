@@ -1,13 +1,22 @@
-import ContactSection from "../../components/contact/contact.component";
-import "../../assets/css/globals.css";
 import { keywords } from "../../constants/constant";
 import { getTranslations } from "next-intl/server";
+import ContactPage from "../../page-components/contact/page";
 
 const url = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
+
 export const metadata = {
+  metadataBase: new URL(`${url}`),
   title: "Contact Us | MellyCrochets",
   description:
-    "Get in touch with MellyCrochets for inquiries about our handcrafted crochet fashion.",
+    "Get in touch with MellyCrochets for inquiries about our handcrafted crochet fashion and custom orders.",
+
+  alternates: {
+    canonical: `${url}/contact`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   keywords: [
     "crochet contact",
     "handmade fashion inquiries",
@@ -15,14 +24,27 @@ export const metadata = {
     "custom crochet orders",
     ...keywords,
   ].join(", "),
+
+  // OpenGraph Metadata
   openGraph: {
     title: "Contact Us | MellyCrochets",
     description:
-      "Reach out to MellyCrochets for custom orders and inquiries about our handcrafted pieces.",
-    images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
+      "Reach out to MellyCrochets for custom crochet orders, inquiries, and collaborations.",
+    images: [
+      {
+        url: `${url}/uploads/crochets/crochet-dress-main.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "MellyCrochets contact page",
+      },
+    ],
     url: `${url}/contact`,
     type: "website",
+    siteName: "MellyCrochets",
+    locale: "en_US",
   },
+
+  // Icons for different platforms
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -32,37 +54,21 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
     shortcut: "/favicon.ico",
   },
+
+  // Twitter Card Metadata
   twitter: {
     card: "summary_large_image",
     title: "Contact Us | MellyCrochets",
-    description: "Get in touch for custom crochet orders and inquiries.",
+    description:
+      "Get in touch for custom crochet orders, inquiries, or collaborations.",
     images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
+    site: "@mellycrochets", // Add actual Twitter handle if available
+    creator: "@mellycrochets", // Add creator handle if available
   },
 };
 
 export default async function Contact() {
   const t = await getTranslations("contact");
 
-  return (
-    <div>
-      {/* Hero Section */}
-      <div className="relative w-full bg-gray-100 py-20 px-6 flex flex-col items-center text-center">
-        {/* Background Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-200 opacity-80"></div>
-
-        {/* Fade-in Slide-up Animation */}
-        <div className="relative z-10 text-center max-w-3xl p-6 md:p-12 lg:p-16 animate-fade-in-up">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
-            {t("heroTitle")}
-          </h1>
-          <p className="text-lg text-gray-700 max-w-2xl mb-6">
-            {t("heroDescription")}
-          </p>
-        </div>
-      </div>
-
-      {/* Contact Details */}
-      <ContactSection />
-    </div>
-  );
+  return <ContactPage t={t} />;
 }

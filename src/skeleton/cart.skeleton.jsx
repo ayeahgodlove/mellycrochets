@@ -1,5 +1,5 @@
 "use client";
-import { Skeleton, Button, Typography, Row, Col } from "antd";
+import { Skeleton, Button, Typography, Row, Col } from '@/components/ui';
 
 const { Text } = Typography;
 

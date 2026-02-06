@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button } from '@/components/ui';
 
 export default function PrivacyConsentBanner() {
   const [visible, setVisible] = useState(false);

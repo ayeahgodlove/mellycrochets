@@ -10,7 +10,6 @@ export async function GET(req, { params }) {
     const postBySlug = await postRepository.findBySlug(slug);
     if (postBySlug) return NextResponse.json(postBySlug, { status: 200 });
 
-    console.log("postById: ", postBySlug);
     return NextResponse.json(
       {
         data: null,

@@ -2,19 +2,13 @@
 import React, { useState } from "react";
 import {
   Button,
-  Card,
-  Descriptions,
   Image,
   Input,
   Space,
   Tooltip,
   message,
-} from "antd";
-import {
-  ContactsOutlined,
-  MinusOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+} from "@/components/ui";
+import { MessageCircle, Minus, Plus } from "lucide-react";
 import CustomImage from "../../../components/shared/custom-image.component";
 import { useCart } from "../../../hooks/cart.hook";
 import { allColors, allSizes } from "../../../constants/constant";
@@ -24,14 +18,8 @@ import { sizeAPI } from "../../../store/api/size_api";
 import CrochetDetailSkeleton from "../../../components/crochet-detail.skeleton";
 import { ReviewCreate } from "../../../components/review/review-create.component";
 import { ReviewList } from "../../../components/review/review-list.component";
-
-const buttonStyles = { width: 35, padding: "0 10px", borderRadius: 0 };
-const inputStyles = {
-  width: 70,
-  height: 40,
-  textAlign: "center",
-  borderRadius: 0,
-};
+import ShareButton from "@/components/shared/share.component";
+import { cn } from "@/lib/utils";
 
 const CrochetDetail = ({ crochet }) => {
   const [cartQty, setCartQty] = useState(1);
@@ -68,12 +56,11 @@ const CrochetDetail = ({ crochet }) => {
 
   const handleAddToCart = async () => {
     const requiresSize = !isSizeDisabled;
-
     // Validation
-    if ((requiresSize && !selectedSize) || !selectedColors) {
+    if ((requiresSize && !selectedSize) || selectedColors.length < 1) {
       message.warning(
         `Please select ${
-          requiresSize ? "a size and color" : "a color"
+          requiresSize && !selectedSize ? "a size and color" : "a color"
         } before adding to cart.`
       );
       setLoadingAddToCart(false);
@@ -107,223 +94,241 @@ const CrochetDetail = ({ crochet }) => {
 
   return (
     <>
-      <div className="max-w-5xl mx-auto px-6 my-10 bg-white shadow-md rounded-lg">
-        <Card
-          variant={"borderless"}
-          style={{ boxShadow: "none" }}
-          className="rounded-lg"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="relative py-3">
-              {crochet.imageUrls?.map((item, i) => (
-                <img
-                  key={`preload-${i}`}
-                  src={`${API_URL_UPLOADS_CROCHETS}/${item}`}
-                  alt="preload"
-                  style={{ display: "none" }}
-                />
-              ))}
-              <Image.PreviewGroup
-                items={crochet.imageUrls?.map(
-                  (url) => `${API_URL_UPLOADS_CROCHETS}/${url || "nodata"}`
-                )}
-              >
-                <Image
-                  width="100%"
-                  height={350}
-                  className="rounded-lg object-cover"
-                  src={`${API_URL_UPLOADS_CROCHETS}/${
-                    crochet.imageUrls[0] || "nodata"
-                  }`}
-                  alt={crochet.name}
-                />
-              </Image.PreviewGroup>
-              <div className="mt-5">
+      {/* Main Product Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 p-6 md:p-8">
+            {/* Image Gallery */}
+            <div className="space-y-4">
+              <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-50">
+                {crochet.imageUrls?.map((item, i) => (
+                  <img
+                    key={`preload-${i}`}
+                    src={`${API_URL_UPLOADS_CROCHETS}/${item}`}
+                    alt="preload"
+                    style={{ display: "none" }}
+                  />
+                ))}
+                <Image.PreviewGroup
+                  items={crochet.imageUrls?.map(
+                    (url) => `${API_URL_UPLOADS_CROCHETS}/${url || "nodata"}`
+                  )}
+                >
+                  <Image
+                    width="100%"
+                    height="100%"
+                    className="w-full h-full object-cover"
+                    src={`${API_URL_UPLOADS_CROCHETS}/${
+                      crochet.imageUrls[0] || "nodata"
+                    }`}
+                    alt={crochet.name}
+                    preview
+                  />
+                </Image.PreviewGroup>
+              </div>
+              <div>
                 <CustomImage imageList={crochet.imageUrls} />
               </div>
             </div>
 
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-1">
-                {crochet.name}
-              </h1>
-              <p className="text-md font-semibold text-gray-700">
-                <span className="text-red-700 text-lg">{convertedPrice}</span>
-              </p>
-
-              <div className="mb-8">
-                <p className="text-md font-semibold text-gray-700">
-                  Chose Your Size
-                </p>
-                <Space wrap>
-                  {allSizes.map((size) => {
-                    const isActive = selectedSize === size.key;
-
-                    return (
-                      <Tooltip
-                        title={
-                          isSizeDisabled
-                            ? "Size selection not applicable for Accessories"
-                            : size.description
-                        }
-                        key={size.key}
-                      >
-                        <Button
-                          key={size.key}
-                          style={{
-                            borderRadius: 50,
-                            padding: "0 15px",
-                            background: isActive ? "#cb384e" : "#fdf3f3",
-                            border: "2px solid #cb384e",
-                            color: isActive ? "white" : "black",
-                          }}
-                          // onClick={() => setSelectedSize(size.key)}
-                          onClick={() =>
-                            !isSizeDisabled && setSelectedSize(size.key)
-                          }
-                        >
-                          {size.key}
-                        </Button>
-                      </Tooltip>
-                    );
-                  })}
-                </Space>
+            {/* Product Info */}
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="space-y-2">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                      {crochet.name}
+                    </h1>
+                    <p className="text-sm text-gray-500 uppercase tracking-wide">
+                      {crochet?.crochetType?.name}
+                    </p>
+                  </div>
+                  <ShareButton
+                    title="Check this out on MellyCrochets!"
+                    text="I found this beautiful handmade crochet item you might love."
+                  />
+                </div>
               </div>
-              <div className="mb-8">
-                <p className="text-md font-semibold text-gray-700">
-                  Chose your Colors
+
+              {/* Price */}
+              <div className="py-4 border-y border-gray-100">
+                <p className="text-3xl font-bold text-red-800">
+                  {convertedPrice}
                 </p>
-                <Space wrap>
+              </div>
+
+              {/* Size Selection */}
+              {!isSizeDisabled && (
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                    Choose Your Size
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {allSizes.map((size) => {
+                      const isActive = selectedSize === size.key;
+                      return (
+                        <Tooltip
+                          title={size.description}
+                          key={size.key}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setSelectedSize(size.key)}
+                            className={cn(
+                              "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                              "border-2",
+                              isActive
+                                ? "bg-red-800 text-white border-red-800 shadow-md"
+                                : "bg-white text-gray-700 border-gray-300 hover:border-red-300 hover:text-red-800"
+                            )}
+                          >
+                            {size.key}
+                          </button>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Color Selection */}
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                  Choose Your Colors
+                </p>
+                <div className="flex flex-wrap gap-2">
                   {allColors.map((color) => {
                     const isActive = selectedColors.includes(color);
-
                     const toggleColor = () => {
                       setSelectedColors(
                         (prev) =>
                           isActive
-                            ? prev.filter((c) => c !== color) // remove if already selected
-                            : [...prev, color] // add if not selected
+                            ? prev.filter((c) => c !== color)
+                            : [...prev, color]
                       );
                     };
                     return (
                       <Tooltip title={color} key={color}>
-                        <Button
-                          key={color}
-                          style={{
-                            borderRadius: 50,
-                            padding: "0 15px",
-                            background: isActive ? "#cb384e" : "#fdf3f3",
-                            border: "2px solid #cb384e",
-                            color: isActive ? "white" : "black",
-                          }}
+                        <button
+                          type="button"
                           onClick={toggleColor}
+                          className={cn(
+                            "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                            "border-2",
+                            isActive
+                              ? "bg-red-800 text-white border-red-800 shadow-md"
+                              : "bg-white text-gray-700 border-gray-300 hover:border-red-300 hover:text-red-800"
+                          )}
                         >
                           {color}
-                        </Button>
+                        </button>
                       </Tooltip>
                     );
                   })}
-                </Space>
+                </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-4">
-                <Space style={{ columnGap: 0 }}>
+              {/* Quantity Selector */}
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                  Quantity
+                </p>
+                <div className="flex items-center gap-0 w-fit border border-gray-200 rounded-lg overflow-hidden">
                   <Button
-                    onClick={() => setCartQty((prev) => Math.max(0, prev - 1))}
-                    style={{
-                      ...buttonStyles,
-                      borderTopLeftRadius: 15,
-                      borderBottomLeftRadius: 15,
-                      borderRight: 0,
-                    }}
-                    size="large"
+                    type="text"
+                    onClick={() => setCartQty((prev) => Math.max(1, prev - 1))}
+                    className="h-12 w-12 rounded-none border-0 hover:bg-gray-50"
+                    disabled={cartQty <= 1}
                   >
-                    <MinusOutlined />
+                    <Minus size={18} />
                   </Button>
                   <Input
-                    size="large"
+                    type="number"
+                    min={1}
                     value={cartQty}
-                    style={inputStyles}
-                    min={0}
+                    onChange={(e) => {
+                      const newValue = parseInt(e.target.value) || 1;
+                      setCartQty(Math.max(1, newValue));
+                    }}
+                    className="w-20 h-12 text-center border-0 border-x border-gray-200 rounded-none focus:ring-0"
                   />
                   <Button
-                    size="large"
+                    type="text"
                     onClick={() => setCartQty((prev) => prev + 1)}
-                    style={{
-                      ...buttonStyles,
-                      borderTopRightRadius: 15,
-                      borderBottomRightRadius: 15,
-                      borderLeft: 0,
-                    }}
+                    className="h-12 w-12 rounded-none border-0 hover:bg-gray-50"
                   >
-                    <PlusOutlined />
-                  </Button>
-                </Space>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Button
-                    type="primary"
-                    onClick={handleAddToCart}
-                    loading={loadingAddToCart}
-                    icon={<PlusOutlined />}
-                    style={{ borderRadius: 50 }}
-                    size="large"
-                  >
-                    Place Order
-                  </Button>
-                  <Button
-                    type="dashed"
-                    danger
-                    icon={<ContactsOutlined />}
-                    style={{ borderRadius: 50 }}
-                    href={`https://wa.me/237681077051?text=${text}`}
-                    target="_blank"
-                    size="large"
-                  >
-                    Contact Seller
+                    <Plus size={18} />
                   </Button>
                 </div>
               </div>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                <Button
+                  type="primary"
+                  onClick={handleAddToCart}
+                  loading={loadingAddToCart}
+                  size="lg"
+                  className="h-12 rounded-lg font-semibold"
+                  icon={<Plus size={18} />}
+                >
+                  Place Order
+                </Button>
+                <Button
+                  type="outline"
+                  href={`https://wa.me/237681077051?text=${text}`}
+                  target="_blank"
+                  size="lg"
+                  className="h-12 rounded-lg font-semibold border-red-300 text-red-800 hover:bg-red-50"
+                  icon={<MessageCircle size={18} />}
+                >
+                  Contact Seller
+                </Button>
+              </div>
             </div>
           </div>
-        </Card>
+        </div>
 
-        <Card
-          style={{ boxShadow: "none" }}
-          className="mt-6"
-          variant={"borderless"}
-        >
-          <Descriptions
-            title="Crochet Details"
-            bordered
-            layout="vertical"
-            column={{ xs: 1, sm: 1, md: 2, lg: 4 }}
-            size="small"
-          >
-            <Descriptions.Item label="Crochet Name">
-              {crochet.name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Crochet Design">
-              {crochet?.crochetType?.name}
-            </Descriptions.Item>
-            <Descriptions.Item label="Description">
-              {crochet.description}
-            </Descriptions.Item>
-            <Descriptions.Item label="Price">
-              {convertedPrice}
-            </Descriptions.Item>
-            {crochet.color && (
-              <Descriptions.Item label="Color">
-                {crochet.color}
-              </Descriptions.Item>
-            )}
-          </Descriptions>
-        </Card>
-      </div>
-      <section className="bg-[#fdf3f3] py-10 px-4 sm:px-10">
-        <div className="max-w-5xl mx-auto">
+        {/* Product Details Section */}
+        <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-6 md:p-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Product Details</h2>
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div className="space-y-1">
+                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Crochet Name</dt>
+                <dd className="text-base font-semibold text-gray-900">{crochet.name}</dd>
+              </div>
+              <div className="space-y-1">
+                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Crochet Design</dt>
+                <dd className="text-base font-semibold text-gray-900">{crochet?.crochetType?.name}</dd>
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Description</dt>
+                <dd className="text-base text-gray-700 leading-relaxed">{crochet.description}</dd>
+              </div>
+              <div className="space-y-1">
+                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Price</dt>
+                <dd className="text-xl font-bold text-red-800">{convertedPrice}</dd>
+              </div>
+              {crochet.color && (
+                <div className="space-y-1">
+                  <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Color</dt>
+                  <dd className="text-base font-semibold text-gray-900">{crochet.color}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="bg-gray-50 py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <ReviewCreate crochetId={crochet.id} />
-          <ReviewList crochetId={crochet.id} />
+          <div className="mt-8">
+            <ReviewList crochetId={crochet.id} />
+          </div>
         </div>
       </section>
     </>

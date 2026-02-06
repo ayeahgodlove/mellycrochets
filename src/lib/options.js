@@ -29,7 +29,6 @@ const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          console.log("Missing credentials");
           return null;
         }
 
@@ -37,7 +36,6 @@ const authOptions = {
           where: { email: credentials.email },
         });
         if (!currentUser) {
-          console.log("Login failed. Invalid Credentials.");
           return null;
         }
 
@@ -46,7 +44,6 @@ const authOptions = {
           currentUser.password
         );
         if (!isPasswordValid) {
-          console.log("Login failed. Invalid credentials");
           return null;
         }
 
@@ -65,6 +62,7 @@ const authOptions = {
         token.id = userItem.id;
         token.name = userItem.username;
         token.email = userItem.email;
+        token.picture = userItem.image;
         token.provider = account?.provider;
         token.role = userItem.role || "user";
       }

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from "next-intl/plugin";
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import path from "path";
 
 const withBundle = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -9,7 +10,7 @@ const withBundle = withBundleAnalyzer({
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig = withNextIntl({
-  transpilePackages: ["@refinedev/antd"],
+  transpilePackages: [],
   productionBrowserSourceMaps: false,
   images: {
     domains: ["localhost"],
@@ -26,9 +27,7 @@ const nextConfig = withNextIntl({
   experimental: {
     optimizeCss: true,
   },
-  swcMinify: true,
   compress: true,
-  optimizeFonts: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -37,6 +36,9 @@ const nextConfig = withNextIntl({
     // Add pg-hstore fallback
     config.resolve = {
       ...config.resolve,
+      alias: {
+        ...(config.resolve?.alias || {}),
+      },
       fallback: {
         ...config.resolve?.fallback,
         "pg-hstore": false,

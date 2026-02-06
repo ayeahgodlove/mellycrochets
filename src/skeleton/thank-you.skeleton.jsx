@@ -1,11 +1,6 @@
 "use client";
-import { Button } from "antd";
-import {
-  CheckOutlined,
-  WhatsAppOutlined,
-  PhoneOutlined,
-  MessageOutlined,
-} from "@ant-design/icons";
+import { Button } from "@/components/ui";
+import { Check, MessageCircle, Phone, Send } from "lucide-react";
 
 const ThankYouPage = () => {
   return (
@@ -15,7 +10,7 @@ const ThankYouPage = () => {
         {/* Check Icon */}
         <div className="flex justify-center mb-6">
           <div className="bg-green-700 text-white rounded-full w-20 h-20 flex items-center justify-center text-3xl">
-            <CheckOutlined />
+            <Check />
           </div>
         </div>
 
@@ -49,19 +44,19 @@ const ThankYouPage = () => {
         <Button
           shape="circle"
           size="large"
-          icon={<WhatsAppOutlined />}
+          icon={<Send size={18} />}
           className="bg-green-600 text-white shadow-lg"
         />
         <Button
           shape="circle"
           size="large"
-          icon={<PhoneOutlined />}
+          icon={<Phone size={18} />}
           className="bg-rose-600 text-white shadow-lg"
         />
         <Button
           shape="circle"
           size="large"
-          icon={<MessageOutlined />}
+          icon={<MessageCircle size={18} />}
           className="bg-white text-black shadow-md"
         />
       </div>

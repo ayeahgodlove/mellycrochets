@@ -8,9 +8,9 @@ import {
   MarkdownField,
   Show,
   TextField,
-} from "@refinedev/antd";
+} from '@/components/refine';
 import { useOne, useShow } from "@refinedev/core";
-import { Space, Tag, Typography } from "antd";
+import { Space, Tag, Typography } from '@/components/ui';
 
 const { Title } = Typography;
 

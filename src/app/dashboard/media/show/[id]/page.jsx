@@ -1,9 +1,9 @@
 "use client";
 
 import { API_URL_UPLOADS_MEDIA } from "../../../../../constants/api-url";
-import { ImageField, Show, TextField } from "@refinedev/antd";
+import { ImageField, Show, TextField } from '@/components/refine';
 import { useShow } from "@refinedev/core";
-import { Typography } from "antd";
+import { Typography } from '@/components/ui';
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
 
 const { Title } = Typography;

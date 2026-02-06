@@ -6,8 +6,8 @@ import {
   List,
   ShowButton,
   useTable,
-} from "@refinedev/antd";
-import { Image, Space, Table } from "antd";
+} from '@/components/refine';
+import { Image, Space, Table } from '@/components/ui';
 
 export default function UserList() {
   const { tableProps } = useTable({
@@ -31,9 +31,12 @@ export default function UserList() {
           <Table.Column
             title="Image"
             dataIndex="image"
-            render={(value) => (
-              <Image src={value} alt="User" preview={false} width={30} />
-            )}
+            render={(value) => {
+              if (!value || value.trim() === "") {
+                return <span className="text-muted-foreground text-sm">-</span>;
+              }
+              return <Image src={value} alt="User" preview={false} width={30} />;
+            }}
           />
           <Table.Column
             title={"Actions"}

@@ -1,10 +1,8 @@
-import ShopHero from "../../components/shared/shop-hero.component";
-import CrochetListWrapper from "../../components/pages/home/list-wrapper.component";
 import { keywords } from "../../constants/constant";
 import { getTranslations } from "next-intl/server";
+import ShopPage from "../../page-components/shop/page";
 
 const url = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
-
 export const metadata = {
   metadataBase: new URL(`${url}`),
   title: {
@@ -79,15 +77,5 @@ export const metadata = {
 
 export default async function IndexPage() {
   const t = await getTranslations("shop");
-  return (
-    <>
-      <div className="">
-        <ShopHero title={t("heroTitle")} description={t("heroDescription")} />
-        <div className="w-full px-10 pb-10" data-aos="fade-up">
-          {/* listings */}
-          <CrochetListWrapper />
-        </div>
-      </div>
-    </>
-  );
+  return <ShopPage title={t("heroTitle")} description={t("heroDescription")} />;
 }

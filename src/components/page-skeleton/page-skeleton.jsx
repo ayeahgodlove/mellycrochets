@@ -1,9 +1,5 @@
-import { Skeleton, Button } from "antd";
-import {
-  WhatsAppOutlined,
-  ShareAltOutlined,
-  PlayCircleOutlined,
-} from "@ant-design/icons";
+import { Skeleton, Button } from "@/components/ui";
+import { PlayCircle, Send, Share2 } from "lucide-react";
 
 export default function PageSkeleton() {
   return (
@@ -24,21 +20,21 @@ export default function PageSkeleton() {
         <Button
           shape="circle"
           size="large"
-          icon={<WhatsAppOutlined />}
+          icon={<Send size={18} />}
           disabled
           className="bg-gray-200 text-gray-400 border-none shadow-md"
         />
         <Button
           shape="circle"
           size="large"
-          icon={<ShareAltOutlined />}
+          icon={<Share2 size={18} />}
           disabled
           className="bg-gray-200 text-gray-400 border-none shadow-md"
         />
         <Button
           shape="circle"
           size="large"
-          icon={<PlayCircleOutlined />}
+          icon={<PlayCircle size={18} />}
           disabled
           className="bg-gray-200 text-gray-400 border-none shadow-md"
         />

@@ -1,21 +1,22 @@
 "use client";
 
-import { Image, Space, Avatar, Dropdown, Typography } from "antd";
+import { Button } from "@/components/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { BiMenu } from "react-icons/bi";
+import { Menu, X, User } from "lucide-react";
 import AppLanguage from "./shared/language.component";
-import ShoppingCart from "./shopping-cart/shopping-cart";
+import ShoppingCartComponent from "./shopping-cart/shopping-cart";
 import { useTranslations } from "next-intl";
 import { useGetIdentity } from "@refinedev/core";
 import AppCurrency from "./shared/currency.component";
 import { crochetTypeAPI } from "@/store/api/crochet_type_api";
-import AppNavigationSkeleton from "./nav-skeleton.component";
 import CrochetDropdownV2 from "./shared/crochet-type-menu-v2.component";
 import { useCart } from "../hooks/cart.hook";
 import { signOut } from "next-auth/react";
 import { format } from "../lib/format";
+import { Avatar, Dropdown, Space, Image } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 const AppNavigation = () => {
   const {
@@ -29,6 +30,7 @@ const AppNavigation = () => {
   const { data: user } = useGetIdentity({});
   const [cartCount, setCartCount] = useState(0);
   const [cartItems, setCartItems] = useState([]);
+  const [scrolled, setScrolled] = useState(false);
 
   const menuRef = useRef(null);
   const navRef = useRef(null);
@@ -39,11 +41,20 @@ const AppNavigation = () => {
 
   const role = user?.role;
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const items = [
     {
       key: "profile",
       label: (
-        <Link href="/profile" className={`nav-link`}>
+        <Link href="/dashboard/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
+          <User size={16} />
           Profile
         </Link>
       ),
@@ -51,24 +62,24 @@ const AppNavigation = () => {
     role === "admin" && {
       key: "dashboard",
       label: (
-        <Link href="/dashboard" className={`nav-link`}>
-          Admin
+        <Link href="/dashboard" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
+          Dashboard
         </Link>
       ),
     },
     {
       key: "logout",
       label: (
-        <Link
-          href="/#"
-          className="nav-link"
-          onClick={() => signOut({ callbackUrl: "/" })}
+        <button
+          type="button"
+          className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors w-full text-left text-red-600"
+          onClick={() => signOut({ callbackUrl: "/login" })}
         >
-          SignOut
-        </Link>
+          Sign Out
+        </button>
       ),
     },
-  ];
+  ].filter(Boolean);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -83,279 +94,199 @@ const AppNavigation = () => {
     };
 
     if (isOpen) {
-      document.addEventListener("mouseover", handleOutsideClick);
+      document.addEventListener("mousedown", handleOutsideClick);
       document.addEventListener("touchstart", handleOutsideClick);
     } else {
-      document.removeEventListener("mouseover", handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("touchstart", handleOutsideClick);
     }
 
     return () => {
-      document.removeEventListener("mouseover", handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("touchstart", handleOutsideClick);
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      const items = await loadCartCrochets();
-      setCartItems(items);
-      setCartCount(items.length);
-    };
+  const fetchCartItems = async () => {
+    const items = await loadCartCrochets();
+    setCartItems(items);
+    setCartCount(items.length);
+  };
 
+  useEffect(() => {
     fetchCartItems();
   }, []);
 
-  if (isLoading || isFetching) {
-    return <AppNavigationSkeleton />;
-  }
+  const navLinks = [
+    { href: "/", label: t("home") },
+    { href: "/shop", label: t("shop") },
+    { href: "/about", label: t("about") },
+    { href: "/blog_posts", label: t("article") },
+    { href: "/contact", label: t("contact") },
+  ];
 
   return (
     <nav
       ref={navRef}
-      className="bg-[#fdf3f3] py-1 px-5 md:px-30 lg:px-50 shadow-md z-10 w-full"
+      className={cn(
+        "sticky top-0 z-50 w-full bg-white border-b border-gray-100 transition-all duration-200",
+        scrolled && "shadow-sm"
+      )}
     >
-      <div className="flex justify-between items-center">
-        <div className="aspect-w-16 aspect-h-9 text-2xl font-bold text-gray-900">
-          <Link href="/">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center shrink-0">
             <Image
               src="/logo.png"
+              alt="MellyCrochets"
+              width={140}
+              height={60}
+              className="h-16 w-auto object-contain"
               preview={false}
-              width={120}
-              height={90}
-              alt="logo"
-              // className="w-full h-auto object-cover"
-              className="w-28 md:w-36 lg:w-44 h-auto object-contain"
             />
           </Link>
-        </div>
 
-        {/* desktop menus */}
-        <div
-          className="hidden md:flex space-x-4"
-          style={{ alignItems: "center" }}
-        >
-          <Link
-            href="/"
-            className={`nav-link font-playfair  ${
-              pathname === "/" ? "active" : ""
-            }`}
-          >
-            {t("home")}
-          </Link>
-
-          <Link
-            href="/shop"
-            className={`nav-link font-playfair  ${
-              pathname === "/shop" ? "active" : ""
-            }`}
-            // style={{ marginRight: 0 }}
-          >
-            {t("shop")}
-          </Link>
-          {crochetTypes && crochetTypes.length > 0 && (
-            <CrochetDropdownV2 crochetTypes={crochetTypes} />
-          )}
-
-          <Link
-            href="/about"
-            className={`nav-link font-playfair  ${
-              pathname === "/about" ? "active" : ""
-            }`}
-          >
-            {t("about")}
-          </Link>
-
-          <Link
-            href="/blog_posts"
-            className={`nav-link font-playfair  ${
-              pathname === "/blog_posts" ? "active" : ""
-            }`}
-          >
-            {t("article")}
-          </Link>
-
-          <Link
-            href="/contact"
-            className={`nav-link font-playfair  ${
-              pathname === "/contact" ? "active" : ""
-            }`}
-          >
-            {t("contact")}
-          </Link>
-
-          <Space>
-            <AppLanguage />
-            <AppCurrency />
-          </Space>
-
-          <div className="shoppingCart">
-            <ShoppingCart cartCount={cartCount} cartItems={cartItems} />
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "px-4 py-2 text-sm font-medium rounded-md transition-colors",
+                  pathname === link.href
+                    ? "text-red-800 bg-red-50"
+                    : "text-gray-700 hover:text-red-800 hover:bg-red-50"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+            
+            {/* Crochet Types Dropdown */}
+            {crochetTypes && crochetTypes.length > 0 && (
+              <CrochetDropdownV2 crochetTypes={crochetTypes} />
+            )}
           </div>
-          {!user ? (
-            <Link
-              href="/login"
-              className={`nav-link font-playfair  ${
-                pathname === "/login" ? "active" : ""
-              }`}
-            >
-              Signin
-            </Link>
-          ) : (
-            <Dropdown
-              menu={{ items }}
-              placement="bottomRight"
-              trigger={["click"]}
-              ref={avatarRef}
-            >
-              <div ref={avatarRef} className="cursor-pointer">
-                <Space style={{ marginLeft: "8px" }} size="middle">
-                  {user?.avatar?.trim() ? (
-                    <Avatar
-                      style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
-                      src={user.avatar}
-                      alt={user.name}
-                    />
-                  ) : (
-                    <Avatar style={{ backgroundColor: "#fde3cf" }}>
-                      <Typography.Title
-                        level={5}
-                        style={{ marginBottom: 0, color: "#f56a00" }}
-                      >
-                        {format.initials(user.name)}
-                      </Typography.Title>
-                    </Avatar>
-                  )}
-                </Space>
-              </div>
-            </Dropdown>
-          )}
-        </div>
 
-        <div className="md:hidden lg:hidden xl:hidden absolute right-20 mb-0">
-          <Space align="center">
+          {/* Right Side Actions */}
+          <div className="hidden lg:flex items-center gap-3">
             <AppLanguage />
-
             <AppCurrency />
-
-            <div className="shoppingCart" style={{ marginLeft: 0 }}>
-              <ShoppingCart cartCount={cartCount} cartItems={cartItems} />
+            
+            <div className="relative">
+              <ShoppingCartComponent 
+                cartCount={cartCount} 
+                cartItems={cartItems}
+                onCartUpdate={fetchCartItems}
+              />
             </div>
-            {user && (
+
+            {!user ? (
+              <Link href="/login">
+                <Button type="primary" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            ) : (
               <Dropdown
                 menu={{ items }}
                 placement="bottomRight"
                 trigger={["click"]}
-                ref={avatarRef}
               >
                 <div ref={avatarRef} className="cursor-pointer">
-                  <Space style={{ marginLeft: "8px" }} size="middle">
-                    {user?.avatar?.trim() ? (
-                      <Avatar
-                        style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
-                        src={user.avatar}
-                        alt={user.name}
-                      />
-                    ) : (
-                      <Avatar
-                        style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
-                      >
-                        {format.initials(user.name)}
-                      </Avatar>
+                  <Avatar
+                    src={user?.avatar}
+                    alt={user?.name}
+                    className="h-9 w-9 border-2 border-gray-200 hover:border-red-300 transition-colors"
+                  >
+                    {!user?.avatar && (
+                      <span className="text-sm font-semibold text-red-800">
+                        {format.initials(user?.name)}
+                      </span>
                     )}
-                  </Space>
+                  </Avatar>
                 </div>
               </Dropdown>
             )}
-          </Space>
-        </div>
-
-        {/* mobile menu */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setOpen(!isOpen)}
-            className="py-1 px-1 bg-gray-100 rounded-lg cursor-pointer"
-          >
-            <BiMenu size={38} />
-          </button>
-        </div>
-
-        {isOpen && (
-          <div
-            ref={menuRef}
-            className="md:hidden absolute top-20 left-0 right-0 bg-[#fdf3f3] mt-3 py-5 px-10 md:px-30 lg:px-50 z-50"
-          >
-            <div className="flex flex-col space-y-6">
-              <Link
-                href="/"
-                className={`nav-link font-playfair  ${
-                  pathname === "/" ? "active" : ""
-                }`}
-                style={{ marginBottom: 10 }}
-              >
-                {t("home")}
-              </Link>
-
-              <Link
-                href="/shop"
-                className={`nav-link font-playfair  ${
-                  pathname === "/shop" ? "active" : ""
-                }`}
-                style={{ marginBottom: 10 }}
-              >
-                {t("shop")}
-              </Link>
-
-              <div className="ml-[-15px] mb-[5px]">
-                {crochetTypes && crochetTypes.length > 0 && (
-                  <CrochetDropdownV2 crochetTypes={crochetTypes} />
-                )}
-              </div>
-
-              <Link
-                href="/about"
-                className={`nav-link font-playfair  ${
-                  pathname === "/about" ? "active" : ""
-                }`}
-                style={{ marginBottom: 10 }}
-              >
-                {t("about")}
-              </Link>
-
-              <Link
-                href="/blog_posts"
-                className={`nav-link font-playfair  ${
-                  pathname === "/blog_posts" ? "active" : ""
-                }`}
-                style={{ marginBottom: 10 }}
-              >
-                {t("article")}
-              </Link>
-
-              <Link
-                href="/contact"
-                className={`nav-link font-playfair  ${
-                  pathname === "/contact" ? "active" : ""
-                }`}
-                style={{ marginBottom: 10 }}
-              >
-                {t("contact")}
-              </Link>
-              {!user && (
-                <Link
-                  href="/login"
-                  className={`nav-link font-playfair  ${
-                    pathname === "/login" ? "active" : ""
-                  }`}
-                  style={{ marginBottom: 10 }}
-                >
-                  Signin
-                </Link>
-              )}
-            </div>
           </div>
-        )}
+
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center gap-2">
+            <AppLanguage />
+            <AppCurrency />
+            <div className="relative">
+              <ShoppingCartComponent 
+                cartCount={cartCount} 
+                cartItems={cartItems}
+                onCartUpdate={fetchCartItems}
+              />
+            </div>
+            {user && (
+              <Dropdown menu={{ items }} placement="bottomRight" trigger={["click"]}>
+                <Avatar
+                  src={user?.avatar}
+                  alt={user?.name}
+                  className="h-8 w-8"
+                >
+                  {!user?.avatar && format.initials(user?.name)}
+                </Avatar>
+              </Dropdown>
+            )}
+            <Button
+              type="text"
+              onClick={() => setOpen(!isOpen)}
+              className="p-2"
+              icon={isOpen ? <X size={20} /> : <Menu size={20} />}
+            />
+          </div>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div
+          ref={menuRef}
+          className="lg:hidden border-t border-gray-100 bg-white"
+        >
+          <div className="px-4 py-4 space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "block px-3 py-2 text-base font-medium rounded-md transition-colors",
+                  pathname === link.href
+                    ? "text-red-800 bg-red-50"
+                    : "text-gray-700 hover:text-red-800 hover:bg-red-50"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+            
+            {crochetTypes && crochetTypes.length > 0 && (
+              <div className="px-3 py-2">
+                <CrochetDropdownV2 crochetTypes={crochetTypes} />
+              </div>
+            )}
+
+            {!user && (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="block px-3 py-2 mt-4"
+              >
+                <Button type="primary" block>
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

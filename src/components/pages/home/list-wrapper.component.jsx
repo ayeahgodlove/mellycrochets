@@ -1,12 +1,15 @@
 import CrochetList from "../../crochet/crochet-list.component";
-import axios from "axios";
+import { CrochetRepository } from "../../../data/repositories/crochet.repository";
+
+const crochetRepository = new CrochetRepository();
 
 export default async function CrochetListWrapper() {
-  const response = await axios.get(`${process.env.NEXTAUTH_URL}/api/crochets`);
-
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch crochetType details");
+  try {
+    const crochets = await crochetRepository.getAll();
+    return <CrochetList crochets={crochets} />;
+  } catch (error) {
+    console.error("Error fetching crochets:", error);
+    // Return empty array on error to prevent page crash
+    return <CrochetList crochets={[]} />;
   }
-  const { data } = response;
-  return <CrochetList crochets={data} />;
 }
