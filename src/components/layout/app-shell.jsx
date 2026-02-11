@@ -16,10 +16,12 @@ const AppShell = ({ children }) => {
   return (
     <>
       <AppNavigation />
-
-      {children}
-      <Footer />
-      <PrivacyConsent />
+      {/* Spacer so content is not hidden under fixed nav (nav height: h-16 = 4rem) */}
+      <div className="pt-16">
+        {children}
+        <Footer />
+        <PrivacyConsent />
+      </div>
     </>
   );
 };

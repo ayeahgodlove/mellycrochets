@@ -12,9 +12,11 @@ const HomePage = ({ t }) => {
         heroMiddle={t("heroMiddle")}
         heroLast={t("heroLast")}
         description={t("heroDescription")}
+        primaryCtaLabel={t("heroPrimaryCta")}
+        secondaryCtaLabel={t("heroSecondaryCta")}
       />
 
-      <section className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-8 md:py-12" data-aos="fade-up">
+      <section id="listing" className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-8 md:py-12" data-aos="fade-up">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div className="flex-1">

@@ -212,11 +212,20 @@ export class CrochetRepository {
     }
   }
   /**
-   * Returns crochets with optional filters (name search, crochetTypeId).
+   * Returns crochets with optional filters (name, crochetTypeId, sizeId, price range).
    * Same response shape as getAll().
    */
   async getAllWithFilters(filters = {}) {
-    const { name, name_like, crochetTypeId } = filters;
+    const {
+      name,
+      name_like,
+      crochetTypeId,
+      sizeId,
+      minPriceCfa,
+      maxPriceCfa,
+      minPriceUsd,
+      maxPriceUsd,
+    } = filters;
     const searchName = name_like ?? name;
     const where = {};
     if (searchName && String(searchName).trim()) {
@@ -225,16 +234,27 @@ export class CrochetRepository {
     if (crochetTypeId && String(crochetTypeId).trim()) {
       where.crochetTypeId = String(crochetTypeId).trim();
     }
+    if (minPriceCfa != null && minPriceCfa !== "") {
+      where.priceInCfa = { ...(where.priceInCfa || {}), [Op.gte]: Number(minPriceCfa) };
+    }
+    if (maxPriceCfa != null && maxPriceCfa !== "") {
+      where.priceInCfa = { ...(where.priceInCfa || {}), [Op.lte]: Number(maxPriceCfa) };
+    }
+    if (minPriceUsd != null && minPriceUsd !== "") {
+      where.priceInUsd = { ...(where.priceInUsd || {}), [Op.gte]: Number(minPriceUsd) };
+    }
+    if (maxPriceUsd != null && maxPriceUsd !== "") {
+      where.priceInUsd = { ...(where.priceInUsd || {}), [Op.lte]: Number(maxPriceUsd) };
+    }
+    const sizeInclude = sizeId && String(sizeId).trim()
+      ? { model: Size, as: "sizes", through: { attributes: ["colors"] }, where: { id: String(sizeId).trim() }, required: true }
+      : { model: Size, as: "sizes", through: { attributes: ["colors"] } };
     try {
       const crochets = await Crochet.findAll({
         where: Object.keys(where).length ? where : undefined,
         include: [
           { model: CrochetType, as: "crochetType" },
-          {
-            model: Size,
-            as: "sizes",
-            through: { attributes: ["colors"] },
-          },
+          sizeInclude,
         ],
         order: [["createdAt", "DESC"]],
       });

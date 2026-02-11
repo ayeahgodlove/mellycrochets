@@ -75,7 +75,19 @@ export const metadata = {
   },
 };
 
-export default async function IndexPage() {
+export default async function IndexPage({ searchParams }) {
   const t = await getTranslations("shop");
-  return <ShopPage title={t("heroTitle")} description={t("heroDescription")} />;
+  const params = searchParams ? await searchParams : {};
+  const filters = {
+    name: params?.name ?? "",
+    crochetTypeId: params?.crochetTypeId ?? "",
+    sizeId: params?.sizeId ?? "",
+  };
+  return (
+    <ShopPage
+      title={t("heroTitle")}
+      description={t("heroDescription")}
+      filterParams={filters}
+    />
+  );
 }

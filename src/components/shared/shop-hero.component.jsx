@@ -1,13 +1,35 @@
 const ShopHero = ({ title, description }) => {
   return (
-    <div className="relative w-full bg-gray-100 py-20 px-6 text-center">
-      <div className="relative z-10 flex flex-col items-center text-center p-6 md:p-12 lg:p-16 animate-fade-in-up">
-        <h1 className="text-2xl md:text-5xl font-bold text-gray-900 mb-4">
+    <section className="relative w-full overflow-hidden bg-white py-16 md:py-24 px-6">
+      {/* Background gradient + soft glow, aligned with main hero styling */}
+      <div
+        className="absolute inset-0 hero-gradient-bg"
+        style={{
+          background:
+            "linear-gradient(135deg, #fef8f5 0%, #fdf2ed 40%, #fce8e0 70%, #f5e6e1 100%)",
+        }}
+        aria-hidden
+      />
+      <div
+        className="absolute -top-10 -left-10 w-52 h-52 rounded-full opacity-40 hero-glow-pulse"
+        style={{ background: "radial-gradient(circle, #c9a87c 0%, transparent 70%)" }}
+        aria-hidden
+      />
+      <div
+        className="absolute -bottom-16 -right-8 w-60 h-60 rounded-full opacity-35 hero-glow-pulse"
+        style={{ background: "radial-gradient(circle, #82181a 0%, transparent 70%)" }}
+        aria-hidden
+      />
+
+      <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto p-6 md:p-10 lg:p-12 animate-fade-in-up">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-[#1a1a1a] leading-tight mb-4">
           {title}
         </h1>
-        <p className="text-lg text-gray-700 max-w-2xl mb-6">{description}</p>
+        <p className="text-lg md:text-xl text-[#3d3d3d] max-w-2xl mb-2 md:mb-3">
+          {description}
+        </p>
       </div>
-    </div>
+    </section>
   );
 };
 

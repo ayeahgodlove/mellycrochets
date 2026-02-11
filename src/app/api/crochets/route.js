@@ -13,10 +13,16 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const name = searchParams.get("name_like") ?? searchParams.get("name");
     const crochetTypeId = searchParams.get("crochetTypeId");
+    const sizeId = searchParams.get("sizeId");
 
-    const hasFilters = (name != null && String(name).trim() !== "") || (crochetTypeId != null && String(crochetTypeId).trim() !== "");
+    const filters = {};
+    if (name != null && String(name).trim() !== "") filters.name_like = name;
+    if (crochetTypeId != null && String(crochetTypeId).trim() !== "") filters.crochetTypeId = crochetTypeId;
+    if (sizeId != null && String(sizeId).trim() !== "") filters.sizeId = sizeId;
+
+    const hasFilters = Object.keys(filters).length > 0;
     const crochets = hasFilters
-      ? await crochetRepository.getAllWithFilters({ name_like: name, crochetTypeId })
+      ? await crochetRepository.getAllWithFilters(filters)
       : await crochetRepository.getAll();
 
     return NextResponse.json(crochets);

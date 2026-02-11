@@ -22,14 +22,15 @@ const fetchPostDetails = async (slug) => {
   }
 };
 
-// 🏷️ Generate Metadata for SEO
+// 🏷️ Generate Metadata for SEO (Next.js 15: params is a Promise)
 export async function generateMetadata({ params }) {
-  if (!params?.slug) {
-    return {}; // Avoid breaking the app
+  const { slug } = await params;
+  if (!slug) {
+    return {};
   }
-  const post = await fetchPostDetails(params.slug);
+  const post = await fetchPostDetails(slug);
   if (!post) {
-    return {}; // Handle the case where post data is not available
+    return {};
   }
   return generatePageMetadata({
     title: `${post.title} | MellyCrochets Blog`,
@@ -40,10 +41,10 @@ export async function generateMetadata({ params }) {
       post.category?.name || "",
     ].filter(Boolean)
       .join(", "),
-    slug: params.slug,
-    url: `${process.env.NEXTAUTH_URL}/blog_posts/${params.slug}`,
+    slug,
+    url: `${process.env.NEXTAUTH_URL}/blog_posts/${slug}`,
     alternates: {
-      canonical: `${process.env.NEXTAUTH_URL}/blog_posts/${params.slug}`, // fixed $ sign
+      canonical: `${process.env.NEXTAUTH_URL}/blog_posts/${slug}`,
     },
     image: `${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`,
     images: [
@@ -64,7 +65,7 @@ export async function generateMetadata({ params }) {
       type: "article",
       title: post.title,
       description: post.summary || `Read this post about ${post.title}`,
-      url: `${process.env.NEXTAUTH_URL}/blog_posts/${params.slug}`,
+      url: `${process.env.NEXTAUTH_URL}/blog_posts/${slug}`,
       siteName: "MellyCrochets",
       images: [
         {
@@ -111,9 +112,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function IndexPage({ params }) {
-  // Fetch data on server
+  const { slug } = await params;
   const [post, categories, tags, latestPosts] = await Promise.all([
-    fetchPostBySlug(params.slug),
+    fetchPostBySlug(slug),
     fetchCategories(),
     fetchTags(),
     fetchLatestPosts(),

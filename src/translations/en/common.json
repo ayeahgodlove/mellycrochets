@@ -23,7 +23,9 @@
     "heroInit": "Beyond",
     "heroMiddle": "Needles",
     "heroLast": "and Threads",
-    "heroDescription": "Crafting elegance, one stitch at a time. Explore our collection of handmade crochets."
+    "heroDescription": "Crafting elegance, one stitch at a time. Explore our collection of handmade crochets.",
+    "heroPrimaryCta": "Shop the collection",
+    "heroSecondaryCta": "Explore styles"
   },
   "shop": {
     "heroTitle": "Discover Unique Handmade Crochet Pieces",

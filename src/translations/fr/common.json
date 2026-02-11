@@ -23,7 +23,9 @@
     "heroInit": "Au-delà",
     "heroMiddle": "des Aiguilles",
     "heroLast": "et des Fils",
-    "heroDescription": "Façonner l'élégance, un point à la fois. Découvrez notre collection de crochets faits main."
+    "heroDescription": "Façonner l'élégance, un point à la fois. Découvrez notre collection de crochets faits main.",
+    "heroPrimaryCta": "Découvrir la collection",
+    "heroSecondaryCta": "Explorer les styles"
   },
   "shop": {
     "heroTitle": "Découvrez des pièces de crochet uniques et artisanales",
@@ -217,6 +219,15 @@
       "show": "Afficher un abonné"
     }
   },
+  "contacts": {
+    "contacts": "Contacts",
+    "titles": {
+      "list": "Lister les contacts",
+      "create": "Créer un contact",
+      "edit": "Modifier un contact",
+      "show": "Afficher un contact"
+    }
+  },
   "media": {
     "media": "Médias",
     "titles": {
@@ -228,6 +239,12 @@
   },
   "configurations": {
     "configurations": "Configurations"
+  },
+  "dashboard": {
+    "dashboard": "Tableau de bord",
+    "titles": {
+      "list": "Tableau de bord"
+    }
   },
   "users": {
     "users": "Utilisateurs",
