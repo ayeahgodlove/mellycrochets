@@ -64,6 +64,5 @@ export async function generateMetadata() {
 }
 
 export default async function About() {
-  const t = await getTranslations("about");
-  return <AboutPage t={t} />;
+  return <AboutPage />;
 }

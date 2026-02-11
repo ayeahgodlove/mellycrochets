@@ -1,6 +1,7 @@
 // src/presentation/dtos/tag-request.dto.ts
 
 import { nanoid } from "nanoid";
+import slugify from "slugify";
 import { emptyTag } from "../models";
 
 class TagRequestDto {
@@ -15,6 +16,7 @@ class TagRequestDto {
       ...emptyTag,
       id: nanoid(10),
       name: this.name,
+      slug: slugify(this.name ?? "", { lower: true, strict: true }),
     };
   }
 

@@ -1,5 +1,5 @@
 import BlogPostDetailPage from "../../../page-components/blog-posts/post-detail";
-import { API_URL_UPLOADS_POSTS } from "../../../constants/api-url";
+import { API_URL_UPLOADS_POSTS, getPostImageUrl } from "../../../constants/api-url";
 import {
   fetchCategories,
   fetchLatestPosts,
@@ -45,10 +45,10 @@ export async function generateMetadata({ params }) {
     alternates: {
       canonical: `${process.env.NEXTAUTH_URL}/blog_posts/${params.slug}`, // fixed $ sign
     },
-    image: `${process.env.NEXTAUTH_URL}/uploads/posts/${post.imageUrl}`,
+    image: `${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`,
     images: [
       {
-        url: `${process.env.NEXTAUTH_URL}/uploads/posts/${post.imageUrl}`,
+        url: `${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`,
         width: 1200,
         height: 630,
         alt: post.title,
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }) {
       siteName: "MellyCrochets",
       images: [
         {
-          url: `${process.env.NEXTAUTH_URL}/uploads/posts/${post.imageUrl}`,
+          url: `${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -84,7 +84,7 @@ export async function generateMetadata({ params }) {
       card: "summary_large_image",
       title: `${post.title} | MellyCrochets Blog`,
       description: post.summary || `Read this post about ${post.title}`,
-      images: [`${process.env.NEXTAUTH_URL}/uploads/posts/${post.imageUrl}`],
+      images: [`${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`],
       site: "@mellycrochets",
       creator: "@mellycrochets",
     },

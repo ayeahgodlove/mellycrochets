@@ -2,7 +2,7 @@
 
 import { format } from "../../../lib/format";
 import PageBreadCrumbs from "../../../components/page-breadcrumb/page-breadcrumb.component";
-import { DeleteButton, EditButton, List, ShowButton, useTable } from "@/components/refine";
+import { CreateButton, DeleteButton, EditButton, List, ShowButton, useTable } from "@/components/refine";
 import { Space, Table } from "@/components/ui";
 
 export default function SubscriberList() {
@@ -13,6 +13,9 @@ export default function SubscriberList() {
   return (
     <>
       <PageBreadCrumbs items={["Subscribers", "Lists"]} />
+      <div className="mb-4 flex justify-end">
+        <CreateButton />
+      </div>
       <List>
         <Table {...tableProps} rowKey="id">
           <Table.Column

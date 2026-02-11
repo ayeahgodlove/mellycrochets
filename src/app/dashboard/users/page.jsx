@@ -3,6 +3,8 @@
 import { format } from "../../../lib/format";
 import PageBreadCrumbs from "../../../components/page-breadcrumb/page-breadcrumb.component";
 import {
+  CreateButton,
+  EditButton,
   List,
   ShowButton,
   useTable,
@@ -17,6 +19,9 @@ export default function UserList() {
   return (
     <>
       <PageBreadCrumbs items={["Users", "Lists"]} />
+      <div className="mb-4 flex justify-end">
+        <CreateButton />
+      </div>
       <List>
         <Table {...tableProps} rowKey="id">
           <Table.Column
@@ -43,6 +48,7 @@ export default function UserList() {
             dataIndex="actions"
             render={(_, record) => (
               <Space>
+                <EditButton hideText size="small" recordItemId={record.id} />
                 <ShowButton hideText size="small" recordItemId={record.id} />
               </Space>
             )}

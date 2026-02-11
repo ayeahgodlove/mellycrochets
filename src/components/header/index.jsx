@@ -35,7 +35,7 @@ export const Header = ({ sticky = true }) => {
     },
     {
       key: "profile",
-      label: <Link href="/dashboard/profile">Profile</Link>,
+      label: <Link href="/profile">Profile</Link>,
     },
     {
       key: "logout",

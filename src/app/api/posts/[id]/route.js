@@ -1,6 +1,6 @@
 import { PostRequestDto } from "../../../../data/dtos/post-request.dto";
 import { PostRepository } from "../../../../data/repositories/post.repository";
-import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -24,7 +24,8 @@ export async function PATCH(req, { params }) {
     );
   }
 
-  if (!params?.id) {
+  const { id } = await params || {};
+  if (!id) {
     return NextResponse.json(
       {
         message: "Invalid request: ID is required.",
@@ -37,7 +38,7 @@ export async function PATCH(req, { params }) {
 
   try {
     const dto = new PostRequestDto(await req.json());
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
     if (validationErrors.length > 0) {
       return NextResponse.json(
@@ -51,12 +52,10 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    const id = params.id;
-
     const obj = {
       ...emptyPost,
       ...dto.toData(),
-      id: id,
+      id,
     };
     const updatedPost = await postRepository.update(obj);
 

@@ -1,28 +1,53 @@
 "use client";
 
+import { useEffect } from "react";
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { API_URL_UPLOADS_MEDIA } from "../../../../../constants/api-url";
 import { Edit, useForm, useSelect } from '@/components/refine';
-import { Col, Form, Image, Input, Row, Select, Space, Typography } from '@/components/ui';
+import { Col, Form, Input, Row, Select } from '@/components/ui';
+import { PostImageUpload } from "../../../../../components/shared/post-image-upload.component";
 import { EditorComponent } from "../../../../../components/editor/editor.component";
 
 export default function BlogPostEdit() {
-  const { formProps, saveButtonProps } = useForm({});
+  const { formProps, saveButtonProps, query } = useForm({});
 
-  const { queryResult: mediaData, selectProps: mediaSelectProps } = useSelect({
-    resource: "media",
-  });
-
-  const { queryResult: categoryData, selectProps } = useSelect({
+  const { query: categoryQuery } = useSelect({
     resource: "categories",
+    optionLabel: "name",
+    optionValue: "id",
   });
-  const { queryResult: tagData } = useSelect({
+  const { query: tagQuery } = useSelect({
     resource: "tags",
+    optionLabel: "name",
+    optionValue: "id",
   });
 
-  const categories = categoryData.data;
-  const tags = tagData.data;
-  const media = mediaData.data;
+  // Refine getList returns { data: array, total }; our APIs return the array directly, so data is the list
+  const categories = categoryQuery?.data?.data ?? categoryQuery?.data ?? [];
+  const tags = tagQuery?.data?.data ?? tagQuery?.data ?? [];
+  const categoryOptions = Array.isArray(categories) ? categories.map((d) => ({ label: d.name, value: String(d.id) })) : [];
+  const tagOptions = Array.isArray(tags) ? tags.map((d) => ({ label: d.name, value: d.id })) : [];
+
+  const record = query?.data?.data ?? query?.data;
+
+  useEffect(() => {
+    if (!record || !formProps?.form?.setFieldsValue) return;
+    const updates = {};
+    const categoryId = record.categoryId ?? record.category?.id;
+    if (categoryId != null) {
+      updates.categoryId = String(categoryId);
+    }
+    if (record.imageUrl != null && record.imageUrl !== "") {
+      updates.imageUrl = record.imageUrl.includes("/") ? record.imageUrl.replace(/^.*\//, "") : record.imageUrl;
+    }
+    const tagsRaw = record.tags;
+    if (Array.isArray(tagsRaw) && tagsRaw.length > 0 && typeof tagsRaw[0] === "object" && tagsRaw[0]?.id != null) {
+      updates.tags = tagsRaw.map((t) => t.id);
+    }
+    if (Object.keys(updates).length > 0) {
+      formProps.form.setFieldsValue(updates);
+    }
+  }, [record, formProps?.form]);
+
   return (
     <>
       <PageBreadCrumbs items={["Blog Posts", "Lists", "Edit"]} />
@@ -56,9 +81,9 @@ export default function BlogPostEdit() {
 
           <Form.Item label={"Content"} name="content">
             <EditorComponent
-              initialValue={formProps.form.getFieldValue("content") || ""}
+              initialValue={(formProps.form?.getFieldValue?.("content")) ?? ""}
               onChange={(value) =>
-                formProps.form.setFieldsValue({ content: value })
+                formProps.form?.setFieldsValue?.({ content: value })
               }
             />
           </Form.Item>
@@ -75,19 +100,10 @@ export default function BlogPostEdit() {
               >
                 <Select
                   showSearch
-                  onChange={selectProps.onChange}
-                  onSearch={selectProps.onSearch}
-                  filterOption={selectProps.filterOption}
-                  options={
-                    categories
-                      ? categories.data.map((d) => {
-                          return {
-                            label: d.name,
-                            value: d.id,
-                          };
-                        })
-                      : []
+                  filterOption={(input, opt) =>
+                    (opt?.label ?? "").toString().toLowerCase().includes(input.toLowerCase())
                   }
+                  options={categoryOptions}
                   placeholder="Select a related category"
                   size="large"
                 />
@@ -106,11 +122,10 @@ export default function BlogPostEdit() {
                 ]}
               >
                 <Select
-                  defaultValue={"draft"}
                   options={[
-                    { value: "DRAFT", label: "Draft" },
-                    { value: "PUBLISHED", label: "Published" },
-                    { value: "REJECTED", label: "Rejected" },
+                    { value: "draft", label: "Draft" },
+                    { value: "published", label: "Published" },
+                    { value: "archived", label: "Archived" },
                   ]}
                   size="large"
                 />
@@ -128,73 +143,20 @@ export default function BlogPostEdit() {
             ]}
           >
             <Select
-              options={
-                tags
-                  ? tags.data.map((d) => {
-                      return {
-                        label: d.name,
-                        value: d.id,
-                      };
-                    })
-                  : []
-              }
-              mode="tags"
+              options={tagOptions}
+              mode="multiple"
               placeholder="Select related tags"
               size="large"
             />
           </Form.Item>
 
           <Form.Item
-            name={"imageUrl"}
+            name="imageUrl"
             label="Image"
-            required={true}
-            rules={[
-              { required: true, message: "This field is a required field" },
-            ]}
+            rules={[{ required: true, message: "Image is required" }]}
             style={{ marginBottom: 10 }}
           >
-            <Select
-              {...mediaSelectProps}
-              showSearch
-              options={
-                media
-                  ? media.data.map((d) => {
-                      return {
-                        label: d.title,
-                        value: d.imageUrl,
-                        emoji: (
-                          <Image
-                            src={`${API_URL_UPLOADS_MEDIA}/${d.imageUrl}`}
-                            alt={d?.title}
-                            height={50}
-                            width={60}
-                          />
-                        ),
-                        desc: (
-                          <Typography.Title level={5}>
-                            {d.title}
-                          </Typography.Title>
-                        ),
-                      };
-                    })
-                  : []
-              }
-              optionRender={(option) => (
-                <Space>
-                  <span role="img" aria-label={option.data.label}>
-                    {option.data.emoji}
-                  </span>
-                  {option.data.desc}
-                </Space>
-              )}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              placeholder="Select image"
-              size="large"
-            />
+            <PostImageUpload />
           </Form.Item>
         </Form>
       </Edit>

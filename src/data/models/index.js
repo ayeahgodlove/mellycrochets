@@ -149,6 +149,13 @@ const emptyPost = {
   categoryId: "",
 };
 
+const emptyContact = {
+  id: "",
+  name: "",
+  email: "",
+  message: "",
+};
+
 export {
   emptyCrochetSize,
   emptyCartItem,
@@ -168,4 +175,5 @@ export {
   emptyCategory,
   emptyTag,
   emptyComment,
+  emptyContact,
 };

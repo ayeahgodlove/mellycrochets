@@ -19,6 +19,7 @@ const Tag = require("./tag")(sequelize, DataTypes);
 const Category = require("./category")(sequelize, DataTypes);
 const PostTag = require("./post-tag")(sequelize, DataTypes);
 const Comment = require("./comment")(sequelize, DataTypes);
+const Contact = require("./contact")(sequelize, DataTypes);
 // User <=> post Associations
 User.hasMany(Post, {
   foreignKey: "authorId",
@@ -194,4 +195,5 @@ module.exports = {
   Post,
   Comment,
   PostTag,
+  Contact,
 };

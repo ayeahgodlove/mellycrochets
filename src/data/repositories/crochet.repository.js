@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { NotFoundException } from "../../exceptions/not-found.exception";
 import { Crochet, CrochetSize, CrochetType, Size } from "../entities";
 
@@ -210,6 +211,76 @@ export class CrochetRepository {
       throw error;
     }
   }
+  /**
+   * Returns crochets with optional filters (name search, crochetTypeId).
+   * Same response shape as getAll().
+   */
+  async getAllWithFilters(filters = {}) {
+    const { name, name_like, crochetTypeId } = filters;
+    const searchName = name_like ?? name;
+    const where = {};
+    if (searchName && String(searchName).trim()) {
+      where.name = { [Op.like]: `%${String(searchName).trim()}%` };
+    }
+    if (crochetTypeId && String(crochetTypeId).trim()) {
+      where.crochetTypeId = String(crochetTypeId).trim();
+    }
+    try {
+      const crochets = await Crochet.findAll({
+        where: Object.keys(where).length ? where : undefined,
+        include: [
+          { model: CrochetType, as: "crochetType" },
+          {
+            model: Size,
+            as: "sizes",
+            through: { attributes: ["colors"] },
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      const formattedCrochets = crochets.map((crochet) => {
+        const crochetData = crochet.get();
+        let imageUrls = [];
+        try {
+          if (typeof crochetData.imageUrls === "string") {
+            imageUrls = JSON.parse(crochetData.imageUrls);
+          } else if (Array.isArray(crochetData.imageUrls)) {
+            imageUrls = crochetData.imageUrls;
+          }
+        } catch (e) {
+          imageUrls = [];
+        }
+        const crochetTypeData = crochet.crochetType ? crochet.crochetType.get() : crochetData.crochetType;
+        return {
+          ...crochetData,
+          imageUrls,
+          crochetType: crochetTypeData
+            ? {
+                id: crochetTypeData.id,
+                name: crochetTypeData.name,
+                slug: crochetTypeData.slug,
+                description: crochetTypeData.description,
+                createdAt: crochetTypeData.createdAt,
+                updatedAt: crochetTypeData.updatedAt,
+              }
+            : null,
+          sizes: (crochet.sizes || []).map((size) => {
+            const sizeData = size.get ? size.get() : size;
+            return {
+              id: sizeData.id,
+              label: sizeData.label,
+              price: size.CrochetSize?.price,
+              stock: size.CrochetSize?.stock,
+            };
+          }),
+        };
+      });
+      return formattedCrochets;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   /*
    * Returns an array of Car
    */

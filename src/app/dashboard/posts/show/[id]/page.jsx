@@ -1,52 +1,42 @@
 "use client";
 
 import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
-import { API_URL_UPLOADS_POSTS } from "../../../../../constants/api-url";
-import {
-  DateField,
-  ImageField,
-  MarkdownField,
-  Show,
-  TextField,
-} from '@/components/refine';
+import { getPostImageUrl } from "../../../../../constants/api-url";
+import { DateField, EditButton, ImageField, Show, TextField } from "@/components/refine";
 import { useOne, useShow } from "@refinedev/core";
-import { Space, Tag, Typography } from '@/components/ui';
+import { Card, Space, Tag, Typography } from '@/components/ui';
 
 const { Title } = Typography;
 
 export default function BlogPostShow() {
-  const { queryResult } = useShow({});
-  const { data, isLoading } = queryResult;
+  const { query } = useShow({});
+  const data = query?.data;
+  const isLoading = query?.isFetching ?? false;
+  const record = data?.data ?? data;
 
-  const record = data?.data;
-
-  const { data: categoryData, isLoading: categoryIsLoading } = useOne({
+  const categoryId = record?.categoryId ?? record?.category?.id;
+  const { result: categoryResult, query: categoryQuery } = useOne({
     resource: "categories",
-    id: record?.category?.id || "",
+    id: categoryId ?? "",
     queryOptions: {
-      enabled: !!record,
+      enabled: !!record && !!categoryId,
     },
   });
-
-  const { data: tagData, isLoading: tagIsLoading } = useOne({
-    resource: "tags",
-    id: record?.tag?.id || "",
-    queryOptions: {
-      enabled: !!record,
-    },
-  });
+  const categoryName = record?.category?.name ?? categoryResult?.name;
+  const categoryIsLoading = categoryQuery?.isFetching ?? false;
 
   const getTag = (value) => {
-    if (tagIsLoading) return <>Loading...</>;
-    if (!value || !tagData) return "-";
+    const list = Array.isArray(value) ? value : [];
+    if (list.length === 0) return "-";
 
     return (
       <Space size={[0, 8]} wrap>
-        {value.map((tag) => {
-          const tagInfo = tagData.data.find((t) => t.id === tag.id);
+        {list.map((tag) => {
+          const tagId = typeof tag === "object" && tag?.id != null ? tag.id : tag;
+          const name = typeof tag === "object" && tag?.name != null ? tag.name : tagId;
           return (
-            <Tag size="small" key={tag.id} color={"red"}>
-              {tagInfo?.name || tag.id}
+            <Tag size="small" key={tagId} color={"red"}>
+              {name}
             </Tag>
           );
         })}
@@ -57,42 +47,54 @@ export default function BlogPostShow() {
   return (
     <>
       <PageBreadCrumbs items={["Blog Posts", "Lists", "Details"]} />
-      <Show isLoading={isLoading} >
-        <Title level={5}>{"ID"}</Title>
-        <TextField value={record?.id ?? ""} />
-        <Title level={5}>{"Title"}</Title>
-        <TextField value={record?.title} />
-        <Title level={5}>{"Summary"}</Title>
-        <MarkdownField value={record?.summary} />
-        <Title level={5}>{"Content"}</Title>
-        <MarkdownField value={record?.content} />
-        {/* <div
-          style={{ padding: 10, background: "#f2f2f2" }}
-          dangerouslySetInnerHTML={{
-            __html: record?.content,
-          }}
-        /> */}
-        <Title level={5}>{"Category"}</Title>
-        <TextField
-          value={
-            categoryIsLoading ? (
-              <>Loading...</>
-            ) : (
-              <>{categoryData?.data?.name}</>
-            )
-          }
-        />
-
-        <Title level={5}>{"Tags"}</Title>
-        <TextField value={getTag(record?.tags)} />
-        <Title level={5}>{"Status"}</Title>
-        <TextField value={record?.status} />
-        <Title level={5}>{"CreatedAt"}</Title>
-        <DateField value={record?.createdAt} />
-        <ImageField
-          imageTitle={record?.title}
-          value={`${API_URL_UPLOADS_POSTS}/${record?.imageUrl}`}
-        />
+      <div className="mb-4 flex justify-end">
+        <Space>
+          <EditButton recordItemId={record?.id} />
+        </Space>
+      </div>
+      <Show isLoading={isLoading}>
+        <Card className="p-6 bg-white shadow-sm border-0 space-y-4">
+          <div>
+            <Title level={5}>{"ID"}</Title>
+            <TextField value={record?.id ?? ""} />
+          </div>
+          <div>
+            <Title level={5}>{"Title"}</Title>
+            <TextField value={record?.title} />
+          </div>
+          <div>
+            <Title level={5}>{"Summary"}</Title>
+            <TextField value={record?.summary} />
+          </div>
+          <div>
+            <Title level={5}>{"Content"}</Title>
+            <TextField value={record?.content} />
+          </div>
+          <div>
+            <Title level={5}>{"Category"}</Title>
+            <TextField
+              value={categoryIsLoading ? "Loading..." : (categoryName ?? "-")}
+            />
+          </div>
+          <div>
+            <Title level={5}>{"Tags"}</Title>
+            <TextField value={getTag(record?.tags)} />
+          </div>
+          <div>
+            <Title level={5}>{"Status"}</Title>
+            <TextField value={record?.status} />
+          </div>
+          <div>
+            <Title level={5}>{"CreatedAt"}</Title>
+            <DateField value={record?.createdAt} />
+          </div>
+          <div>
+            <ImageField
+              imageTitle={record?.title}
+              value={getPostImageUrl(record?.imageUrl)}
+            />
+          </div>
+        </Card>
       </Show>
     </>
   );

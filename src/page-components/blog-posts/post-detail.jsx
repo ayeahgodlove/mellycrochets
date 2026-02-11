@@ -1,4 +1,5 @@
 import { Card, Divider, Tag, Space } from "@/components/ui";
+import { getPostImageUrl } from "../../constants/api-url";
 import CrochetTypeHero from "../../components/shared/crochet-type-hero.component";
 import Link from "next/link";
 import { CiFolderOn } from "react-icons/ci";
@@ -26,7 +27,7 @@ const BlogPostDetailPage = ({
           <Card
             cover={
               <img
-                src={`${uploadsBaseUrl}/${post.imageUrl}`}
+                src={getPostImageUrl(post.imageUrl)}
                 alt={post.title}
                 className="rounded-t-xl object-cover w-full"
               />

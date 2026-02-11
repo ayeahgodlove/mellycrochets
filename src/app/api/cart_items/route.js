@@ -1,7 +1,7 @@
 import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 import { CartItemRequestDto } from "../../../data/dtos/cart-item-request.dto";
-import { displayValidationErrors } from "../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../lib/displayValidationErrors";
 import authOptions from "../../../lib/options";
 import { getServerSession } from "next-auth";
 import { Crochet } from "../../../data/entities";
@@ -83,7 +83,7 @@ export async function POST(request) {
       selectedColors: body.color,
     });
 
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
     //desstructure the object
     const { crochetId, sizeId, quantity, userId, price, currency, selectedColors } =
       dto.toData();

@@ -2,7 +2,7 @@ import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 import { SubscriberRepository } from "../../../data/repositories/subscriber.repository";
 import { SubscriberRequestDto } from "../../../data/dtos/subscriber-request.dto";
-import { displayValidationErrors } from "../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../lib/displayValidationErrors";
 
 const subscriberRepository = new SubscriberRepository();
 
@@ -28,7 +28,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const dto = new SubscriberRequestDto(body);
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
     if (validationErrors.length > 0) {
       return NextResponse.json(

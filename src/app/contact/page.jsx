@@ -68,7 +68,5 @@ export const metadata = {
 };
 
 export default async function Contact() {
-  const t = await getTranslations("contact");
-
-  return <ContactPage t={t} />;
+  return <ContactPage />;
 }

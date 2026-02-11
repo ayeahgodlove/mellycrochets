@@ -53,7 +53,7 @@ const AppNavigation = () => {
     {
       key: "profile",
       label: (
-        <Link href="/dashboard/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
+        <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
           <User size={16} />
           Profile
         </Link>

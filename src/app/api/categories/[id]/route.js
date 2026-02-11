@@ -1,6 +1,6 @@
 import { CategoryRequestDto } from "../../../../data/dtos/category-request.dto";
 import { CategoryRepository } from "../../../../data/repositories/category.repository";
-import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -24,7 +24,9 @@ export async function PATCH(req, { params }) {
     );
   }
 
-  if (!params?.id) {
+  const { id } = await params;
+
+  if (!id) {
     return NextResponse.json(
       {
         message: "Invalid request: ID is required.",
@@ -39,7 +41,7 @@ export async function PATCH(req, { params }) {
 
   try {
     const dto = new CategoryRequestDto(await req.json());
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
     if (validationErrors.length > 0) {
       return NextResponse.json(
@@ -52,8 +54,6 @@ export async function PATCH(req, { params }) {
         { status: 400 }
       );
     }
-
-    const id = params.id;
 
     const obj = {
       ...emptyCategory,
@@ -86,7 +86,9 @@ export async function PATCH(req, { params }) {
 }
 
 export async function GET(req, { params }) {
-  if (!params?.id) {
+  const { id } = await params;
+
+  if (!id) {
     return NextResponse.json(
       { message: "ID is required", success: false, data: null },
       { status: 400 }
@@ -94,7 +96,6 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const id = params.id;
 
     const category = await categoryRepository.findById(id);
     // const categoryDTO = categoryMapper.toDTO(category);
@@ -128,7 +129,7 @@ export async function DELETE(req, { params }) {
   }
 
   try {
-    const id = params.id;
+    const { id } = await params;
 
     await categoryRepository.delete(id);
 

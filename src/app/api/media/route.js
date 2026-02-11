@@ -2,6 +2,7 @@ import { MediaRepository } from "../../../data/repositories/media.repository";
 import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 import { MediaRequestDto } from "../../../data/dtos/media-request.dto";
+import { VALIDATION_OPTIONS } from "../../../lib/displayValidationErrors";
 
 const mediaRepository = new MediaRepository();
 
@@ -32,7 +33,7 @@ export async function POST(request) {
     imageUrl,
   });
 
-  const validationErrors = await validate(dto);
+  const validationErrors = await validate(dto, VALIDATION_OPTIONS);
   if (validationErrors.length > 0) {
     return NextResponse.json(
       {

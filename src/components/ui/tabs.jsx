@@ -43,9 +43,9 @@ TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 // Ant Design compatibility wrapper
 const TabsWrapper = ({ defaultActiveKey, activeKey, onChange, children, className, ...props }) => {
-  const [internalActiveKey, setInternalActiveKey] = React.useState(defaultActiveKey || activeKey);
+  const [internalActiveKey, setInternalActiveKey] = React.useState(() => defaultActiveKey ?? activeKey ?? "");
   const isControlled = activeKey !== undefined;
-  const currentKey = isControlled ? activeKey : internalActiveKey;
+  const currentKey = (isControlled ? activeKey : internalActiveKey) ?? defaultActiveKey ?? "";
 
   const handleValueChange = (value) => {
     if (!isControlled) {
@@ -85,8 +85,10 @@ const TabsWrapper = ({ defaultActiveKey, activeKey, onChange, children, classNam
                          child.props?.['data-tab-pane'] === true;
         
         if (isTabPane) {
+          // Prefer tabKey so value matches "overview" etc.; child.key can be ".0" from toArray
+          const tabKey = child.props?.tabKey ?? child.props?.key ?? child.key ?? String(panes.length);
           panes.push({
-            key: String(child.key || child.props.key || child.props.tabKey || panes.length),
+            key: String(tabKey),
             tab: child.props.tab,
             children: child.props.children,
           });
@@ -117,8 +119,9 @@ const TabsWrapper = ({ defaultActiveKey, activeKey, onChange, children, classNam
     return <div className={className}>{children}</div>;
   }
 
+  const value = currentKey || safeTabs[0]?.key;
   return (
-    <Tabs value={currentKey} onValueChange={handleValueChange} className={className} {...props}>
+    <Tabs value={value} onValueChange={handleValueChange} className={className} {...props}>
       <TabsList>
         {safeTabs.map((tab) => (
           <TabsTrigger key={tab.key} value={tab.key}>

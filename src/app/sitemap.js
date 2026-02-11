@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getPostImageUrl } from "../constants/api-url";
 
 export default async function sitemap() {
   const baseUrl = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
@@ -45,7 +46,7 @@ export default async function sitemap() {
     images: blog?.imageUrl
       ? [
           {
-            url: `${baseUrl}/uploads/posts/${blog?.imageUrl}`,
+            url: `${baseUrl}${getPostImageUrl(blog?.imageUrl)}`,
             alt: blog?.title,
           },
         ]

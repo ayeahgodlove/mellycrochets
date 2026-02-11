@@ -4,6 +4,7 @@ import PageBreadCrumbs from "../../../components/page-breadcrumb/page-breadcrumb
 import { API_URL_UPLOADS_POSTS } from "../../../constants/api-url";
 import { format } from "../../../lib/format";
 import {
+  CreateButton,
   DeleteButton,
   // EditButton,
   List,
@@ -20,6 +21,9 @@ export default function MediaList() {
   return (
     <>
       <PageBreadCrumbs items={["Media", "Lists"]} />
+      <div className="mb-4 flex justify-end">
+        <CreateButton />
+      </div>
       <List>
         <Table {...tableProps} rowKey="id">
           <Table.Column

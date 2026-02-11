@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Menu, PanelLeftClose, PanelLeftOpen, ChevronRight, Search, User, LogOut, Settings, X } from "lucide-react";
 import {
+  useBack,
   useDelete,
   useForm as useCoreForm,
   useNavigation,
@@ -196,7 +197,7 @@ export const ThemedLayoutV2 = ({ Header, Title, children }) => {
     {
       key: "profile",
       label: (
-        <Link href="/dashboard/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
+        <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
           <User size={16} />
           Profile
         </Link>
@@ -429,19 +430,46 @@ const getResourceFromPath = (pathname) => {
   return parts[dashboardIndex + 1] || null;
 };
 
-const FormLayout = ({ title, saveButtonProps, children }) => (
-  <div className="space-y-4">
-    <div className="flex items-center justify-between">
-      <Typography.Title level={4}>{title}</Typography.Title>
-      {saveButtonProps ? (
-        <Button type="primary" onClick={saveButtonProps.onClick} loading={saveButtonProps.loading}>
-          Save
-        </Button>
-      ) : null}
+const FormLayout = ({ title, saveButtonProps, children }) => {
+  const back = useBack();
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            type="default"
+            size="small"
+            onClick={back}
+            className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+          >
+            Back
+          </Button>
+          {title ? (
+            <Typography.Title
+              level={4}
+              className="text-gray-900 font-bold"
+            >
+              {title}
+            </Typography.Title>
+          ) : null}
+        </div>
+        {saveButtonProps ? (
+          <Button
+            type="primary"
+            onClick={saveButtonProps.onClick}
+            loading={saveButtonProps.loading}
+            disabled={saveButtonProps.disabled}
+            className="h-10 px-6 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {saveButtonProps.loading ? "Saving..." : "Save"}
+          </Button>
+        ) : null}
+      </div>
+      <div>{children}</div>
     </div>
-    <div>{children}</div>
-  </div>
-);
+  );
+};
 
 export const Create = ({ saveButtonProps, children }) => (
   <FormLayout title="Create" saveButtonProps={saveButtonProps}>
@@ -455,11 +483,25 @@ export const Edit = ({ saveButtonProps, children }) => (
   </FormLayout>
 );
 
-export const Show = ({ isLoading, children }) => (
-  <div className="space-y-4">
-    {isLoading ? <Empty description="Loading..." /> : children}
-  </div>
-);
+export const Show = ({ isLoading, children }) => {
+  const back = useBack();
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Button
+          type="default"
+          size="small"
+          onClick={back}
+          className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+        >
+          Back
+        </Button>
+      </div>
+      {isLoading ? <Empty description="Loading..." /> : children}
+    </div>
+  );
+};
 
 export const DeleteButton = ({ recordItemId, hideText, size = "middle", resourceName }) => {
   const pathname = usePathname();
@@ -471,14 +513,19 @@ export const DeleteButton = ({ recordItemId, hideText, size = "middle", resource
       mutate({ resource: resolvedResource, id: recordItemId });
     }
   };
+  const sizeClasses = size === "small" ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm";
   return (
     <Button
       type="default"
       size={size}
       onClick={handleDelete}
-      className="bg-red-50 text-red-700 hover:bg-red-100"
+      className={`${sizeClasses} bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 border border-red-200 hover:border-red-300 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md`}
     >
-      {hideText ? "🗑️" : "Delete"}
+      {hideText ? (
+        <span className="text-base">🗑️</span>
+      ) : (
+        "Delete"
+      )}
     </Button>
   );
 };
@@ -490,14 +537,19 @@ export const EditButton = ({ recordItemId, hideText, size = "middle", resourceNa
     resolvedResource && recordItemId !== undefined
       ? `/dashboard/${resolvedResource}/edit/${recordItemId}`
       : "#";
+  const sizeClasses = size === "small" ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm";
   return (
     <Button
       type="default"
       size={size}
       href={href}
-      className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+      className={`${sizeClasses} bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border border-blue-200 hover:border-blue-300 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md`}
     >
-      {hideText ? "✏️" : "Edit"}
+      {hideText ? (
+        <span className="text-base">✏️</span>
+      ) : (
+        "Edit"
+      )}
     </Button>
   );
 };
@@ -509,14 +561,43 @@ export const ShowButton = ({ recordItemId, hideText, size = "middle" }) => {
     resolvedResource && recordItemId !== undefined
       ? `/dashboard/${resolvedResource}/show/${recordItemId}`
       : "#";
+  const sizeClasses = size === "small" ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm";
   return (
     <Button
       type="default"
       size={size}
       href={href}
-      className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+      className={`${sizeClasses} bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 border border-green-200 hover:border-green-300 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md`}
     >
-      {hideText ? "👁️" : "Show"}
+      {hideText ? (
+        <span className="text-base">👁️</span>
+      ) : (
+        "Show"
+      )}
+    </Button>
+  );
+};
+
+export const CreateButton = ({ hideText, size = "middle", resourceName }) => {
+  const pathname = usePathname();
+  const resolvedResource = resourceName || getResourceFromPath(pathname);
+  const href = resolvedResource ? `/dashboard/${resolvedResource}/create` : "#";
+  const sizeClasses = size === "small" ? "h-8 px-3 text-xs" : size === "large" ? "h-11 px-6 text-base" : "h-10 px-5 text-sm";
+  return (
+    <Button
+      type="primary"
+      size={size}
+      href={href}
+      className={`${sizeClasses} bg-gradient-to-r from-red-700 to-red-800 hover:from-red-800 hover:to-red-900 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border-0`}
+    >
+      {hideText ? (
+        <span className="text-base leading-none">➕</span>
+      ) : (
+        <>
+          <span className="text-base leading-none">➕</span>
+          <span>Create</span>
+        </>
+      )}
     </Button>
   );
 };
@@ -533,9 +614,33 @@ export const useForm = (props) => {
     [form, formLoading]
   );
 
+  // Track previous data to avoid unnecessary updates
+  const prevDataRef = useRef(null);
+  const isMountedRef = useRef(false);
+
+  // Mark component as mounted after first render
   useEffect(() => {
-    if (query?.data?.data && form?.setFieldsValue) {
-      form.setFieldsValue(query.data.data);
+    isMountedRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    // Only update if component is mounted and data exists
+    if (!isMountedRef.current || !query?.data?.data || !form?.setFieldsValue) {
+      return;
+    }
+
+    // Only update if data has actually changed
+    const currentData = JSON.stringify(query.data.data);
+    const prevData = prevDataRef.current ? JSON.stringify(prevDataRef.current) : null;
+    
+    if (currentData !== prevData) {
+      // Use setTimeout with longer delay to ensure it's after all render cycles
+      setTimeout(() => {
+        if (isMountedRef.current && form?.setFieldsValue) {
+          form.setFieldsValue(query.data.data);
+          prevDataRef.current = query.data.data;
+        }
+      }, 50);
     }
   }, [query?.data?.data, form]);
 
@@ -560,6 +665,8 @@ export const useTable = (props = {}) => {
     pageSize,
     setCurrentPage,
     setPageSize,
+    filters,
+    setFilters,
   } = useCoreTable({
     ...rest,
     sorters: initialSorter ? { initial: initialSorter } : undefined,
@@ -579,7 +686,7 @@ export const useTable = (props = {}) => {
     },
   };
 
-  return { tableProps, tableQuery, result };
+  return { tableProps, tableQuery, result, filters, setFilters };
 };
 
 export const useSelect = useCoreSelect;

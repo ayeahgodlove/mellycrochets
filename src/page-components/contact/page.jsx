@@ -1,21 +1,29 @@
+"use client";
+
 import ContactSection from "../../components/contact/contact.component";
 import "../../assets/css/globals.css";
+import { useTranslations } from "next-intl";
+import { Mail, MessageCircle } from "lucide-react";
 
-const ContactPage = ({ t }) => {
+const ContactPage = () => {
+  const t = useTranslations("contact");
   return (
-    <div>
-      <div className="relative w-full bg-gray-100 py-20 px-6 flex flex-col items-center text-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-200 opacity-80"></div>
-
-        <div className="relative z-10 text-center max-w-3xl p-6 md:p-12 lg:p-16 animate-fade-in-up">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative w-full bg-white py-16 md:py-24 px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-full mb-6">
+            <MessageCircle size={18} className="text-red-800" />
+            <span className="text-sm font-semibold text-red-800">Get in Touch</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
             {t("heroTitle")}
           </h1>
-          <p className="text-lg text-gray-700 max-w-2xl mb-6">
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             {t("heroDescription")}
           </p>
         </div>
-      </div>
+      </section>
 
       <ContactSection />
     </div>

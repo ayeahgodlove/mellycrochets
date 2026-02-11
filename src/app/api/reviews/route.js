@@ -2,7 +2,7 @@ import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 import { ReviewRepository } from "../../../data/repositories/review.repository";
 import { ReviewRequestDto } from "../../../data/dtos/review-request.dto";
-import { displayValidationErrors } from "../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../lib/displayValidationErrors";
 
 const reviewRepository = new ReviewRepository();
 
@@ -28,7 +28,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const dto = new ReviewRequestDto(body);
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
     if (validationErrors.length > 0) {
       return NextResponse.json(

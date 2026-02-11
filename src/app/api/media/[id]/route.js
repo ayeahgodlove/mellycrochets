@@ -1,6 +1,6 @@
 import { MediaRequestDto } from "../../../../data/dtos/media-request.dto";
 import { MediaRepository } from "../../../../data/repositories/media.repository";
-import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 
@@ -12,7 +12,7 @@ export async function PATCH(req, { params }) {
 
   const dto = new MediaRequestDto(data.title, imageUrl);
 
-  const validationErrors = await validate(dto);
+  const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
   if (validationErrors.length > 0) {
     return NextResponse.json(

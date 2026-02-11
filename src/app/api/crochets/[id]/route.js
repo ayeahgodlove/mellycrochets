@@ -1,11 +1,11 @@
+import slugify from "slugify";
 import { CrochetRequestDto } from "../../../../data/dtos/crochet-request.dto";
 import { CrochetRepository } from "../../../../data/repositories/crochet.repository";
-import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import authOptions from "../../../../lib/options";
-import { emptyCrochet } from "../../../../data/models";
 
 const crochetRepository = new CrochetRepository();
 
@@ -37,7 +37,7 @@ export async function PATCH(req, { params }) {
 
   try {
     const dto = new CrochetRequestDto(await req.json());
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
     if (validationErrors.length > 0) {
       return NextResponse.json(
@@ -53,10 +53,27 @@ export async function PATCH(req, { params }) {
 
     const id = params.id;
 
+    const existing = await crochetRepository.findById(id);
+    if (!existing) {
+      return NextResponse.json(
+        { message: "Crochet not found", success: false, data: null },
+        { status: 404 }
+      );
+    }
+
+    const imageUrls = Array.isArray(dto.imageUrls) && dto.imageUrls.length > 0
+      ? dto.imageUrls
+      : (Array.isArray(existing.imageUrls) ? existing.imageUrls : []);
+
     const obj = {
-      ...emptyCrochet,
-      ...dto.toData(),
-      id: id,
+      id,
+      name: dto.name ?? existing.name,
+      slug: slugify((dto.name ?? existing.name) ?? "", { lower: true }),
+      description: dto.description ?? existing.description,
+      crochetTypeId: dto.crochetTypeId || existing.crochetTypeId,
+      imageUrls,
+      priceInCfa: dto.priceInCfa,
+      priceInUsd: dto.priceInUsd,
     };
     const updatedCrochet = await crochetRepository.update(obj);
 

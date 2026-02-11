@@ -1,4 +1,5 @@
 import CategoryPostsPage from "../../../page-components/categories/category-posts-page";
+import { getPostImageUrl } from "../../../constants/api-url";
 import { fetchCategoryBySlug } from "../../../utils/data";
 import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }) {
 
   const baseUrl = process.env.NEXTAUTH_URL;
   const firstPostImage = category?.posts?.[0]?.imageUrl
-    ? `${baseUrl}/uploads/posts/${category.posts[0].imageUrl}`
+    ? `${baseUrl}${getPostImageUrl(category.posts[0].imageUrl)}`
     : `${baseUrl}/uploads/default-category.jpg`;
 
   return generatePageMetadata({
@@ -56,7 +57,7 @@ export async function generateMetadata({ params }) {
     image: firstPostImage,
     images:
       category?.posts?.slice(0, 3).map((post) => ({
-        url: `${baseUrl}/uploads/posts/${post.imageUrl}`,
+        url: `${baseUrl}${getPostImageUrl(post.imageUrl)}`,
         width: 800,
         height: 600,
         alt: post.title,

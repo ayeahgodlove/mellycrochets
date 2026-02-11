@@ -25,13 +25,16 @@ import { TabsWrapper, TabPane } from "./tabs";
 export const Tabs = TabsWrapper;
 Tabs.TabPane = TabPane;
 export * from "./textarea";
+export * from "./upload";
+export * from "./steps";
 
 // Compatibility wrappers and additional components
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, X, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, X, Loader2 } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button as ShadcnButton } from "./button";
 import { Card as ShadcnCard, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./card";
@@ -121,13 +124,13 @@ export const Button = React.forwardRef(
       
       if (isExternal) {
         return (
-          <a className={buttonClasses} href={href} target={target} {...buttonProps}>
+          <a className={cn(buttonClasses, "inline-flex items-center justify-center gap-2")} href={href} target={target} {...buttonProps}>
             {content}
           </a>
         );
       }
       return (
-        <Link href={href} className={buttonClasses} {...buttonProps}>
+        <Link href={href} className={cn(buttonClasses, "inline-flex items-center justify-center gap-2")} {...buttonProps}>
           {content}
         </Link>
       );
@@ -215,14 +218,14 @@ export const Space = ({
   ...props
 }) => {
   const sizeMap = {
-    small: "gap-2",
-    middle: "gap-4",
-    large: "gap-6",
+    small: "gap-1.5",
+    middle: "gap-2",
+    large: "gap-3",
   };
   return (
     <div
       className={cn(
-        "flex",
+        "flex items-center",
         direction === "vertical" ? "flex-col" : "flex-row",
         wrap && "flex-wrap",
         align && `items-${align}`,
@@ -286,6 +289,22 @@ const FormWrapper = ({ children, onFinish, initialValues, form, layout, classNam
     }
   }, [form]);
 
+  // Update form values when initialValues change (but not during render)
+  useEffect(() => {
+    if (initialValues && Object.keys(initialValues).length > 0) {
+      // Only update if values are different to avoid unnecessary updates
+      setFormValues(prev => {
+        const hasChanges = Object.keys(initialValues).some(
+          key => prev[key] !== initialValues[key]
+        );
+        if (hasChanges) {
+          return { ...prev, ...initialValues };
+        }
+        return prev;
+      });
+    }
+  }, [initialValues]);
+
   const handleSubmit = (e) => {
     e?.preventDefault();
     const formData = new FormData(e.target);
@@ -294,8 +313,9 @@ const FormWrapper = ({ children, onFinish, initialValues, form, layout, classNam
       values[key] = value;
     }
     
-    // Merge with formValues for non-input fields
-    const allValues = { ...formValues, ...values };
+    // Merge formValues (Form.Item state), form instance (e.g. imageUrls set before submit), and FormData
+    const instanceValues = form?.getFieldsValue?.() ?? {};
+    const allValues = { ...formValues, ...instanceValues, ...values };
     
     // Validate all fields
     const newErrors = {};
@@ -343,30 +363,39 @@ const FormWrapper = ({ children, onFinish, initialValues, form, layout, classNam
   );
 };
 
-FormWrapper.Item = ({ label, name, rules, children, className, ...props }) => {
+FormWrapper.Item = ({ label, name, rules, children, className, valuePropName, noStyle, getValueFromEvent, getValueProps, trigger, validateTrigger, shouldUpdate, dependencies, initialValue, hidden, tooltip, ...rest }) => {
   const context = React.useContext(FormContext);
   const error = context?.errors?.[name];
+  const isFileList = valuePropName === "fileList";
+  const getValue = getValueFromEvent ?? ((e) => (e?.target ? e.target.value : e));
 
   const handleChange = (e) => {
-    const value = e.target.value;
+    const value = getValue(e);
     context?.updateFieldValue(name, value);
-    children.props.onChange?.(e);
+    children?.props?.onChange?.(e);
   };
 
+  const controlledValue = context?.formValues?.[name] ?? children?.props?.value ?? (isFileList ? [] : "");
+  const childProps = {
+    name,
+    id: name,
+    ...(isFileList ? { fileList: Array.isArray(controlledValue) ? controlledValue : controlledValue ? [controlledValue] : [] } : { value: controlledValue }),
+    onChange: handleChange,
+    className: cn(
+      children?.props?.className,
+      error && "border-red-500 focus:border-red-500 focus:ring-red-500"
+    ),
+  };
+
+  if (noStyle) {
+    return React.cloneElement(children, childProps);
+  }
+
   return (
-    <div className={cn("space-y-2", className)} {...props}>
+    <div className={cn("space-y-2", className)} {...rest}>
       {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
       <div>
-        {React.cloneElement(children, {
-          name,
-          id: name,
-          value: context?.formValues?.[name] || children.props.value || "",
-          onChange: handleChange,
-          className: cn(
-            children.props.className,
-            error && "border-red-500 focus:border-red-500 focus:ring-red-500"
-          ),
-        })}
+        {React.cloneElement(children, childProps)}
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
@@ -374,49 +403,270 @@ FormWrapper.Item = ({ label, name, rules, children, className, ...props }) => {
 };
 
 FormWrapper.useForm = () => {
-  const [formValues, setFormValues] = useState({});
-  const [errors, setErrors] = useState({});
+  // Refs only in the hook — no state here, so we never update the parent (e.g. CategoryEdit) during its render.
+  const valuesRef = useRef({});
   const internalStateRef = useRef(null);
   const internalErrorsRef = useRef(null);
-  
-  const formInstance = useMemo(() => ({
-    setFieldsValue: (values) => {
-      setFormValues(prev => {
-        const newValues = { ...prev, ...values };
-        // Also update internal state if connected
-        if (internalStateRef.current) {
-          internalStateRef.current(newValues);
+
+  const formInstance = useRef(null);
+  if (formInstance.current === null) {
+    formInstance.current = {
+      setFieldsValue: (values) => {
+        if (!values || typeof values !== "object") return;
+        valuesRef.current = { ...valuesRef.current, ...values };
+        const next = valuesRef.current;
+        const setState = internalStateRef.current;
+        if (setState) {
+          queueMicrotask(() => setState(next));
         }
-        return newValues;
-      });
-    },
-    getFieldsValue: () => formValues,
-    resetFields: () => {
-      setFormValues({});
-      setErrors({});
-      if (internalStateRef.current) {
-        internalStateRef.current({});
-      }
-      if (internalErrorsRef.current) {
-        internalErrorsRef.current({});
-      }
-    },
-    validateFields: () => Promise.resolve(),
-    submit: () => {},
-    _setInternalState: (setter) => {
-      internalStateRef.current = setter;
-    },
-    _setInternalErrors: (setter) => {
-      internalErrorsRef.current = setter;
-    },
-  }), [formValues]);
-  
+      },
+      getFieldsValue: () => valuesRef.current,
+      getFieldValue: (name) => {
+        const v = valuesRef.current;
+        if (name === undefined) return v;
+        return name in v ? v[name] : undefined;
+      },
+      resetFields: () => {
+        valuesRef.current = {};
+        internalStateRef.current?.({});
+        internalErrorsRef.current?.({});
+      },
+      validateFields: () => Promise.resolve(),
+      submit: () => {
+        const formElement = document.querySelector("form");
+        if (formElement) formElement.requestSubmit();
+      },
+      _setInternalState: (setter) => {
+        internalStateRef.current = setter;
+      },
+      _setInternalErrors: (setter) => {
+        internalErrorsRef.current = setter;
+      },
+    };
+  }
+
   return {
-    form: formInstance,
+    form: formInstance.current,
   };
 };
 
 export const Form = FormWrapper;
+
+// Ant Design–compatible Select (options, value, onChange) for use with Form.Item
+const SelectAnt = React.forwardRef(
+  (
+    {
+      options = [],
+      value,
+      onChange,
+      placeholder = "Select...",
+      size = "middle",
+      showSearch,
+      filterOption = true,
+      mode,
+      disabled,
+      className,
+      optionRender,
+      ...rest
+    },
+    ref
+  ) => {
+    const [search, setSearch] = useState("");
+    const [open, setOpen] = useState(false);
+    const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
+    const triggerRef = useRef(null);
+    const sizeClasses = { small: "h-8 text-sm", middle: "h-10 text-sm", large: "h-12 text-base" };
+    const isMultiple = mode === "multiple" || mode === "tags";
+    const valueArray = Array.isArray(value) ? value : value != null ? [value] : [];
+    const valueToKey = (v) => (typeof v === "object" && v !== null && v?.id != null ? v.id : v);
+    const filtered =
+      showSearch && search
+        ? options.filter((opt) => {
+            const label = (opt?.label ?? opt?.value ?? "").toString().toLowerCase();
+            return typeof filterOption === "function"
+              ? filterOption(search, { ...opt, label })
+              : label.includes(search.toLowerCase());
+          })
+        : options;
+
+    const toggleOption = (optValue) => {
+      const next = valueArray.includes(optValue)
+        ? valueArray.filter((v) => v !== optValue)
+        : [...valueArray, optValue];
+      onChange?.(next);
+    };
+
+    const displayLabel = (v) => {
+      if (v == null) return "";
+      const opt = options.find((o) => String(o.value) === String(v));
+      if (opt?.label != null) return String(opt.label);
+      if (typeof v === "object" && v !== null && "name" in v) return String(v.name ?? "");
+      return String(v);
+    };
+
+    const selectOption = (optValue) => {
+      if (isMultiple) toggleOption(optValue);
+      else {
+        onChange?.(optValue);
+        setOpen(false);
+      }
+    };
+
+    const openDropdown = () => {
+      if (disabled) return;
+      if (triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        setPosition({
+          top: rect.bottom,
+          left: rect.left,
+          width: rect.width,
+        });
+      }
+      setOpen(true);
+    };
+
+    const triggerContent = isMultiple ? (
+      valueArray.length ? (
+        <div className="flex flex-wrap gap-1">
+          {valueArray.map((v) => (
+            <span
+              key={valueToKey(v)}
+              className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-xs"
+            >
+              {displayLabel(v)}
+              <span
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer hover:text-red-600 ml-0.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  toggleOption(v);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleOption(v);
+                  }
+                }}
+              >
+                ×
+              </span>
+            </span>
+          ))}
+        </div>
+      ) : (
+        <span className="text-gray-500">{placeholder}</span>
+      )
+    ) : (
+      <span className={value != null && value !== "" ? "text-gray-900" : "text-gray-500"}>
+        {value != null && value !== "" ? displayLabel(value) : placeholder}
+      </span>
+    );
+
+    const dropdownContent =
+      open && typeof document !== "undefined"
+        ? createPortal(
+            <>
+              <div
+                className="fixed inset-0 z-[9998]"
+                aria-hidden
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setOpen(false);
+                }}
+              />
+              <div
+                className="fixed z-[9999] max-h-60 overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg py-1"
+                style={{
+                  top: position.top + 4,
+                  left: position.left,
+                  width: position.width,
+                  minWidth: 200,
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {showSearch && (
+                  <input
+                    type="text"
+                    className="w-full border-0 border-b border-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-0"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
+                {filtered.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-gray-500">No options</div>
+                ) : (
+                  filtered.map((opt) => (
+                    <div
+                      key={String(opt.value)}
+                      role="option"
+                      aria-selected={isMultiple ? valueArray.includes(opt.value) : value === opt.value}
+                      className={cn(
+                        "px-3 py-2 text-sm cursor-pointer hover:bg-gray-50",
+                        (isMultiple ? valueArray.includes(opt.value) : value === opt.value) && "bg-red-50 text-red-800"
+                      )}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        selectOption(opt.value);
+                      }}
+                    >
+                      {optionRender ? optionRender({ data: opt }) : opt.label}
+                    </div>
+                  ))
+                )}
+              </div>
+            </>,
+            document.body
+          )
+        : null;
+
+    return (
+      <div className={cn("relative w-full", className)} ref={ref}>
+        <div
+          ref={triggerRef}
+          role="button"
+          tabIndex={disabled ? undefined : 0}
+          aria-expanded={open}
+          aria-haspopup="listbox"
+          className={cn(
+            "min-h-[2.5rem] w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-left focus:ring-2 focus:ring-red-500/20 focus:border-red-500 flex items-center justify-between gap-2",
+            sizeClasses[size],
+            disabled && "opacity-60 cursor-not-allowed bg-gray-50 pointer-events-none"
+          )}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openDropdown();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openDropdown();
+            }
+          }}
+        >
+          {triggerContent}
+          <ChevronDown className="h-4 w-4 shrink-0 text-gray-500" />
+        </div>
+        {dropdownContent}
+      </div>
+    );
+  }
+);
+SelectAnt.displayName = "Select";
+
+// Re-export Radix subcomponents as Select.*; override default export to Ant-compatible Select
+import * as SelectPrimitive from "./select";
+export const Select = SelectAnt;
+export const SelectTrigger = SelectPrimitive.SelectTrigger;
+export const SelectContent = SelectPrimitive.SelectContent;
+export const SelectItem = SelectPrimitive.SelectItem;
+export const SelectValue = SelectPrimitive.SelectValue;
 
 // Input compatibility
 export const Input = React.forwardRef(({ prefix, suffix, className, value, size = "middle", ...props }, ref) => {
@@ -468,6 +718,204 @@ Input.TextArea = React.forwardRef(({ className, rows = 3, value, ...props }, ref
   );
 });
 Input.TextArea.displayName = "Input.TextArea";
+
+// InputNumber component
+export const InputNumber = React.forwardRef(
+  (
+    {
+      value,
+      onChange,
+      min,
+      max,
+      step = 1,
+      precision,
+      disabled,
+      readOnly,
+      size = "middle",
+      className,
+      style,
+      placeholder,
+      prefix,
+      suffix,
+      formatter,
+      parser,
+      ...props
+    },
+    ref
+  ) => {
+    const [internalValue, setInternalValue] = useState(value ?? "");
+    const inputRef = useRef(null);
+
+    // Sync with external value
+    useEffect(() => {
+      if (value !== undefined && value !== internalValue) {
+        setInternalValue(value);
+      }
+    }, [value]);
+
+    const sizeClasses = {
+      small: "h-8 text-sm",
+      middle: "h-10 text-sm",
+      large: "h-12 text-base",
+    };
+
+    const formatValue = (val) => {
+      if (val === "" || val === null || val === undefined) return "";
+      let num = typeof val === "string" ? parseFloat(val) : val;
+      if (isNaN(num)) return "";
+      if (min !== undefined && num < min) num = min;
+      if (max !== undefined && num > max) num = max;
+      if (precision !== undefined) {
+        num = parseFloat(num.toFixed(precision));
+      }
+      return formatter ? formatter(num) : num;
+    };
+
+    const parseValue = (val) => {
+      if (val === "" || val === null || val === undefined) return undefined;
+      const parsed = parser ? parser(val) : parseFloat(val);
+      return isNaN(parsed) ? undefined : parsed;
+    };
+
+    const handleChange = (e) => {
+      const inputValue = e.target.value;
+      if (inputValue === "" || inputValue === "-") {
+        setInternalValue(inputValue);
+        onChange?.(undefined);
+        return;
+      }
+      const parsed = parseValue(inputValue);
+      if (parsed !== undefined) {
+        const formatted = formatValue(parsed);
+        setInternalValue(formatted);
+        onChange?.(parsed);
+      } else {
+        setInternalValue(inputValue);
+      }
+    };
+
+    const handleBlur = () => {
+      const parsed = parseValue(internalValue);
+      if (parsed !== undefined) {
+        const formatted = formatValue(parsed);
+        setInternalValue(formatted);
+        onChange?.(parsed);
+      } else {
+        setInternalValue("");
+        onChange?.(undefined);
+      }
+    };
+
+    const increment = () => {
+      const current = parseValue(internalValue) ?? min ?? 0;
+      const newValue = current + step;
+      const formatted = formatValue(newValue);
+      setInternalValue(formatted);
+      onChange?.(newValue);
+    };
+
+    const decrement = () => {
+      const current = parseValue(internalValue) ?? min ?? 0;
+      const newValue = current - step;
+      const formatted = formatValue(newValue);
+      setInternalValue(formatted);
+      onChange?.(newValue);
+    };
+
+    const canIncrement = max === undefined || (parseValue(internalValue) ?? min ?? 0) < max;
+    const canDecrement = min === undefined || (parseValue(internalValue) ?? min ?? 0) > min;
+
+    return (
+      <div
+        className={cn("relative flex items-center w-full", className)}
+        style={style}
+      >
+        {prefix && (
+          <span className="absolute left-3 z-10 text-gray-500 text-sm">
+            {prefix}
+          </span>
+        )}
+        <div className="relative flex items-center w-full">
+          <button
+            type="button"
+            onClick={decrement}
+            disabled={disabled || readOnly || !canDecrement}
+            className={cn(
+              "absolute left-1 z-10 w-6 h-6 flex items-center justify-center rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              sizeClasses[size]
+            )}
+            tabIndex={-1}
+          >
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20 12H4"
+              />
+            </svg>
+          </button>
+          <ShadcnInput
+            ref={ref || inputRef}
+            type="text"
+            inputMode="decimal"
+            value={internalValue}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            disabled={disabled}
+            readOnly={readOnly}
+            placeholder={placeholder}
+            className={cn(
+              sizeClasses[size] || sizeClasses.middle,
+              "text-center pr-8 pl-8",
+              prefix && "pl-10",
+              suffix && "pr-10",
+              "border-gray-200 focus:border-red-500 focus:ring-red-500/20"
+            )}
+            {...props}
+          />
+          <button
+            type="button"
+            onClick={increment}
+            disabled={disabled || readOnly || !canIncrement}
+            className={cn(
+              "absolute right-1 z-10 w-6 h-6 flex items-center justify-center rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              sizeClasses[size]
+            )}
+            tabIndex={-1}
+          >
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
+        </div>
+        {suffix && (
+          <span className="absolute right-3 text-gray-500 text-sm">
+            {suffix}
+          </span>
+        )}
+      </div>
+    );
+  }
+);
+InputNumber.displayName = "InputNumber";
 
 // Typography component
 export const Typography = {
@@ -652,14 +1100,14 @@ export const Table = ({ dataSource, children, rowKey, pagination, loading, colum
 
   return (
     <div className="space-y-4" {...props}>
-      <div className="w-full overflow-auto rounded-lg bg-card shadow-sm">
+      <div className="w-full overflow-auto rounded-xl bg-white border border-gray-200 shadow-sm">
         <ShadcnTable>
           <TableHeader>
-            <TableRow className="hover:bg-transparent">
+            <TableRow className="hover:bg-transparent border-b border-gray-200">
               {columns.map((col, colIndex) => (
                 <TableHead 
                   key={col.key || col.dataIndex || col.title || `col-${colIndex}`}
-                  className="h-12 font-semibold"
+                  className="h-12 px-4 font-semibold text-gray-900 bg-gray-50/50"
                 >
                   {col.title}
                 </TableHead>
@@ -682,13 +1130,13 @@ export const Table = ({ dataSource, children, rowKey, pagination, loading, colum
                 return (
                   <TableRow 
                     key={resolvedRowKey(record, index)}
-                    className="transition-colors hover:bg-muted/30 even:bg-muted/10 cursor-pointer"
+                    className="transition-all duration-150 hover:bg-gray-50/50 even:bg-gray-50/20 border-b border-gray-100 hover:shadow-sm"
                     {...rowProps}
                   >
                     {columns.map((col, colIndex) => (
                       <TableCell 
                         key={col.key || col.dataIndex || col.title || `cell-${index}-${colIndex}`}
-                        className="px-4 py-3"
+                        className="px-4 py-3.5 text-sm text-gray-700"
                       >
                         {col.render
                           ? col.render(record?.[col.dataIndex], record, index)
@@ -711,30 +1159,43 @@ export const Table = ({ dataSource, children, rowKey, pagination, loading, colum
         </ShadcnTable>
       </div>
       {pagination && pagination !== false && (pagination.current || pagination.total || pagination.onChange) ? (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button
-            size="small"
-            type="default"
-            onClick={() => pagination.onChange?.((pagination.current || 1) - 1, pagination.pageSize)}
-            disabled={(pagination.current || 1) <= 1}
-          >
-            Previous
-          </Button>
-          <span className="text-gray-600">
-            Page {pagination.current || 1} of{" "}
-            {Math.max(1, Math.ceil((pagination.total || 0) / (pagination.pageSize || rows.length || 1)))}
-          </span>
-          <Button
-            size="small"
-            type="default"
-            onClick={() => pagination.onChange?.((pagination.current || 1) + 1, pagination.pageSize)}
-            disabled={
-              (pagination.current || 1) >=
-              Math.max(1, Math.ceil((pagination.total || 0) / (pagination.pageSize || rows.length || 1)))
-            }
-          >
-            Next
-          </Button>
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="text-sm text-gray-600 font-medium">
+            Showing <span className="font-semibold text-gray-900">{((pagination.current || 1) - 1) * (pagination.pageSize || 10) + 1}</span> to{" "}
+            <span className="font-semibold text-gray-900">
+              {Math.min((pagination.current || 1) * (pagination.pageSize || 10), pagination.total || 0)}
+            </span>{" "}
+            of <span className="font-semibold text-gray-900">{pagination.total || 0}</span> results
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              size="small"
+              type="default"
+              onClick={() => pagination.onChange?.((pagination.current || 1) - 1, pagination.pageSize)}
+              disabled={(pagination.current || 1) <= 1}
+              className="h-8 px-3 text-xs bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 hover:border-gray-400 rounded-md font-medium transition-all duration-200 shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </Button>
+            <div className="flex items-center gap-1 px-3 py-1 bg-white rounded-md border border-gray-300">
+              <span className="text-xs font-semibold text-gray-700">
+                Page {pagination.current || 1} of{" "}
+                {Math.max(1, Math.ceil((pagination.total || 0) / (pagination.pageSize || rows.length || 1)))}
+              </span>
+            </div>
+            <Button
+              size="small"
+              type="default"
+              onClick={() => pagination.onChange?.((pagination.current || 1) + 1, pagination.pageSize)}
+              disabled={
+                (pagination.current || 1) >=
+                Math.max(1, Math.ceil((pagination.total || 0) / (pagination.pageSize || rows.length || 1)))
+              }
+              className="h-8 px-3 text-xs bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 hover:border-gray-400 rounded-md font-medium transition-all duration-200 shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </Button>
+          </div>
         </div>
       ) : null}
     </div>

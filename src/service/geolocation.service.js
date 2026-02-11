@@ -1,15 +1,17 @@
 import axios from "axios";
 
-// utils/getGeolocation.ts
+/**
+ * Resolve country code via our API proxy to avoid CORS (geolocation-db.com does not allow browser origins).
+ */
 export const getGeolocation = async () => {
   try {
-    const response = await axios.get(
-      `https://geolocation-db.com/json/f2431d4f714497`
-    );
-    const data = await response.data;
-    return data.country_code; // Return country code
+    const response = await axios.get("/api/geolocation");
+    const data = response.data;
+    return data.country_code ?? null;
   } catch (error) {
-    console.error("Geolocation fetch error:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Geolocation (using default currency):", error?.message || error);
+    }
     return null;
   }
 };

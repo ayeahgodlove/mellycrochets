@@ -8,7 +8,7 @@ import {
   Tooltip,
   message,
 } from "@/components/ui";
-import { MessageCircle, Minus, Plus } from "lucide-react";
+import { MessageCircle, Minus, Plus, Package } from "lucide-react";
 import CustomImage from "../../../components/shared/custom-image.component";
 import { useCart } from "../../../hooks/cart.hook";
 import { allColors, allSizes } from "../../../constants/constant";
@@ -264,24 +264,24 @@ const CrochetDetail = ({ crochet }) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
                   type="primary"
                   onClick={handleAddToCart}
                   loading={loadingAddToCart}
                   size="lg"
-                  className="h-12 rounded-lg font-semibold"
+                  className="flex-1 h-12 rounded-lg font-semibold bg-red-800 hover:bg-red-900 text-white shadow-md hover:shadow-lg transition-all"
                   icon={<Plus size={18} />}
                 >
                   Place Order
                 </Button>
                 <Button
-                  type="outline"
+                  type="default"
                   href={`https://wa.me/237681077051?text=${text}`}
                   target="_blank"
                   size="lg"
-                  className="h-12 rounded-lg font-semibold border-red-300 text-red-800 hover:bg-red-50"
-                  icon={<MessageCircle size={18} />}
+                  className="flex-1 h-12 rounded-lg font-semibold border-2 border-red-300 text-red-800 hover:bg-red-50 hover:border-red-900 transition-all bg-white"
+                  icon={<MessageCircle size={18} className="text-red-800" />}
                 >
                   Contact Seller
                 </Button>
@@ -291,30 +291,35 @@ const CrochetDetail = ({ crochet }) => {
         </div>
 
         {/* Product Details Section */}
-        <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 md:p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Product Details</h2>
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <div className="space-y-1">
-                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Crochet Name</dt>
-                <dd className="text-base font-semibold text-gray-900">{crochet.name}</dd>
+        <div className="mt-8 bg-white rounded-xl shadow-lg border-0 overflow-hidden">
+          <div className="bg-gradient-to-r from-red-900 to-red-800 px-6 py-4">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Package size={24} />
+              Product Details
+            </h2>
+          </div>
+          <div className="p-6 md:p-8 bg-white">
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              <div className="space-y-2 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Crochet Name</dt>
+                <dd className="text-lg font-bold text-gray-900">{crochet.name}</dd>
               </div>
-              <div className="space-y-1">
-                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Crochet Design</dt>
-                <dd className="text-base font-semibold text-gray-900">{crochet?.crochetType?.name}</dd>
+              <div className="space-y-2 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Crochet Design</dt>
+                <dd className="text-lg font-bold text-gray-900">{crochet?.crochetType?.name}</dd>
               </div>
-              <div className="space-y-1 md:col-span-2">
-                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Description</dt>
+              <div className="space-y-2 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors md:col-span-2">
+                <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</dt>
                 <dd className="text-base text-gray-700 leading-relaxed">{crochet.description}</dd>
               </div>
-              <div className="space-y-1">
-                <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Price</dt>
-                <dd className="text-xl font-bold text-red-800">{convertedPrice}</dd>
+              <div className="space-y-2 p-4 rounded-lg bg-red-50 border border-red-100">
+                <dt className="text-xs font-semibold text-red-600 uppercase tracking-wider">Price</dt>
+                <dd className="text-2xl font-bold text-red-800">{convertedPrice}</dd>
               </div>
               {crochet.color && (
-                <div className="space-y-1">
-                  <dt className="text-sm font-medium text-gray-500 uppercase tracking-wide">Color</dt>
-                  <dd className="text-base font-semibold text-gray-900">{crochet.color}</dd>
+                <div className="space-y-2 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <dt className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Color</dt>
+                  <dd className="text-lg font-bold text-gray-900">{crochet.color}</dd>
                 </div>
               )}
             </dl>
@@ -323,12 +328,10 @@ const CrochetDetail = ({ crochet }) => {
       </section>
 
       {/* Reviews Section */}
-      <section className="bg-gray-50 py-12 md:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
           <ReviewCreate crochetId={crochet.id} />
-          <div className="mt-8">
-            <ReviewList crochetId={crochet.id} />
-          </div>
+          <ReviewList crochetId={crochet.id} />
         </div>
       </section>
     </>

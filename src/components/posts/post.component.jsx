@@ -1,4 +1,4 @@
-import { API_URL_UPLOADS_POSTS } from "../../constants/api-url";
+import { getPostImageUrl } from "../../constants/api-url";
 import Link from "next/link";
 import React from "react";
 
@@ -9,7 +9,7 @@ const AppPost = ({ post }) => {
       className="bg-white shadow-lg rounded-xl flex flex-col items-center"
     >
       <img
-        src={`${API_URL_UPLOADS_POSTS}/${post.imageUrl}`}
+        src={getPostImageUrl(post.imageUrl)}
         alt={post.title}
         className=" mb-4 object-cover rounded-tl-xl rounded-tr-xl"
         style={{

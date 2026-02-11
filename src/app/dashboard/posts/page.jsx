@@ -1,9 +1,10 @@
 "use client";
 
 import PageBreadCrumbs from "../../../components/page-breadcrumb/page-breadcrumb.component";
-import { API_URL_UPLOADS_POSTS } from "../../../constants/api-url";
+import { getPostImageUrl } from "../../../constants/api-url";
 import {
   // DateField,
+  CreateButton,
   DeleteButton,
   EditButton,
   List,
@@ -19,31 +20,49 @@ export default function BlogPostList() {
     syncWithLocation: true,
   });
 
-  const { data: categoryData, isLoading: categoryIsLoading } = useMany({
+  const categoryIds = tableProps?.dataSource
+    ? [...new Set(
+        tableProps.dataSource
+          .map((item) => item?.categoryId ?? item?.category?.id)
+          .filter(Boolean)
+      )]
+    : [];
+
+  const tagIds = tableProps?.dataSource
+    ? [...new Set(
+        tableProps.dataSource.flatMap((item) =>
+          (item?.tags ?? []).map((t) => (typeof t === "object" && t?.id != null ? t.id : t))
+        ).filter(Boolean)
+      )]
+    : [];
+
+  const { result: categoryResult, query: categoryQuery } = useMany({
     resource: "categories",
-    ids:
-      tableProps?.dataSource
-        ?.map((item) => item?.category?.id)
-        .filter(Boolean) ?? [],
+    ids: categoryIds,
     queryOptions: {
-      enabled: !!tableProps?.dataSource,
+      enabled: categoryIds.length > 0,
     },
   });
 
-  const { data: tagsData, isLoading: tagsIsLoading } = useMany({
+  const { result: tagsResult, query: tagsQuery } = useMany({
     resource: "tags",
-    ids:
-      tableProps?.dataSource
-        ?.flatMap((item) => item?.tags?.map((tag) => tag.id))
-        .filter(Boolean) ?? [],
+    ids: tagIds,
     queryOptions: {
-      enabled: !!tableProps?.dataSource,
+      enabled: tagIds.length > 0,
     },
   });
+
+  const categoryList = categoryResult?.data ?? [];
+  const tagsList = tagsResult?.data ?? [];
+  const categoryIsLoading = categoryQuery?.isFetching ?? false;
+  const tagsIsLoading = tagsQuery?.isFetching ?? false;
 
   return (
     <>
       <PageBreadCrumbs items={["Blog Posts", "Lists"]} />
+      <div className="mb-4 flex justify-end">
+        <CreateButton />
+      </div>
       <List>
         <Table {...tableProps} rowKey="id">
           <Table.Column
@@ -59,7 +78,7 @@ export default function BlogPostList() {
             title={"Image"}
             render={(value, record) => (
               <Image
-                src={`${API_URL_UPLOADS_POSTS}/${record.imageUrl}`}
+                src={getPostImageUrl(record?.imageUrl)}
                 alt={record?.title}
                 width={80}
               />
@@ -68,30 +87,33 @@ export default function BlogPostList() {
           <Table.Column
             dataIndex={"categoryId"}
             title={"Category"}
-            render={(value) =>
-              categoryIsLoading ? (
-                <>Loading...</>
-              ) : categoryData ? (
-                categoryData.data.find((item) => item.id === value)?.name
-              ) : (
-                "Not found"
-              )
-            }
+            render={(value, record) => {
+              if (categoryIsLoading) return <>Loading...</>;
+              const name =
+                record?.category?.name ??
+                categoryList.find((c) => String(c.id) === String(value))?.name;
+              return name ?? value ?? "-";
+            }}
           />
           <Table.Column
             dataIndex="tags"
             title={"Tags"}
             render={(value) => {
               if (tagsIsLoading) return <>Loading...</>;
-              if (!value || !tagsData) return "-";
+              const list = Array.isArray(value) ? value : [];
+              if (list.length === 0) return "-";
 
               return (
                 <Space size={[0, 8]} wrap>
-                  {value.map((tag) => {
-                    const tagInfo = tagsData.data.find((t) => t.id === tag.id);
+                  {list.map((tag) => {
+                    const tagId = typeof tag === "object" && tag?.id != null ? tag.id : tag;
+                    const name =
+                      (typeof tag === "object" && tag?.name != null)
+                        ? tag.name
+                        : tagsList.find((t) => String(t.id) === String(tagId))?.name;
                     return (
-                      <Tag size="small" key={tag.id} color={"red"}>
-                        {tagInfo?.name || tag.id}
+                      <Tag size="small" key={tagId} color={"red"}>
+                        {name ?? tagId}
                       </Tag>
                     );
                   })}

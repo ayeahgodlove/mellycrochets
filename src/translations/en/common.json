@@ -135,6 +135,8 @@
   "notifications": {
     "createError": "Transaction Failed!",
     "createSuccess": "Transaction completed successfully!",
+    "editSuccess": "Successfully updated!",
+    "editError": "Update failed.",
     "success": "Success",
     "error": "Error",
     "deleteSuccess": "Successfully Deleted"
@@ -206,6 +208,15 @@
       "create": "Create Subscriber",
       "edit": "Edit Subscriber",
       "show": "Show Subscriber"
+    }
+  },
+  "contacts": {
+    "contacts": "Contacts",
+    "titles": {
+      "list": "List Contacts",
+      "create": "Create Contact",
+      "edit": "Edit Contact",
+      "show": "Show Contact"
     }
   },
   "media": {

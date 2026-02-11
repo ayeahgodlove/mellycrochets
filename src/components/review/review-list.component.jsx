@@ -3,6 +3,7 @@ import { useList } from "@refinedev/core";
 import { Card, Rate, Skeleton, Avatar, Typography, Empty } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { format } from "../../lib/format";
+import { MessageSquare, User } from "lucide-react";
 
 export const ReviewList = ({ crochetId }) => {
   const t = useTranslations("customer_detail");
@@ -11,59 +12,95 @@ export const ReviewList = ({ crochetId }) => {
   });
 
   if (isLoading) {
-    return <Skeleton active />;
+    return (
+      <Card className="shadow-xl border-0 p-6">
+        <Skeleton active paragraph={{ rows: 4 }} />
+      </Card>
+    );
   }
   const reviews = data?.data ?? [];
 
   const crochetReviews = reviews.filter((d) => d.crochetId === crochetId);
 
   return (
-    <div className="mt-10">
-      <h3 className="text-lg font-semibold mb-4">Customer Reviews</h3>
-      {crochetReviews && crochetReviews.length > 0 ? (
-        crochetReviews.map((review) => {
-          const user = review.user;
-          return (
-            <Card
-              key={review.id}
-              style={{ marginBottom: 10 }}
-              className="mb-4 shadow-sm"
-            >
-              <div className="flex items-center mb-2">
-                {user ? (
-                  <Avatar
-                    src={review.user.image}
-                    size={"large"}
-                    style={{ width: 60, height: 60 }}
-                  >
-                    {review.user.username[0]}
-                  </Avatar>
-                ) : (
-                  <Avatar style={{ backgroundColor: "#fde3cf" }}>
-                    <Typography.Title
-                      level={5}
-                      style={{ marginBottom: 0, color: "#f56a00" }}
-                    >
-                      {format.initials(review.username)}
-                    </Typography.Title>
-                  </Avatar>
-                )}
-                <div className="ml-3">
-                  <Typography.Title level={5} className="text-sm font-medium">
-                    {review.username}
-                  </Typography.Title>
-                  <Rate disabled defaultValue={review.rating} />
+    <Card className="shadow-xl border-0 overflow-hidden p-0 bg-white">
+      <div className="bg-gradient-to-r from-red-900 to-red-800 px-6 py-4">
+        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <MessageSquare size={24} />
+          {t("reviewListTitle")}
+          {crochetReviews.length > 0 && (
+            <span className="ml-auto text-white/90 text-sm font-normal">
+              {crochetReviews.length} {crochetReviews.length === 1 ? "review" : "reviews"}
+            </span>
+          )}
+        </h3>
+      </div>
+      <div className="p-6 md:p-8 bg-white">
+        {crochetReviews && crochetReviews.length > 0 ? (
+          <div className="space-y-6">
+            {crochetReviews.map((review) => {
+              const user = review.user;
+              return (
+                <div
+                  key={review.id}
+                  className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-4">
+                    {user ? (
+                      <Avatar
+                        src={review.user?.image}
+                        size={56}
+                        className="flex-shrink-0 border-2 border-white shadow-sm"
+                      >
+                        {review.user?.username?.[0]?.toUpperCase() || <User size={24} />}
+                      </Avatar>
+                    ) : (
+                      <Avatar 
+                        size={56}
+                        className="flex-shrink-0 border-2 border-white shadow-sm bg-gradient-to-br from-orange-200 to-orange-300"
+                      >
+                        <span className="text-orange-700 font-bold text-lg">
+                          {format.initials(review.username)}
+                        </span>
+                      </Avatar>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-4 mb-2">
+                        <div>
+                          <Typography.Title 
+                            level={5} 
+                            className="!mb-1 !text-base font-bold text-gray-900"
+                          >
+                            {review.username || "Anonymous"}
+                          </Typography.Title>
+                          <Rate 
+                            disabled 
+                            defaultValue={review.rating} 
+                            className="text-sm"
+                          />
+                        </div>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed mt-3 text-base">
+                        {review.comment}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <p className="ml-5 text-gray-700">{review.comment}</p>
-            </Card>
-          );
-        })
-      ) : (
-        <Empty
-          description={<Typography.Title>{t("noDataMsg")}</Typography.Title>}
-        />
-      )}
-    </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="py-12">
+            <Empty
+              description={
+                <Typography.Text className="text-gray-500 text-lg">
+                  {t("noDataMsg")}
+                </Typography.Text>
+              }
+            />
+          </div>
+        )}
+      </div>
+    </Card>
   );
 };

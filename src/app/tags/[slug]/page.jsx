@@ -1,4 +1,5 @@
 import TagPostsPage from "../../../page-components/tags/tag-posts-page";
+import { getPostImageUrl } from "../../../constants/api-url";
 import { fetchTagBySlug } from "../../../utils/data";
 import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
@@ -48,11 +49,11 @@ export async function generateMetadata({ params }) {
 
     // Media
     image: tag.posts[0]?.imageUrl
-      ? `${process.env.NEXTAUTH_URL}/uploads/posts/${tag.posts[0].imageUrl}`
+      ? `${process.env.NEXTAUTH_URL}${getPostImageUrl(tag.posts[0].imageUrl)}`
       : `${process.env.NEXTAUTH_URL}/uploads/default-tag.jpg`,
     images:
       tag.posts?.slice(0, 3).map((post) => ({
-        url: `${process.env.NEXTAUTH_URL}/uploads/posts/${post.imageUrl}`,
+        url: `${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`,
         width: 800,
         height: 600,
         alt: post.title,

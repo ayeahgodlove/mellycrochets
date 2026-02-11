@@ -143,6 +143,8 @@
   "notifications": {
     "createError": "Transaction échouée !",
     "createSuccess": "Transaction réussie !",
+    "editSuccess": "Modification réussie !",
+    "editError": "Échec de la modification.",
     "success": "Succès",
     "error": "Erreur",
     "deleteSuccess": "Supprimé avec succès"

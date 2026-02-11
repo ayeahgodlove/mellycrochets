@@ -8,11 +8,13 @@ import { Form } from "@/components/ui";
 
 export default function CrochetEdit() {
   const { formProps, saveButtonProps } = useForm({});
-  const { queryResult: crochetTypeData } = useSelect({
+  const { query: crochetTypeQuery } = useSelect({
     resource: "crochet_types",
+    optionLabel: "name",
+    optionValue: "id",
   });
 
-  const crochetTypes = crochetTypeData.data;
+  const crochetTypes = crochetTypeQuery?.data?.data ?? crochetTypeQuery?.data ?? [];
   return (
     <>
       <PageBreadCrumbs items={["Crochets", "Lists", "Edit"]} />

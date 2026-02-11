@@ -11,6 +11,7 @@ import { GrUserSettings, GrDashboard  } from "react-icons/gr";
 import { FaUserShield } from "react-icons/fa";
 import { FaUsersViewfinder } from "react-icons/fa6";
 import { BiCategory } from "react-icons/bi";
+import { MdOutlineContactMail } from "react-icons/md";
 // import { RiFolderHistoryLine, RiSecurePaymentLine } from "react-icons/ri";
 
 export const useMenu = () => {
@@ -97,6 +98,17 @@ export const useMenu = () => {
         canAccess: ["admin"],
       },
       icon: <FaUsersViewfinder />,
+    },
+    {
+      name: "contacts",
+      list: "/dashboard/contacts",
+      create: "/dashboard/contacts/create",
+      edit: "/dashboard/contacts/edit/:id",
+      show: "/dashboard/contacts/show/:id",
+      meta: {
+        canAccess: ["admin"],
+      },
+      icon: <MdOutlineContactMail />,
     },
     {
       name: "configurations",

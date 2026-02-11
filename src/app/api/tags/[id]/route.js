@@ -1,6 +1,6 @@
 import { TagRequestDto } from "../../../../data/dtos/tag-request.dto";
 import { TagRepository } from "../../../../data/repositories/tag.repository";
-import { displayValidationErrors } from "../../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../../lib/displayValidationErrors";
 import { validate } from "class-validator";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
@@ -39,7 +39,7 @@ export async function PATCH(req, { params }) {
 
   try {
     const dto = new TagRequestDto(await req.json());
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
 
     if (validationErrors.length > 0) {
       return NextResponse.json(

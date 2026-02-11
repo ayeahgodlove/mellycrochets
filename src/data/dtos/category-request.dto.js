@@ -1,6 +1,7 @@
 // src/presentation/dtos/category-request.dto.ts
 
 import { nanoid } from "nanoid";
+import slugify from "slugify";
 import { emptyCategory } from "../models";
 
 class CategoryRequestDto {
@@ -15,6 +16,7 @@ class CategoryRequestDto {
       ...emptyCategory,
       id: nanoid(10),
       name: this.name,
+      slug: slugify(this.name ?? "", { lower: true, strict: true }),
     };
   }
 

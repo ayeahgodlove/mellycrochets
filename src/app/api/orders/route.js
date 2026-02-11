@@ -2,7 +2,7 @@ import { validate } from "class-validator";
 import { NextResponse } from "next/server";
 import { OrderRepository } from "../../../data/repositories/order.repository";
 import { OrderRequestDto } from "../../../data/dtos/order-request.dto";
-import { displayValidationErrors } from "../../../lib/displayValidationErrors";
+import { displayValidationErrors, VALIDATION_OPTIONS } from "../../../lib/displayValidationErrors";
 // import authOptions from "../../../lib/options";
 // import { getServerSession } from "next-auth";
 
@@ -31,7 +31,7 @@ export async function POST(request) {
     const body = await request.json();
     const dto = new OrderRequestDto(body);
 
-    const validationErrors = await validate(dto);
+    const validationErrors = await validate(dto, VALIDATION_OPTIONS);
     if (validationErrors.length > 0) {
       return NextResponse.json(
         {
