@@ -1,6 +1,6 @@
 "use client";
 
-import PageBreadCrumbs from "../../../../../../components/page-breadcrumb/page-breadcrumb.component";
+import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
 import { Edit, useForm } from '@/components/refine';
 import { Card, Form, Input } from '@/components/ui';
 

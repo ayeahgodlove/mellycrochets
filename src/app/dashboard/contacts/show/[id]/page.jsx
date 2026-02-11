@@ -1,10 +1,10 @@
 "use client";
 
-import PageBreadCrumbs from "../../../../../../components/page-breadcrumb/page-breadcrumb.component";
+import PageBreadCrumbs from "../../../../../components/page-breadcrumb/page-breadcrumb.component";
 import { EditButton, Show } from '@/components/refine';
 import { useShow } from "@refinedev/core";
 import { Card, Descriptions, Space } from '@/components/ui';
-import { format } from "../../../../../../lib/format";
+import { format } from "../../../../../lib/format";
 
 export default function ContactShow() {
   const { query } = useShow({});
