@@ -4,7 +4,7 @@ import CrochetListWrapper from "../../components/pages/home/list-wrapper.compone
 import ViewMoreButton from "../../components/pages/home/view-more-button.component";
 import SignupPrompt from "../../components/signup/signup.component";
 
-const HomePage = ({ t }) => {
+const HomePage = ({ t, heroImages = [] }) => {
   return (
     <>
       <HeroSection
@@ -14,6 +14,7 @@ const HomePage = ({ t }) => {
         description={t("heroDescription")}
         primaryCtaLabel={t("heroPrimaryCta")}
         secondaryCtaLabel={t("heroSecondaryCta")}
+        heroImages={heroImages}
       />
 
       <section id="listing" className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-8 md:py-12" data-aos="fade-up">

@@ -1,21 +1,26 @@
+import { headers } from "next/headers";
 import CrochetList from "../../crochet/crochet-list.component";
 import { CrochetRepository } from "../../../data/repositories/crochet.repository";
 
 const crochetRepository = new CrochetRepository();
 
-const getBaseUrl = () =>
-  process.env.NEXTAUTH_URL || "http://localhost:3000";
+async function getBaseUrl() {
+  try {
+    const h = await headers();
+    const host = h.get("host") || h.get("x-forwarded-host");
+    const proto = h.get("x-forwarded-proto") || "http";
+    if (host) return `${proto}://${host}`;
+  } catch (_) {}
+  return process.env.NEXTAUTH_URL || "http://localhost:3000";
+}
 
 function buildFilterQuery(filterParams) {
   if (!filterParams || typeof filterParams !== "object") return null;
-  const { name, crochetTypeId, sizeId } = filterParams;
+  const { name, crochetTypeId } = filterParams;
   const params = new URLSearchParams();
   if (name != null && String(name).trim() !== "") params.set("name", name.trim());
   if (crochetTypeId != null && String(crochetTypeId).trim() !== "") {
     params.set("crochetTypeId", crochetTypeId.trim());
-  }
-  if (sizeId != null && String(sizeId).trim() !== "") {
-    params.set("sizeId", sizeId.trim());
   }
   return params.toString() || null;
 }
@@ -25,7 +30,7 @@ export default async function CrochetListWrapper({ filterParams }) {
     const query = buildFilterQuery(filterParams);
 
     if (query) {
-      const base = getBaseUrl();
+      const base = await getBaseUrl();
       const res = await fetch(`${base}/api/crochets/filter?${query}`, {
         cache: "no-store",
       });

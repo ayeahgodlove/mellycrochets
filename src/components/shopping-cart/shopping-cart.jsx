@@ -1,23 +1,41 @@
 "use client";
 
 import {
-  Avatar,
   Badge,
   Button,
   List,
   message,
   Popover,
-  Space,
   Typography,
 } from "@/components/ui";
 import { ShoppingCart as ShoppingCartIcon, Trash2, Plus, Minus } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { API_URL_UPLOADS_CROCHETS } from "../../constants/api-url";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { format } from "../../lib/format";
 import { useCart } from "../../hooks/cart.hook";
 import { CURRENCY } from "../../constants/constant";
-import { cn } from "@/lib/utils";
+
+function CartItemThumbnail({ src, alt, className }) {
+  const [error, setError] = useState(false);
+  const fallback = alt ? alt.charAt(0).toUpperCase() : "?";
+  if (error || !src) {
+    return (
+      <div className={cn(className, "flex items-center justify-center bg-gray-200 text-gray-600 text-lg font-semibold")}>
+        {fallback}
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt || ""}
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+}
 
 const ShoppingCart = ({ cartCount = 0, cartItems: initialCartItems = [], onCartUpdate }) => {
   const [popovervisible, setPopovervisible] = useState(false);
@@ -25,26 +43,25 @@ const ShoppingCart = ({ cartCount = 0, cartItems: initialCartItems = [], onCartU
   const { removeCrochet, updateQuantity, loadCartCrochets } = useCart();
   const [cartItems, setCartItems] = useState(initialCartItems);
   const [updatingItems, setUpdatingItems] = useState(new Set());
+  const onCartUpdateRef = useRef(onCartUpdate);
+  onCartUpdateRef.current = onCartUpdate;
 
-  // Sync with parent cartItems when they change
+  // Sync with parent cartItems when they change (e.g. initial load)
   useEffect(() => {
     setCartItems(initialCartItems);
   }, [initialCartItems]);
 
-  // Reload cart items when popover opens
+  // Reload cart items only when popover opens (stable deps to avoid re-run loop)
   useEffect(() => {
-    if (popovervisible) {
-      const reloadCart = async () => {
-        const items = await loadCartCrochets();
-        setCartItems(items);
-        // Notify parent to refresh
-        if (onCartUpdate) {
-          onCartUpdate(items);
-        }
-      };
-      reloadCart();
-    }
-  }, [popovervisible, loadCartCrochets, onCartUpdate]);
+    if (!popovervisible) return;
+    let cancelled = false;
+    loadCartCrochets().then((items) => {
+      if (cancelled) return;
+      setCartItems(items);
+      onCartUpdateRef.current?.(items);
+    });
+    return () => { cancelled = true; };
+  }, [popovervisible]);
 
   const handleCheckoutSubmit = () => {
     navigator.push("/cart");
@@ -146,10 +163,10 @@ const ShoppingCart = ({ cartCount = 0, cartItems: initialCartItems = [], onCartU
               >
                 <List.Item.Meta
                   avatar={
-                    <Avatar
+                    <CartItemThumbnail
                       src={`${API_URL_UPLOADS_CROCHETS}/${item.crochet.imageUrls[0]}`}
-                      className="w-16 h-16"
                       alt={item.crochet.name}
+                      className="w-16 h-16 rounded-full object-cover bg-gray-100 shrink-0 overflow-hidden flex items-center justify-center text-gray-400 font-semibold"
                     />
                   }
                   title={
@@ -221,11 +238,13 @@ const ShoppingCart = ({ cartCount = 0, cartItems: initialCartItems = [], onCartU
     );
   };
 
+  const popoverContent = useMemo(() => <CartHolder />, [cartItems, updatingItems]);
+
   return (
     <Popover
       placement="bottom"
       title="Your Cart"
-      content={<CartHolder />}
+      content={popoverContent}
       trigger="click"
       open={popovervisible}
       onOpenChange={setPopovervisible}

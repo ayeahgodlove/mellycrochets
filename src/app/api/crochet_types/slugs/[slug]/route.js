@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 const crochetTypeRepository = new CrochetTypeRepository();
 
 export async function GET(req, { params }) {
-  if (!params?.slug) {
+  const resolved = await params;
+  if (!resolved?.slug) {
     return NextResponse.json(
       { message: "Slug is required", success: false, data: null },
       { status: 400 }
@@ -12,7 +13,7 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const slug = params.slug;
+    const slug = resolved.slug;
 
     const crochetType = await crochetTypeRepository.findBySlug(slug);
     // const crochetTypeDTO = crochetTypeMapper.toDTO(crochetType);

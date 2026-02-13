@@ -1,24 +1,10 @@
 import CrochetDetailPage from "../../../page-components/crochets/crochet-detail-page";
 import { fetchCrochetBySlug } from "../../../utils/data";
-import axios from "axios";
 import { keywords } from "../../../constants/constant";
+import { JsonLd } from "../../../components/seo/json-ld";
 
-const fetchCrochetDetails = async (slug) => {
-  const response = await axios.get(
-    `${process.env.NEXTAUTH_URL}/api/crochets/slugs/${slug}`
-  );
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch crochet details");
-  } else {
-    return await response.data;
-  }
-};
-
-//Generate Metadata for SEO
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  
-  // Early return if slug is missing
   if (!slug) {
     return {
       title: "Crochet Product | MellyCrochets Shop",
@@ -32,8 +18,8 @@ export async function generateMetadata({ params }) {
 
   let crochet;
   try {
-    crochet = await fetchCrochetDetails(slug);
-  } catch (error) {
+    crochet = await fetchCrochetBySlug(slug);
+  } catch {
     return {
       title: "Crochet Product | MellyCrochets Shop",
       description: "Beautiful handmade crochet designs from MellyCrochets",
@@ -44,7 +30,6 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  // Fallback if crochet data isn't available
   if (!crochet) {
     return {
       title: "Crochet Product | MellyCrochets Shop",
@@ -59,17 +44,14 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  // Construct base URL
   const baseUrl = process.env.NEXTAUTH_URL || "";
   const productUrl = `${baseUrl}/crochets/${slug}`;
-  const imageUrl = crochet.imageUrls?.[0] 
+  const imageUrl = crochet.imageUrls?.[0]
     ? `${baseUrl}/uploads/crochets/${crochet.imageUrls[0]}`
     : `${baseUrl}/default-crochet-image.jpg`;
-
-  // Prepare metadata
   const title = `${crochet.name} | MellyCrochets Shop`;
   const description = crochet.description || `Beautiful handmade ${crochet.name} crochet design`;
-  
+
   return {
     metadataBase: baseUrl ? new URL(baseUrl) : undefined,
     title,
@@ -81,7 +63,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url: productUrl,
-      type: "article",
+      type: "website",
       images: [
         {
           url: imageUrl,
@@ -110,7 +92,7 @@ export async function generateMetadata({ params }) {
       `buy ${crochet.name}`,
       "MellyCrochets shop",
       ...(keywords || []) // Ensure keywords is defined
-    ].filter(Boolean).join(", "), // Remove any undefined values
+    ].filter(Boolean).join(", "),
     robots: {
       index: true,
       follow: true,
@@ -125,9 +107,80 @@ export async function generateMetadata({ params }) {
     }
   };
 }
+function buildProductSchema(crochet, baseUrl) {
+  const productUrl = `${baseUrl}/crochets/${crochet.slug}`;
+  const images = (crochet.imageUrls || []).map(
+    (img) => `${baseUrl}/uploads/crochets/${img}`
+  );
+  const mainImage = images[0] || `${baseUrl}/default-crochet-image.jpg`;
+  const price = crochet.priceInUsd ?? crochet.priceInCfa;
+  const priceCurrency = crochet.priceInUsd != null ? "USD" : "XAF";
+
+  const product = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: crochet.name,
+    description: crochet.description || `Handmade ${crochet.name} by MellyCrochets`,
+    image: images.length ? images : [mainImage],
+    url: productUrl,
+    sku: crochet.slug,
+    brand: {
+      "@type": "Brand",
+      name: "MellyCrochets",
+    },
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency,
+      price: price ?? undefined,
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  };
+  return product;
+}
+
+function buildBreadcrumbSchema(crochet, baseUrl) {
+  const typeName = crochet.crochetType?.name || "Shop";
+  const typeSlug = crochet.crochetType?.slug;
+  const items = [
+    { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+    { "@type": "ListItem", position: 2, name: "Shop", item: `${baseUrl}/shop` },
+  ];
+  if (typeSlug) {
+    items.push({
+      "@type": "ListItem",
+      position: items.length + 1,
+      name: typeName,
+      item: `${baseUrl}/shop?type=${encodeURIComponent(typeSlug)}`,
+    });
+  }
+  items.push({
+    "@type": "ListItem",
+    position: items.length + 1,
+    name: crochet.name,
+    item: `${baseUrl}/crochets/${crochet.slug}`,
+  });
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items,
+  };
+}
+
 export default async function IndexPage({ params }) {
   const { slug } = await params;
   const crochet = await fetchCrochetBySlug(slug);
+  const baseUrl = process.env.NEXTAUTH_URL || "";
 
-  return <CrochetDetailPage crochet={crochet} />;
+  const productSchema = crochet ? buildProductSchema(crochet, baseUrl) : null;
+  const breadcrumbSchema = crochet ? buildBreadcrumbSchema(crochet, baseUrl) : null;
+
+  return (
+    <>
+      {productSchema && <JsonLd data={productSchema} />}
+      {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
+      <CrochetDetailPage crochet={crochet} />
+    </>
+  );
 }

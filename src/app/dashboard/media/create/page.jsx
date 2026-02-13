@@ -3,7 +3,8 @@
 import PageBreadCrumbs from "../../../../components/page-breadcrumb/page-breadcrumb.component";
 import { BASE_URL } from "../../../../constants/api-url";
 import { Create, getValueFromEvent, useForm } from '@/components/refine';
-import { Form, Input, Select, Upload } from '@/components/ui';
+import { Form, Input, Upload } from '@/components/ui';
+import { processImageBeforeUpload } from "../../../../lib/image-upload-processor";
 
 export default function MediaCreate() {
   const { formProps, saveButtonProps } = useForm({});
@@ -37,6 +38,7 @@ export default function MediaCreate() {
               listType="picture"
               maxCount={1}
               multiple={false}
+              beforeUpload={processImageBeforeUpload}
             >
               <p className="ant-upload-text">Drag & drop a file in this area</p>
             </Upload.Dragger>

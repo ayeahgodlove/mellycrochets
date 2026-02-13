@@ -88,6 +88,12 @@ export const CURRENCY = {
   usd: "USD",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const SEOConfig = {
   title: {
     default:

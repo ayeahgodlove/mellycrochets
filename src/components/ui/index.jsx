@@ -1312,6 +1312,15 @@ export const Avatar = ({ src, alt, children, className, style, ...props }) => {
   );
 };
 
+// True if the menu item label is or wraps a link (so we render it without DropdownMenuItem to allow navigation)
+function isLinkLabel(item) {
+  const label = item?.label;
+  if (!React.isValidElement(label)) return false;
+  if (label.type === Link) return true;
+  if (label.props?.href != null) return true;
+  return false;
+}
+
 // Dropdown compatibility wrapper
 export const Dropdown = ({ menu, children, placement, trigger, onOpenChange, className }) => {
   const items = menu?.items || [];
@@ -1396,6 +1405,14 @@ export const Dropdown = ({ menu, children, placement, trigger, onOpenChange, cla
           <React.Fragment key={item.key || index}>
             {item.type === "divider" ? (
               <DropdownMenuSeparator />
+            ) : isLinkLabel(item) ? (
+              <div
+                className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground [&_a]:block [&_a]:w-full"
+                onClick={() => setOpen(false)}
+              >
+                {item.extra && <span className="flex-shrink-0">{item.extra}</span>}
+                <span className="flex-1">{item.label}</span>
+              </div>
             ) : (
               <DropdownMenuItem
                 onSelect={(e) => {
@@ -1405,9 +1422,7 @@ export const Dropdown = ({ menu, children, placement, trigger, onOpenChange, cla
                 disabled={item.disabled}
                 className="cursor-pointer"
                 onClick={(e) => {
-                  // Handle clicks on items that contain links/buttons
-                  if (item.label && typeof item.label === 'object' && item.label.props?.onClick) {
-                    // Let the nested element handle the click
+                  if (item.label && typeof item.label === "object" && item.label.props?.onClick) {
                     return;
                   }
                   e.stopPropagation();
@@ -1846,7 +1861,7 @@ const ModalFooter = ({ className, ...props }) => (
 );
 ModalFooter.displayName = "ModalFooter";
 
-export const Modal = ({ open, onCancel, title, footer, children, width, height, className, ...props }) => {
+export const Modal = ({ open, onCancel, title, titleVisuallyHidden, footer, children, width, height, className, ...props }) => {
   return (
     <ModalRoot open={open} onOpenChange={(isOpen) => !isOpen && onCancel?.()}>
       <ModalContent
@@ -1854,11 +1869,15 @@ export const Modal = ({ open, onCancel, title, footer, children, width, height, 
         style={{ width, height, maxHeight: "90vh", overflowY: "auto" }}
         {...props}
       >
-        {title && (
+        {title && titleVisuallyHidden ? (
+          <span className="sr-only">
+            <ModalTitle>{title}</ModalTitle>
+          </span>
+        ) : title ? (
           <ModalHeader>
             <ModalTitle>{title}</ModalTitle>
           </ModalHeader>
-        )}
+        ) : null}
         <div className="py-4">{children}</div>
         {footer !== null && (
           <ModalFooter>

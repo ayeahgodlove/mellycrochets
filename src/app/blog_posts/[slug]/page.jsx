@@ -6,32 +6,15 @@ import {
   fetchPostBySlug,
   fetchTags,
 } from "../../../utils/data";
-
-import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
 import { keywords } from "../../../constants/constant";
+import { JsonLd } from "../../../components/seo/json-ld";
 
-const fetchPostDetails = async (slug) => {
-  const response = await axios.get(
-    `${process.env.NEXTAUTH_URL}/api/posts/slug/${slug}`
-  );
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch post details");
-  } else {
-    return await response.data;
-  }
-};
-
-// 🏷️ Generate Metadata for SEO (Next.js 15: params is a Promise)
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  if (!slug) {
-    return {};
-  }
-  const post = await fetchPostDetails(slug);
-  if (!post) {
-    return {};
-  }
+  if (!slug) return {};
+  const post = await fetchPostBySlug(slug);
+  if (!post) return {};
   return generatePageMetadata({
     title: `${post.title} | MellyCrochets Blog`,
     description: post.summary || `Read this post about ${post.title}`,
@@ -111,6 +94,23 @@ export async function generateMetadata({ params }) {
   });
 }
 
+function buildBlogPostBreadcrumbSchema(post, baseUrl) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${baseUrl}/blog` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${baseUrl}/blog_posts/${post.slug}`,
+      },
+    ],
+  };
+}
+
 export default async function IndexPage({ params }) {
   const { slug } = await params;
   const [post, categories, tags, latestPosts] = await Promise.all([
@@ -119,13 +119,19 @@ export default async function IndexPage({ params }) {
     fetchTags(),
     fetchLatestPosts(),
   ]);
+  const baseUrl = process.env.NEXTAUTH_URL || "";
+  const breadcrumbSchema = post ? buildBlogPostBreadcrumbSchema(post, baseUrl) : null;
+
   return (
-    <BlogPostDetailPage
-      post={post}
-      categories={categories}
-      tags={tags}
-      latestPosts={latestPosts}
-      uploadsBaseUrl={API_URL_UPLOADS_POSTS}
-    />
+    <>
+      {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
+      <BlogPostDetailPage
+        post={post}
+        categories={categories}
+        tags={tags}
+        latestPosts={latestPosts}
+        uploadsBaseUrl={API_URL_UPLOADS_POSTS}
+      />
+    </>
   );
 }

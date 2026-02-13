@@ -1,33 +1,16 @@
 import CategoryPostsPage from "../../../page-components/categories/category-posts-page";
 import { getPostImageUrl } from "../../../constants/api-url";
 import { fetchCategoryBySlug } from "../../../utils/data";
-import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
 import { keywords } from "../../../constants/constant";
+import { JsonLd } from "../../../components/seo/json-ld";
 
-const fetchCategoryDetails = async (slug) => {
-  const response = await axios.get(
-    `${process.env.NEXTAUTH_URL}/api/categories/slugs/${slug}`
-  );
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch category details");
-  } else {
-    return await response.data;
-  }
-};
-
-// 🏷️ Generate Metadata for SEO
-// 🏷️ Generate Metadata for SEO
 export async function generateMetadata({ params }) {
-  if (!params?.slug) {
-    console.warn("Slug is missing in params!");
-    return {}; // Avoid breaking the app
-  }
+  const resolved = await params;
+  if (!resolved?.slug) return {};
 
-  const category = await fetchCategoryDetails(params.slug);
-  if (!category) {
-    return {}; // Handle the case where category data is not available
-  }
+  const category = await fetchCategoryBySlug(resolved.slug);
+  if (!category) return {};
 
   const baseUrl = process.env.NEXTAUTH_URL;
   const firstPostImage = category?.posts?.[0]?.imageUrl
@@ -52,7 +35,7 @@ export async function generateMetadata({ params }) {
       .filter(Boolean)
       .join(", "),
 
-    slug: params.slug,
+    slug: resolved.slug,
 
     image: firstPostImage,
     images:
@@ -63,9 +46,9 @@ export async function generateMetadata({ params }) {
         alt: post.title,
       })) || [],
 
-    url: `${baseUrl}/categories/${params.slug}`,
+    url: `${baseUrl}/categories/${resolved.slug}`,
     alternates: {
-      canonical: `${baseUrl}/categories/${params.slug}`,
+      canonical: `${baseUrl}/categories/${resolved.slug}`,
     },
 
     publishedTime: new Date(category.createdAt).toISOString(),
@@ -77,7 +60,7 @@ export async function generateMetadata({ params }) {
       description: `Collection of ${category.posts?.length || ""} ${
         category.name
       } blog posts`,
-      url: `${baseUrl}/categories/${params.slug}`,
+      url: `${baseUrl}/categories/${resolved.slug}`,
       siteName: "MellyCrochets",
       images: [
         {
@@ -124,10 +107,34 @@ export async function generateMetadata({ params }) {
   });
 }
 
+function buildCategoryBreadcrumbSchema(category, baseUrl) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${baseUrl}/blog` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: category.name,
+        item: `${baseUrl}/categories/${category.slug}`,
+      },
+    ],
+  };
+}
+
 export default async function IndexPage({ params }) {
-  const { slug } = params;
-
+  const resolved = await params;
+  const slug = resolved?.slug;
   const category = await fetchCategoryBySlug(slug);
+  const baseUrl = process.env.NEXTAUTH_URL || "";
+  const breadcrumbSchema = category ? buildCategoryBreadcrumbSchema(category, baseUrl) : null;
 
-  return <CategoryPostsPage category={category} />;
+  return (
+    <>
+      {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
+      <CategoryPostsPage category={category} />
+    </>
+  );
 }

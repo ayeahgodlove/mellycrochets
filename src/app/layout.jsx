@@ -5,8 +5,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "../assets/css/globals.css";
 import "../assets/css/main.css";
-import { Spin } from "@/components/ui";
-import { Loader2 } from "lucide-react";
 import AppShell from "../components/layout/app-shell";
 import "../lib/polyfils";
 import { keywords } from "../constants/constant";
@@ -74,18 +72,13 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Viewport for responsiveness */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        {/* SEO metadata */}
         <meta name="robots" content="index, follow" />
         <meta name="theme-color" content="#82181a" />
-
-        {/* PWA support */}
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-        {/* Font optimization */}
+        <link rel="alternate" type="application/rss+xml" title="MellyCrochets Blog RSS" href={`${url}/feed.xml`} />
+        <link rel="alternate" type="application/rss+xml" title="MellyCrochets Blog RSS" href={`${url}/rss.xml`} />
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
@@ -106,19 +99,60 @@ export default async function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
           rel="stylesheet"
         />
-
-        {/* Optional content security policy (customize if needed) */}
-        {/* <meta
-          http-equiv="content-security-policy"
-          content="default-src https:; script-src 'sha256-cPpRrcp58qOLBGbg0daTQMB+cvBxtwl2c5F22Cbohzk='"
-        /> */}
-        {/* google verification */}
         <meta
           name="google-site-verification"
           content="ldebmFeO6kY68u7FbCml3aurSI0q3u4SflpJm11J458"
         />
-
-        {/* Structured data (JSON-LD) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "@id": `${url}/#organization`,
+              name: "MellyCrochets",
+              alternateName: "MellyCrochets ETS",
+              url: url,
+              logo: `${url}/logo.png`,
+              image: `${url}/uploads/crochets/crochet-dress-main.jpg`,
+              description: "Handcrafted crochet fashion and accessories. Sustainable, eco-friendly pieces for every style.",
+              telephone: "+237681077051",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Bamenda",
+                addressRegion: "North West",
+                postalCode: "237",
+                streetAddress: "Mile 4 Nkwen",
+                addressCountry: "Cameroon",
+              },
+              sameAs: [
+                "https://www.instagram.com/mellycrochets_",
+                "https://facebook.com/MellycrochetsETS",
+              ],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "MellyCrochets",
+              url: url,
+              description: "Handcrafted crochet fashion and accessories",
+              publisher: { "@id": `${url}/#organization` },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: `${url}/shop?name={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -162,21 +196,7 @@ export default async function RootLayout({ children }) {
       </head>
 
       <body>
-        <Suspense
-          fallback={
-            <Spin
-              size="large"
-              indicator={<Loader2 size={48} className="animate-spin text-gray-500" />}
-              style={{
-                minHeight: "65vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              fullscreen
-            />
-          }
-        >
+        <Suspense fallback={null}>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <RefineContext defaultMode={defaultMode}>
               <AppShell>{children}</AppShell>

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui";
 import { Plus } from "lucide-react";
 import { BASE_URL } from "../../constants/api-url";
+import { processImageBeforeUpload } from "../../lib/image-upload-processor";
 
 const { Step } = Steps;
 
@@ -139,7 +140,7 @@ export default function CrochetForm({ formProps, crochetTypes, selectProps }) {
           <Upload
             listType="picture-card"
             fileList={fileList}
-            beforeUpload={() => true}
+            beforeUpload={processImageBeforeUpload}
             onChange={handleUploadChange}
             action={`${BASE_URL}/uploads/crochets`}
             multiple

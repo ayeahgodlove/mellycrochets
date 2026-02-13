@@ -24,7 +24,8 @@ export async function PATCH(req, { params }) {
     );
   }
 
-  if (!params?.id) {
+  const resolved = await params;
+  if (!resolved?.id) {
     return NextResponse.json(
       {
         message: "Invalid request: ID is required.",
@@ -63,7 +64,7 @@ export async function PATCH(req, { params }) {
       );
     }
 
-    const id = params.id;
+    const id = resolved.id;
 
     const obj = {
       ...data,
@@ -95,7 +96,8 @@ export async function PATCH(req, { params }) {
 }
 
 export async function GET(req, { params }) {
-  if (!params?.id) {
+  const resolved = await params;
+  if (!resolved?.id) {
     return NextResponse.json(
       { message: "ID is required", success: false, data: null },
       { status: 400 }
@@ -103,7 +105,7 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const id = params.id;
+    const id = resolved.id;
 
     const user = await userRepository.findById(id);
     // const userDTO = userMapper.toDTO(user);
@@ -136,8 +138,15 @@ export async function DELETE(req, { params }) {
     );
   }
 
+  const resolved = await params;
+  if (!resolved?.id) {
+    return NextResponse.json(
+      { message: "ID is required", success: false, data: null },
+      { status: 400 }
+    );
+  }
   try {
-    const id = params.id;
+    const id = resolved.id;
 
     await userRepository.deleteUser(id);
 

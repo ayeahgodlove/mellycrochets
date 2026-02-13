@@ -1,5 +1,3 @@
-// import { Button } from '@/components/ui';
-
 const BlogHero = ({ title, description }) => {
   return (
     <section className="relative w-full overflow-hidden bg-white py-16 md:py-24 px-6">
@@ -18,7 +16,7 @@ const BlogHero = ({ title, description }) => {
         aria-hidden
       />
       <div
-        className="absolute bottom-0 right-8 w-56 h-56 rounded-full opacity-3 hero-glow-pulse"
+        className="absolute bottom-0 right-8 w-56 h-56 rounded-full opacity-30 hero-glow-pulse"
         style={{ background: "radial-gradient(circle, #82181a 0%, transparent 70%)" }}
         aria-hidden
       />

@@ -3,6 +3,7 @@ import { API_URL, BASE_URL } from "../../../constants/api-url";
 import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
 import { keywords } from "../../../constants/constant";
+import { JsonLd } from "../../../components/seo/json-ld";
 
 const fetchCrochetTypeDetails = async (slug) => {
   const response = await axios.get(
@@ -15,9 +16,8 @@ const fetchCrochetTypeDetails = async (slug) => {
   }
 };
 
-// 🏷️ Generate Metadata for SEO
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const url = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
 
   if (!slug) {
@@ -93,8 +93,27 @@ export async function generateMetadata({ params }) {
 }
 
 
+function buildCrochetDesignBreadcrumbSchema(crochetType, baseUrl) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${baseUrl}/shop` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: crochetType.name,
+        item: `${baseUrl}/crochet_designs/${crochetType.slug}`,
+      },
+    ],
+  };
+}
+
 export default async function Page({ params }) {
-  const { slug } = params;
+  const resolved = await params;
+  const slug = resolved?.slug;
+  const baseUrl = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
 
   const res = await axios.get(
     `${API_URL}${BASE_URL}/crochet_types/slugs/${slug}`,
@@ -108,6 +127,13 @@ export default async function Page({ params }) {
     throw new Error("Failed to fetch crochet type");
   }
 
-  const { data } = res;
-  return <CrochetDesignsPage crochetType={data} />;
+  const data = res.data;
+  const breadcrumbSchema = data ? buildCrochetDesignBreadcrumbSchema(data, baseUrl) : null;
+
+  return (
+    <>
+      {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
+      <CrochetDesignsPage crochetType={data} />
+    </>
+  );
 }

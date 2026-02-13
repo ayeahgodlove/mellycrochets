@@ -1,30 +1,15 @@
 import TagPostsPage from "../../../page-components/tags/tag-posts-page";
 import { getPostImageUrl } from "../../../constants/api-url";
 import { fetchTagBySlug } from "../../../utils/data";
-import axios from "axios";
 import { generatePageMetadata } from "../../../lib/metadata-generator";
 import { keywords } from "../../../constants/constant";
+import { JsonLd } from "../../../components/seo/json-ld";
 
-const fetchTagDetails = async (slug) => {
-  const response = await axios.get(
-    `${process.env.NEXTAUTH_URL}/api/tags/slugs/${slug}`
-  );
-  if (response.status !== 200) {
-    throw new Error("Failed to fetch tag details");
-  } else {
-    return await response.data;
-  }
-};
-
-// 🏷️ Generate Metadata for SEO
 export async function generateMetadata({ params }) {
-  if (!params?.slug) {
-    return {}; // Avoid breaking the app
-  }
-  const tag = await fetchTagDetails(params.slug);
-  if (!tag) {
-    return {}; // Handle the case where tag data is not available
-  }
+  const resolved = await params;
+  if (!resolved?.slug) return {};
+  const tag = await fetchTagBySlug(resolved.slug);
+  if (!tag) return {};
   return generatePageMetadata({
     title: `${tag.name} Content | MellyCrochets Blog`,
     description:
@@ -42,9 +27,9 @@ export async function generateMetadata({ params }) {
     ]
       .filter(Boolean)
       .join(", "),
-    url: `${process.env.NEXTAUTH_URL}/tags/${params.slug}`,
+    url: `${process.env.NEXTAUTH_URL}/tags/${resolved.slug}`,
     alternates: {
-      canonical: `${process.env.NEXTAUTH_URL}/tags/${params.slug}`,
+      canonical: `${process.env.NEXTAUTH_URL}/tags/${resolved.slug}`,
     },
 
     // Media
@@ -59,7 +44,7 @@ export async function generateMetadata({ params }) {
         alt: post.title,
       })) || [],
 
-    url: `${process.env.NEXTAUTH_URL}/tags/${params.slug}`,
+    url: `${process.env.NEXTAUTH_URL}/tags/${resolved.slug}`,
     publishedTime: new Date(tag.createdAt).toISOString(),
     modifiedTime: new Date(tag.updatedAt).toISOString(),
     // OpenGraph
@@ -114,15 +99,39 @@ export async function generateMetadata({ params }) {
       hashtag: {
         "@type": "Thing",
         name: tag.name,
-        url: `${process.env.NEXTAUTH_URL}/tags/${params.slug}`,
+        url: `${process.env.NEXTAUTH_URL}/tags/${resolved.slug}`,
       },
     },
   });
 }
+function buildTagBreadcrumbSchema(tag, baseUrl) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${baseUrl}/blog` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: tag.name,
+        item: `${baseUrl}/tags/${tag.slug}`,
+      },
+    ],
+  };
+}
+
 export default async function IndexPage({ params }) {
-  const { slug } = params;
-
+  const resolved = await params;
+  const slug = resolved?.slug;
   const tag = await fetchTagBySlug(slug);
+  const baseUrl = process.env.NEXTAUTH_URL || "";
+  const breadcrumbSchema = tag ? buildTagBreadcrumbSchema(tag, baseUrl) : null;
 
-  return <TagPostsPage tag={tag} />;
+  return (
+    <>
+      {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
+      <TagPostsPage tag={tag} />
+    </>
+  );
 }

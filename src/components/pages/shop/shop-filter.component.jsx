@@ -7,7 +7,6 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 const PARAM_NAMES = {
   name: "name",
   crochetTypeId: "crochetTypeId",
-  sizeId: "sizeId",
 };
 
 export default function ShopFilter() {
@@ -15,28 +14,19 @@ export default function ShopFilter() {
   const searchParams = useSearchParams();
 
   const [crochetTypes, setCrochetTypes] = useState([]);
-  const [sizes, setSizes] = useState([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
 
   const [name, setName] = useState("");
   const [crochetTypeId, setCrochetTypeId] = useState("");
-  const [sizeId, setSizeId] = useState("");
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [typesRes, sizesRes] = await Promise.all([
-          fetch("/api/crochet_types"),
-          fetch("/api/sizes"),
-        ]);
+        const typesRes = await fetch("/api/crochet_types");
         if (typesRes.ok) {
           const data = await typesRes.json();
           setCrochetTypes(Array.isArray(data) ? data : []);
-        }
-        if (sizesRes.ok) {
-          const data = await sizesRes.json();
-          setSizes(Array.isArray(data) ? data : []);
         }
       } catch (e) {
         console.error("Failed to load filter options", e);
@@ -50,7 +40,6 @@ export default function ShopFilter() {
   const syncFromUrl = useCallback(() => {
     setName(searchParams.get(PARAM_NAMES.name) ?? "");
     setCrochetTypeId(searchParams.get(PARAM_NAMES.crochetTypeId) ?? "");
-    setSizeId(searchParams.get(PARAM_NAMES.sizeId) ?? "");
   }, [searchParams]);
 
   useEffect(() => {
@@ -61,7 +50,6 @@ export default function ShopFilter() {
     const params = new URLSearchParams();
     if (name.trim()) params.set(PARAM_NAMES.name, name.trim());
     if (crochetTypeId) params.set(PARAM_NAMES.crochetTypeId, crochetTypeId);
-    if (sizeId) params.set(PARAM_NAMES.sizeId, sizeId);
     return params;
   };
 
@@ -75,12 +63,11 @@ export default function ShopFilter() {
   const clearFilters = () => {
     setName("");
     setCrochetTypeId("");
-    setSizeId("");
     router.push("/shop");
     setExpanded(false);
   };
 
-  const hasActiveFilters = name.trim() || crochetTypeId || sizeId;
+  const hasActiveFilters = name.trim() || crochetTypeId;
 
   return (
     <div className="rounded-2xl border border-[#e5e5e5] bg-white shadow-sm overflow-hidden">
@@ -121,9 +108,8 @@ export default function ShopFilter() {
         </div>
       </div>
 
-      {/* Expandable filter panel */}
       {expanded && (
-        <div className="border-t border-[#e5e5e5] bg-[#fafaf9] p-4">
+        <div className="shop-filter-panel border-t border-[#e5e5e5] bg-[#fafaf9] p-4">
           <div className="flex flex-wrap items-end gap-4">
             <div className="min-w-[140px]">
               <label className="block text-xs font-medium text-[#6b7280] mb-1.5">
@@ -140,25 +126,6 @@ export default function ShopFilter() {
                 {crochetTypes.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="min-w-[120px]">
-              <label className="block text-xs font-medium text-[#6b7280] mb-1.5">
-                Size
-              </label>
-              <select
-                value={sizeId}
-                onChange={(e) => setSizeId(e.target.value)}
-                disabled={loadingOptions}
-                className="w-full px-3 py-2.5 rounded-xl border border-[#e5e5e5] bg-white text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#82181a]/20 focus:border-[#82181a] transition-colors"
-                aria-label="Size"
-              >
-                <option value="">All sizes</option>
-                {sizes.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.label}
                   </option>
                 ))}
               </select>

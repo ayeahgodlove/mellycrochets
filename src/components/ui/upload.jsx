@@ -66,16 +66,22 @@ export const Upload = ({
             continue; // Skip this file
           }
           if (result && typeof result === "object" && result.then) {
-            // Promise result
             try {
               const resolved = await result;
-              if (resolved !== false) {
-                processedFiles.push(file);
+              if (resolved === false) continue;
+              if (resolved instanceof File || resolved instanceof Blob) {
+                file.originFileObj = resolved instanceof File ? resolved : new File([resolved], file.name || "image.jpg", { type: "image/jpeg" });
+                file.name = file.originFileObj.name;
               }
+              processedFiles.push(file);
             } catch {
               continue;
             }
           } else if (result !== false) {
+            if (result instanceof File || result instanceof Blob) {
+              file.originFileObj = result instanceof File ? result : new File([result], file.name || "image.jpg", { type: "image/jpeg" });
+              file.name = file.originFileObj.name;
+            }
             processedFiles.push(file);
           }
         } else {
@@ -483,13 +489,20 @@ Upload.Dragger = ({
         if (result && typeof result === "object" && result.then) {
           try {
             const resolved = await result;
-            if (resolved !== false) {
-              processedFiles.push(file);
+            if (resolved === false) continue;
+            if (resolved instanceof File || resolved instanceof Blob) {
+              file.originFileObj = resolved instanceof File ? resolved : new File([resolved], file.name || "image.jpg", { type: "image/jpeg" });
+              file.name = file.originFileObj.name;
             }
+            processedFiles.push(file);
           } catch {
             continue;
           }
         } else if (result !== false) {
+          if (result instanceof File || result instanceof Blob) {
+            file.originFileObj = result instanceof File ? result : new File([result], file.name || "image.jpg", { type: "image/jpeg" });
+            file.name = file.originFileObj.name;
+          }
           processedFiles.push(file);
         }
       } else {

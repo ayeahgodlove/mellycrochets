@@ -129,7 +129,7 @@ const AppNavigation = () => {
     <nav
       ref={navRef}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 transition-all duration-200",
+        "w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 transition-all duration-200",
         scrolled && "shadow-md"
       )}
     >
@@ -269,7 +269,11 @@ const AppNavigation = () => {
             
             {crochetTypes && crochetTypes.length > 0 && (
               <div className="px-3 py-2">
-                <CrochetDropdownV2 crochetTypes={crochetTypes} />
+                <CrochetDropdownV2
+                  crochetTypes={crochetTypes}
+                  onNavigate={() => setOpen(false)}
+                  isMobile
+                />
               </div>
             )}
 

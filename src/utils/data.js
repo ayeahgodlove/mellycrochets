@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL, BASE_URL } from "../constants/api-url";
+import { BASE_URL } from "../constants/api-url";
 
 // Prefer same origin in server context (e.g. localhost in dev) so API routes are hit locally
 const getBaseUrl = () =>

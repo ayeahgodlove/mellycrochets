@@ -21,19 +21,7 @@ export const App = (props) => {
   const t = useTranslations();
   const { menus } = useMenu();
 
-  if (status === "loading") {
-    return (
-      <Spin
-        size="large"
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      />
-    );
-  }
+  const sessionLoading = status === "loading";
 
   const i18nProvider = {
     translate: (key, options) => t(key, options),
@@ -87,10 +75,10 @@ export const App = (props) => {
       };
     },
     getPermissions: async () => {
-      if (!data?.user) return null; // Ensure user exists
+      if (!data?.user) return null;
 
       return {
-        role: data.user.role ?? "user", // Ensure role is always set
+        role: data.user.role ?? "user",
         email: data.user.email,
         name: data.user.name,
         image: data.user.image,
@@ -113,12 +101,23 @@ export const App = (props) => {
     },
   };
 
-  const filteredMenus = menus.filter((menu) =>
-    menu.meta?.canAccess?.includes(data?.user?.role)
-  );
+  const filteredMenus = sessionLoading
+    ? menus
+    : menus.filter((menu) => menu.meta?.canAccess?.includes(data?.user?.role));
 
   return (
     <>
+      {sessionLoading && (
+        <div
+          className="fixed top-4 right-4 z-[100] flex items-center justify-center rounded-lg bg-white/90 px-3 py-2 shadow-sm border border-gray-200"
+          aria-hidden="true"
+          role="status"
+          aria-live="polite"
+        >
+          <Spin size="small" />
+          <span className="ml-2 text-xs text-gray-500 sr-only">Loading session</span>
+        </div>
+      )}
       <RefineKbarProvider>
         <ClientProvider>
           <Refine

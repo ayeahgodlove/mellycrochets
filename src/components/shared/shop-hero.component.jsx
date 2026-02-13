@@ -1,7 +1,6 @@
 const ShopHero = ({ title, description }) => {
   return (
-    <section className="relative w-full overflow-hidden bg-white py-16 md:py-24 px-6">
-      {/* Background gradient + soft glow, aligned with main hero styling */}
+    <section className="relative w-full overflow-hidden bg-white pt-12 pb-10 md:pt-16 md:pb-14 px-4 sm:px-6">
       <div
         className="absolute inset-0 hero-gradient-bg"
         style={{
@@ -21,7 +20,7 @@ const ShopHero = ({ title, description }) => {
         aria-hidden
       />
 
-      <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto p-6 md:p-10 lg:p-12 animate-fade-in-up">
+      <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto p-6 md:p-10 lg:p-12">
         <h1 className="text-3xl md:text-5xl font-extrabold text-[#1a1a1a] leading-tight mb-4">
           {title}
         </h1>

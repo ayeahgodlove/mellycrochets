@@ -1,10 +1,13 @@
 "use client";
 import { Button, Empty } from '@/components/ui';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CrochetCard from "./crochet-card.component";
 import { cn } from "@/lib/utils";
 
 const CrochetList = ({ crochets }) => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <>
       {crochets && crochets.length > 0 ? (
@@ -12,14 +15,21 @@ const CrochetList = ({ crochets }) => {
           className={cn(
             "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
             "gap-4 sm:gap-6 lg:gap-8",
-            "data-aos fade-up"
+            "transition-opacity duration-300 ease-out",
+            mounted ? "opacity-100" : "opacity-0"
           )}
           data-aos="fade-up"
-          data-aos-delay="300"
+          data-aos-delay="100"
           id="crochet-list"
         >
-          {crochets?.map((crochet) => (
-            <CrochetCard key={crochet.id} crochet={crochet} />
+          {crochets?.map((crochet, i) => (
+            <div
+              key={crochet.id}
+              className="crochet-card-in"
+              style={{ animationDelay: `${Math.min(i * 50, 400)}ms` }}
+            >
+              <CrochetCard crochet={crochet} />
+            </div>
           ))}
         </div>
       ) : (

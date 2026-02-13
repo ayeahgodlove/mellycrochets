@@ -70,11 +70,6 @@ export const metadata = {
       noimageindex: false,
     },
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
 };
 
 export default async function IndexPage() {

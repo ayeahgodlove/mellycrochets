@@ -5,14 +5,18 @@ export default function robots() {
       userAgent: "*",
       allow: [
         "/",
-        "/crochets/*",
-        "/blog_posts/*",
-        "/about",
         "/shop",
+        "/crochets/*",
+        "/crochet_designs/*",
+        "/blog",
+        "/blog_posts/*",
+        "/categories/*",
+        "/tags/*",
+        "/about",
         "/contact",
-        "/privacy",
-        "/feed.xml", // optional
-        "/rss.xml",  // optional
+        "/privacy-policy",
+        "/feed.xml",
+        "/rss.xml",
       ],
       disallow: [
         "/dashboard/*",

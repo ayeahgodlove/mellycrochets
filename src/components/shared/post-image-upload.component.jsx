@@ -5,6 +5,7 @@ import { BASE_URL, API_URL_UPLOADS_POSTS } from "../../constants/api-url";
 import { Button, Upload } from "@/components/ui";
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { processImageBeforeUpload } from "../../lib/image-upload-processor";
 
 /** Normalize stored value to a display URL (full path). Store only filename in DB. */
 function toDisplayUrl(value) {
@@ -59,6 +60,7 @@ export function PostImageUpload({ value, onChange, disabled, className }) {
           maxCount={1}
           multiple={false}
           fileList={[]}
+          beforeUpload={processImageBeforeUpload}
           onChange={handleUploadChange}
         >
           <p className="text-sm text-gray-600">

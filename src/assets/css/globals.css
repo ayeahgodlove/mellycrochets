@@ -228,6 +228,44 @@ b {
     animation: hero-gradient-shift 12s ease infinite;
 }
 
+/* Hero product carousel (swap style: main + peek left/right, circular) */
+.hero-carousel-viewport {
+    overflow: hidden;
+}
+
+.hero-carousel-track {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    will-change: transform;
+}
+
+.hero-carousel-slide {
+    position: relative;
+    flex-shrink: 0;
+    height: 100%;
+    transform-origin: center center;
+}
+
+.hero-carousel-slide-active {
+    box-shadow: 0 8px 24px rgba(130, 24, 26, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 0.75rem;
+}
+
+.hero-carousel-slide img {
+    border-radius: 0.75rem;
+}
+
+/* Top contact bar: mobile marquee (right to left) */
+@keyframes hero-marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.animate-hero-marquee {
+    animation: hero-marquee 25s linear infinite;
+}
+
 /* Blog post article body (HTML content from CMS) */
 .article-prose-body h1,
 .article-prose-body h2,
@@ -293,4 +331,32 @@ b {
     max-width: 100%;
     height: auto;
     border-radius: 0.5rem;
+}
+
+/* Shop filter & list transitions */
+.shop-filter-panel {
+    animation: shop-panel-in 0.2s ease-out backwards;
+}
+@keyframes shop-panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.crochet-card-in {
+    animation: crochet-card-in 0.3s ease-out backwards;
+}
+@keyframes crochet-card-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

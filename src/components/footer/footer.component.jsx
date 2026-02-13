@@ -160,12 +160,22 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} MellyCrochets & Services. All
               Rights Reserved.
             </p>
-            <Link
-              href="/privacy-policy"
-              className="text-sm text-gray-600 hover:text-red-800 transition-colors duration-200"
-            >
-              Privacy Policy
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/privacy-policy"
+                className="text-sm text-gray-600 hover:text-red-800 transition-colors duration-200"
+              >
+                Privacy Policy
+              </Link>
+              <a
+                href="https://cumi.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-[#82181a] hover:text-[#701618] transition-colors duration-200 font-medium"
+              >
+                Contact developer
+              </a>
+            </div>
           </div>
         </div>
       </div>

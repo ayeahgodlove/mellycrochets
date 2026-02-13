@@ -246,9 +246,18 @@ export class CrochetRepository {
     if (maxPriceUsd != null && maxPriceUsd !== "") {
       where.priceInUsd = { ...(where.priceInUsd || {}), [Op.lte]: Number(maxPriceUsd) };
     }
-    const sizeInclude = sizeId && String(sizeId).trim()
-      ? { model: Size, as: "sizes", through: { attributes: ["colors"] }, where: { id: String(sizeId).trim() }, required: true }
-      : { model: Size, as: "sizes", through: { attributes: ["colors"] } };
+    const sizeInclude =
+      sizeId && String(sizeId).trim()
+        ? {
+            model: Size,
+            as: "sizes",
+            through: {
+              where: { sizeId: String(sizeId).trim() },
+              attributes: ["colors"],
+            },
+            required: true,
+          }
+        : { model: Size, as: "sizes", through: { attributes: ["colors"] } };
     try {
       const crochets = await Crochet.findAll({
         where: Object.keys(where).length ? where : undefined,
