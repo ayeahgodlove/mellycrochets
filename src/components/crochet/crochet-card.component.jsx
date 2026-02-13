@@ -5,7 +5,7 @@ import { API_URL_UPLOADS_CROCHETS } from "../../constants/api-url";
 import { useCurrency } from "../../hooks/currency.hook";
 
 const { Meta } = Card;
-const CrochetCard = ({ crochet }) => {
+const CrochetCard = ({ crochet, priority = false }) => {
   const { getConvertedPrice } = useCurrency();
 
   const convertedPrice = getConvertedPrice(
@@ -19,14 +19,6 @@ const CrochetCard = ({ crochet }) => {
       className="h-full flex flex-col shadow-sm border-gray-100 hover:shadow-lg transition-all duration-300 overflow-hidden group p-0"
     >
       <div className="relative overflow-hidden w-full">
-        {crochet.imageUrls?.map((item, i) => (
-          <img
-            key={`preload-${i}`}
-            src={`${API_URL_UPLOADS_CROCHETS}/${item}`}
-            alt={crochet.description}
-            style={{ display: "none" }}
-          />
-        ))}
         <Image.PreviewGroup
           items={crochet.imageUrls?.map((item) => {
             return `${API_URL_UPLOADS_CROCHETS}/${item || "nodata"}`;
@@ -39,11 +31,13 @@ const CrochetCard = ({ crochet }) => {
             }`}
             alt={crochet.description}
             preview={true}
-            style={{ 
-              objectFit: "cover", 
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            style={{
+              objectFit: "cover",
               height: "320px",
               width: "100%",
-              display: "block"
+              display: "block",
             }}
           />
         </Image.PreviewGroup>

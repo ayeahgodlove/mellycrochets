@@ -306,8 +306,13 @@ const FormWrapper = ({ children, onFinish, initialValues, form, layout, classNam
   }, [initialValues]);
 
   const handleSubmit = (e) => {
-    e?.preventDefault();
-    const formData = new FormData(e.target);
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const target = e?.target;
+    if (!target) return;
+    const formData = new FormData(target);
     const values = {};
     for (const [key, value] of formData.entries()) {
       values[key] = value;
@@ -1397,7 +1402,7 @@ export const Dropdown = ({ menu, children, placement, trigger, onOpenChange, cla
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align={placement === "bottomRight" ? "end" : placement === "bottomLeft" ? "start" : "center"}
-          className="min-w-[8rem] bg-white"
+          className="min-w-[11rem] bg-white whitespace-nowrap"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -1407,11 +1412,11 @@ export const Dropdown = ({ menu, children, placement, trigger, onOpenChange, cla
               <DropdownMenuSeparator />
             ) : isLinkLabel(item) ? (
               <div
-                className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground [&_a]:block [&_a]:w-full"
+                className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground [&_a]:flex [&_a]:items-center [&_a]:gap-2 [&_a]:whitespace-nowrap [&_a]:min-w-0 [&_a]:w-full"
                 onClick={() => setOpen(false)}
               >
                 {item.extra && <span className="flex-shrink-0">{item.extra}</span>}
-                <span className="flex-1">{item.label}</span>
+                <span className="flex-1 min-w-0">{item.label}</span>
               </div>
             ) : (
               <DropdownMenuItem
@@ -1429,9 +1434,9 @@ export const Dropdown = ({ menu, children, placement, trigger, onOpenChange, cla
                   handleItemClick(item);
                 }}
               >
-                <div className="flex items-center gap-2 w-full">
+                <div className="flex items-center gap-2 w-full whitespace-nowrap min-w-0">
                   {item.extra && <span className="flex-shrink-0">{item.extra}</span>}
-                  <span className="flex-1">{item.label}</span>
+                  <span className="flex-1 min-w-0">{item.label}</span>
                 </div>
               </DropdownMenuItem>
             )}

@@ -165,30 +165,6 @@ export default function HeroSection({
               );
               })}
             </div>
-            {/* Dots – refined: larger tap target, clear active vs inactive */}
-            {n > 1 && (
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10" role="tablist" aria-label="Slide navigation">
-                {slides.map((_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    role="tab"
-                    aria-selected={index === activeIndex}
-                    aria-label={`Slide ${index + 1}`}
-                    onClick={() => goTo(index)}
-                    className={`min-w-[10px] min-h-[10px] rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#82181a]/20 ${
-                      index === activeIndex
-                        ? "bg-[#82181a] shadow-sm"
-                        : "bg-white/70 hover:bg-white/90 border border-white/50"
-                    }`}
-                    style={{
-                      width: index === activeIndex ? 24 : 10,
-                      height: 10,
-                    }}
-                  />
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>

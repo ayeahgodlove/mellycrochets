@@ -62,6 +62,7 @@ const LoginPage = () => {
           onFinish={onFinish}
           className="w-xs sm:w-sm md:w-md lg:w-lg xl:w-xl"
           size="large"
+          method="get"
         >
           <Form.Item
             label={t("emailLabel")}
@@ -105,9 +106,10 @@ const LoginPage = () => {
 
         <Space className="flex flex-col items-center justify-center">
           <Button
+            type="button"
             icon={<FcGoogle />}
             className="w-xs sm:w-sm md:w-md lg:w-lg xl:w-xl"
-            onClick={() => signIn("auth0", { callbackUrl: redirect })}
+            onClick={() => signIn("google", { callbackUrl: redirect })}
             size="large"
           >
             {t("socialAuth")}

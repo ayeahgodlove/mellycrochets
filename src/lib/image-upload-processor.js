@@ -71,18 +71,14 @@ function compressToJpeg(file) {
 }
 
 /**
- * Convert HEIC/HEIF to JPEG using heic2any (dynamic import so it only loads when needed).
+ * HEIC/HEIF conversion is not run here to avoid requiring the "heic2any" package at build time.
+ * HEIC files are uploaded as-is; some backends accept them. For conversion, install heic2any
+ * and use a custom beforeUpload that calls heic2any before processImageForUpload.
  * @param {File} file
- * @returns {Promise<Blob>}
+ * @returns {Promise<Blob|null>} null = use original file
  */
-async function heicToJpeg(file) {
-  const heic2any = (await import("heic2any")).default;
-  const result = await heic2any({
-    blob: file,
-    toType: "image/jpeg",
-  });
-  const blob = Array.isArray(result) ? result[0] : result;
-  return blob;
+async function heicToJpegIfAvailable(file) {
+  return null;
 }
 
 /**
@@ -97,10 +93,13 @@ export async function processImageForUpload(file) {
   let blob = file;
 
   if (isHeic(file)) {
-    try {
-      blob = await heicToJpeg(file);
-    } catch (e) {
-      console.warn("HEIC conversion failed, uploading original:", e);
+    const converted = await heicToJpegIfAvailable(file);
+    if (converted) {
+      blob = converted;
+    } else {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("HEIC conversion skipped (install heic2any for automatic conversion). Uploading original file.");
+      }
       return file;
     }
   }

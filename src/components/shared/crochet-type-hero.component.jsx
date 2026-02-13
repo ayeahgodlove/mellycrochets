@@ -26,7 +26,7 @@ export default function CrochetTypeHero({ title, description, breadcrumbs, image
   return (
     <section
       className={cn(
-        "relative w-full overflow-hidden bg-white px-4 sm:px-6",
+        "relative w-full overflow-hidden bg-white px-4 sm:px-6 pb-14 md:pb-16",
         hasCarousel ? "min-h-[360px] md:min-h-[440px] py-12 md:py-16 flex flex-col justify-center" : "pt-12 pb-10 md:pt-16 md:pb-14"
       )}
     >
@@ -98,6 +98,20 @@ export default function CrochetTypeHero({ title, description, breadcrumbs, image
           ]}
           style={{ display: "flex", justifyContent: "center" }}
         />
+      </div>
+
+      {/* Curved bottom edge — smooth wave into content */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 h-14 md:h-16 w-full pointer-events-none" aria-hidden>
+        <svg
+          viewBox="0 0 1440 80"
+          preserveAspectRatio="none"
+          className="absolute bottom-0 left-0 h-full w-full"
+        >
+          <path
+            d="M0 50 C400 0 600 80 1000 50 C1200 30 1320 50 1440 45 L1440 80 L0 80 Z"
+            fill="white"
+          />
+        </svg>
       </div>
     </section>
   );

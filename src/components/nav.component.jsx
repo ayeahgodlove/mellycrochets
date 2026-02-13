@@ -53,8 +53,8 @@ const AppNavigation = () => {
     {
       key: "profile",
       label: (
-        <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
-          <User size={16} />
+        <Link href="/profile" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors whitespace-nowrap">
+          <User size={16} className="flex-shrink-0" />
           Profile
         </Link>
       ),
@@ -62,7 +62,7 @@ const AppNavigation = () => {
     role === "admin" && {
       key: "dashboard",
       label: (
-        <Link href="/dashboard" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors">
+        <Link href="/dashboard" className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors whitespace-nowrap">
           Dashboard
         </Link>
       ),
@@ -72,7 +72,7 @@ const AppNavigation = () => {
       label: (
         <button
           type="button"
-          className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors w-full text-left text-red-600"
+          className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 rounded-md transition-colors w-full text-left text-red-600 whitespace-nowrap"
           onClick={() => signOut({ callbackUrl: "/login" })}
         >
           Sign Out
@@ -184,10 +184,11 @@ const AppNavigation = () => {
             </div>
 
             {!user ? (
-              <Link href="/login">
-                <Button type="primary" size="sm">
-                  Sign In
-                </Button>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center rounded-md bg-red-800 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+              >
+                Sign In
               </Link>
             ) : (
               <Dropdown
@@ -281,11 +282,9 @@ const AppNavigation = () => {
               <Link
                 href="/login"
                 onClick={() => setOpen(false)}
-                className="block px-3 py-2 mt-4"
+                className="block px-3 py-2 mt-4 rounded-md bg-red-800 text-center text-white font-medium hover:bg-red-700 transition-colors"
               >
-                <Button type="primary" block>
-                  Sign In
-                </Button>
+                Sign In
               </Link>
             )}
           </div>

@@ -28,7 +28,7 @@ const CrochetList = ({ crochets }) => {
               className="crochet-card-in"
               style={{ animationDelay: `${Math.min(i * 50, 400)}ms` }}
             >
-              <CrochetCard crochet={crochet} />
+              <CrochetCard crochet={crochet} priority={i < 8} />
             </div>
           ))}
         </div>
