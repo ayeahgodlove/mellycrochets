@@ -27,6 +27,8 @@ const nextConfig = withNextIntl({
   experimental: {
     optimizeCss: true,
   },
+  // Turbopack is now stable; use top-level turbopack (not experimental.turbo)
+  turbopack: {},
   compress: true,
   eslint: {
     ignoreDuringBuilds: true,

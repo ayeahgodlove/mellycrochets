@@ -109,7 +109,7 @@ const LoginPage = () => {
             type="button"
             icon={<FcGoogle />}
             className="w-xs sm:w-sm md:w-md lg:w-lg xl:w-xl"
-            onClick={() => signIn("google", { callbackUrl: redirect })}
+            onClick={() => signIn("auth0", { callbackUrl: redirect })}
             size="large"
           >
             {t("socialAuth")}

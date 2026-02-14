@@ -12,6 +12,7 @@ const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: "",
   });
   const [loading, setLoading] = useState(false);
@@ -35,7 +36,7 @@ const ContactSection = () => {
       const response = await axios.post("/api/contacts", formData);
       if (response.data.success) {
         setSuccess(true);
-        setFormData({ name: "", email: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", message: "" });
         setTimeout(() => setSuccess(false), 5000);
       } else {
         setError(response.data.message || "Failed to send message");
@@ -161,6 +162,20 @@ const ContactSection = () => {
                   onChange={handleChange}
                   placeholder="Enter your email"
                   required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t("phoneLabel")}
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder={t("phonePlaceholder")}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 />
               </div>

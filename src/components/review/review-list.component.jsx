@@ -1,15 +1,39 @@
-import React from "react";
-import { useList } from "@refinedev/core";
-import { Card, Rate, Skeleton, Avatar, Typography, Empty } from "@/components/ui";
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
+import { Card, Rate, Skeleton, Avatar, AvatarImage, AvatarFallback, Typography, Empty } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { format } from "../../lib/format";
-import { MessageSquare, User } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
-export const ReviewList = ({ crochetId }) => {
+export const ReviewList = ({ crochetId, refreshTrigger = 0 }) => {
   const t = useTranslations("customer_detail");
-  const { data, isLoading } = useList({
-    resource: "reviews",
-  });
+  const [reviews, setReviews] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchReviews = useCallback(async () => {
+    if (!crochetId) {
+      setReviews([]);
+      setIsLoading(false);
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/reviews");
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : data?.data ?? [];
+      setReviews(list.filter((d) => d.crochetId === crochetId));
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
+      setReviews([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [crochetId]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews, refreshTrigger]);
 
   if (isLoading) {
     return (
@@ -18,9 +42,7 @@ export const ReviewList = ({ crochetId }) => {
       </Card>
     );
   }
-  const reviews = data?.data ?? [];
-
-  const crochetReviews = reviews.filter((d) => d.crochetId === crochetId);
+  const crochetReviews = reviews;
 
   return (
     <Card className="shadow-xl border-0 overflow-hidden p-0 bg-white">
@@ -39,43 +61,35 @@ export const ReviewList = ({ crochetId }) => {
         {crochetReviews && crochetReviews.length > 0 ? (
           <div className="space-y-6">
             {crochetReviews.map((review) => {
-              const user = review.user;
+              const displayName = review.user?.username || review.username || "Anonymous";
+              const initials = format.initials(displayName);
+              const avatarUrl = review.user?.image;
               return (
                 <div
                   key={review.id}
                   className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white hover:shadow-md transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    {user ? (
-                      <Avatar
-                        src={review.user?.image}
-                        size={56}
-                        className="flex-shrink-0 border-2 border-white shadow-sm"
-                      >
-                        {review.user?.username?.[0]?.toUpperCase() || <User size={24} />}
-                      </Avatar>
-                    ) : (
-                      <Avatar 
-                        size={56}
-                        className="flex-shrink-0 border-2 border-white shadow-sm bg-gradient-to-br from-orange-200 to-orange-300"
-                      >
-                        <span className="text-orange-700 font-bold text-lg">
-                          {format.initials(review.username)}
-                        </span>
-                      </Avatar>
-                    )}
+                    <Avatar className="h-14 w-14 flex-shrink-0 border-2 border-white shadow-sm rounded-full bg-gradient-to-br from-orange-200 to-orange-300">
+                      {avatarUrl ? (
+                        <AvatarImage src={avatarUrl} alt={displayName} className="object-cover" />
+                      ) : null}
+                      <AvatarFallback className="rounded-full bg-gradient-to-br from-orange-200 to-orange-300 text-orange-700 font-bold text-lg">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <div>
-                          <Typography.Title 
-                            level={5} 
+                          <Typography.Title
+                            level={5}
                             className="!mb-1 !text-base font-bold text-gray-900"
                           >
-                            {review.username || "Anonymous"}
+                            {displayName}
                           </Typography.Title>
-                          <Rate 
-                            disabled 
-                            defaultValue={review.rating} 
+                          <Rate
+                            disabled
+                            defaultValue={review.rating}
                             className="text-sm"
                           />
                         </div>

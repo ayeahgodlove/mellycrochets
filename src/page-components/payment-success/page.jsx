@@ -96,6 +96,22 @@ const PaymentSuccessPage = () => {
           telephone: accountId,
         });
 
+        const customerEmail = user?.email ?? order?.email;
+        const customerPhone = accountId || order?.telephone || "";
+        if (customerEmail) {
+          try {
+            await axios.post("/api/notify/order-status", {
+              orderId,
+              status: isSuccessful ? "completed" : "failed",
+              email: customerEmail,
+              telephone: customerPhone,
+              orderNo: order?.orderNo || orderId,
+            });
+          } catch (notifyErr) {
+            console.error("Order status notify failed:", notifyErr);
+          }
+        }
+
         if (!isSuccessful) {
           message.error("Payment not successful");
           return;

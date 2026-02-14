@@ -31,6 +31,10 @@ export default function ContactCreate() {
             >
               <Input type="email" placeholder="Enter email address" />
             </Form.Item>
+
+            <Form.Item label="Phone" name="phone">
+              <Input type="tel" placeholder="e.g. +237 6XX XXX XXXX" />
+            </Form.Item>
             
             <Form.Item 
               label="Message" 

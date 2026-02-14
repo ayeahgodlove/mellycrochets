@@ -44,7 +44,7 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const baseUrl = process.env.NEXTAUTH_URL || "";
+  const baseUrl = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
   const productUrl = `${baseUrl}/crochets/${slug}`;
   const imageUrl = crochet.imageUrls?.[0]
     ? `${baseUrl}/uploads/crochets/${crochet.imageUrls[0]}`
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }) {
   const description = crochet.description || `Beautiful handmade ${crochet.name} crochet design`;
 
   return {
-    metadataBase: baseUrl ? new URL(baseUrl) : undefined,
+    metadataBase: new URL(baseUrl),
     title,
     description,
     alternates: {

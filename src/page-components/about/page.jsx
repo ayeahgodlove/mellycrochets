@@ -6,7 +6,7 @@ import Image from "next/image";
 import "../../assets/css/globals.css";
 import { FiFacebook, FiInstagram, FiX } from "react-icons/fi";
 import { RiTiktokFill } from "react-icons/ri";
-import { Button } from "@/components/ui";
+import { Button, Avatar, AvatarImage, AvatarFallback } from "@/components/ui";
 import { Heart, Users, Quote, ShoppingBag, Target, User, Sparkles, Award, Leaf, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import axios from "axios";
@@ -23,11 +23,11 @@ const AboutPage = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get("/api/reviews");
-        // Filter reviews that are toggled (approved) and have comments
-        const approvedReviews = response.data
-          .filter((review) => review.toggle && review.comment)
-          .slice(0, 10); // Limit to 10 reviews
-        setReviews(approvedReviews);
+        // Show all reviews (public); only exclude empty comments
+        const allReviews = (Array.isArray(response.data) ? response.data : [])
+          .filter((review) => review.comment?.trim())
+          .slice(0, 10); // Limit to 10 for the slider
+        setReviews(allReviews);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -36,10 +36,18 @@ const AboutPage = () => {
     fetchReviews();
   }, []);
 
+  const REVIEWS_PER_SLIDE = 2;
+  const displayReviews = reviews;
+  const slidePairs = [];
+  for (let i = 0; i < displayReviews.length; i += REVIEWS_PER_SLIDE) {
+    slidePairs.push(displayReviews.slice(i, i + REVIEWS_PER_SLIDE));
+  }
+  const slideCount = slidePairs.length;
+
   useEffect(() => {
-    if (reviews.length > 0 && isAutoPlaying) {
+    if (slideCount > 0 && isAutoPlaying) {
       intervalRef.current = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % reviews.length);
+        setCurrentIndex((prev) => (prev + 1) % slideCount);
       }, 5000); // Auto-slide every 5 seconds
 
       return () => {
@@ -48,7 +56,7 @@ const AboutPage = () => {
         }
       };
     }
-  }, [reviews.length, isAutoPlaying]);
+  }, [slideCount, isAutoPlaying]);
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -66,28 +74,12 @@ const AboutPage = () => {
   };
 
   const nextSlide = () => {
-    goToSlide((currentIndex + 1) % reviews.length);
+    goToSlide((currentIndex + 1) % slideCount);
   };
 
   const prevSlide = () => {
-    goToSlide((currentIndex - 1 + reviews.length) % reviews.length);
+    goToSlide((currentIndex - 1 + slideCount) % slideCount);
   };
-
-  // If no reviews, show placeholder testimonials
-  const displayReviews = reviews.length > 0 ? reviews : [
-    {
-      id: "1",
-      comment: "Absolutely love my handmade crochet tote bag! You can feel the quality and care.",
-      username: "Sarah M.",
-      user: null,
-    },
-    {
-      id: "2",
-      comment: "Perfect baby blanket. Soft, beautiful, and arrived so quickly!",
-      username: "Emma T.",
-      user: null,
-    },
-  ];
 
   return (
     <>
@@ -255,7 +247,9 @@ const AboutPage = () => {
             <p className="text-lg text-gray-600">Hear from our happy customers</p>
           </div>
           
-          {displayReviews.length > 0 && (
+          {displayReviews.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No reviews yet. Be the first to share your experience!</p>
+          ) : (
             <div className="relative">
               {/* Slider Container */}
               <div className="overflow-hidden rounded-xl">
@@ -266,62 +260,77 @@ const AboutPage = () => {
                     transform: `translateX(-${currentIndex * 100}%)`,
                   }}
                 >
-                  {displayReviews.map((review, index) => {
-                    const username = review.user?.username || review.username || "Customer";
-                    const initials = getInitials(username);
-                    return (
-                      <div
-                        key={review.id || index}
-                        className="min-w-full px-2"
-                      >
-                        <div className="bg-gray-50 rounded-xl p-8 border-l-4 border-red-600 hover:shadow-lg transition-all">
-                          <div className="flex items-start gap-4 mb-4">
-                            <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                              <Quote size={20} className="text-red-800" />
+                  {slidePairs.map((pair, slideIndex) => (
+                    <div
+                      key={slideIndex}
+                      className="min-w-full flex gap-4 px-2"
+                    >
+                      {pair.map((review, idx) => {
+                        const displayName = review.user?.username || review.username || "Customer";
+                        const initials = getInitials(displayName);
+                        const avatarUrl = review.user?.image;
+                        return (
+                          <div
+                            key={review.id || `${slideIndex}-${idx}`}
+                            className="flex-1 min-w-0"
+                          >
+                            <div className="bg-gray-50 rounded-xl p-6 md:p-8 border-l-4 border-red-600 hover:shadow-lg transition-all h-full">
+                              <div className="flex items-start gap-4 mb-4">
+                                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                  <Quote size={18} className="text-red-800 md:w-5 md:h-5" />
+                                </div>
+                                <p className="text-gray-700 text-base md:text-lg leading-relaxed italic flex-1 line-clamp-4">
+                                  &quot;{review.comment?.trim()}&quot;
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-9 w-9 md:h-10 md:w-10 rounded-full border-2 border-red-200 flex-shrink-0">
+                                  {avatarUrl ? (
+                                    <AvatarImage
+                                      src={avatarUrl}
+                                      alt={displayName}
+                                      className="object-cover"
+                                    />
+                                  ) : null}
+                                  <AvatarFallback className="bg-red-200 text-red-800 font-bold text-xs md:text-sm">
+                                    {initials}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="font-semibold text-gray-900 text-sm md:text-base truncate">{displayName}</span>
+                              </div>
                             </div>
-                            <p className="text-gray-700 text-lg leading-relaxed italic flex-1">
-                              &quot;{review.comment}&quot;
-                            </p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 bg-red-200 rounded-full flex items-center justify-center">
-                              <span className="text-red-800 font-bold text-sm">
-                                {initials}
-                              </span>
-                            </div>
-                            <span className="font-semibold text-gray-900">{username}</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Navigation Buttons */}
-              {displayReviews.length > 1 && (
+              {slideCount > 1 && (
                 <>
                   <button
                     onClick={prevSlide}
                     className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white rounded-full p-2 shadow-lg hover:bg-red-50 transition-all z-10"
-                    aria-label="Previous review"
+                    aria-label="Previous reviews"
                   >
                     <ChevronLeft size={24} className="text-gray-700" />
                   </button>
                   <button
                     onClick={nextSlide}
                     className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white rounded-full p-2 shadow-lg hover:bg-red-50 transition-all z-10"
-                    aria-label="Next review"
+                    aria-label="Next reviews"
                   >
                     <ChevronRight size={24} className="text-gray-700" />
                   </button>
                 </>
               )}
 
-              {/* Dots Indicator */}
-              {displayReviews.length > 1 && (
+              {/* Dots Indicator (one per slide) */}
+              {slideCount > 1 && (
                 <div className="flex justify-center gap-2 mt-6">
-                  {displayReviews.map((_, index) => (
+                  {slidePairs.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
@@ -330,7 +339,7 @@ const AboutPage = () => {
                           ? "w-8 bg-red-600"
                           : "w-2 bg-gray-300 hover:bg-gray-400"
                       }`}
-                      aria-label={`Go to review ${index + 1}`}
+                      aria-label={`Go to slide ${index + 1}`}
                     />
                   ))}
                 </div>

@@ -25,6 +25,7 @@ export default function ContactList() {
           />
           <Table.Column title="Name" dataIndex="name" />
           <Table.Column title="Email" dataIndex="email" />
+          <Table.Column title="Phone" dataIndex="phone" />
           <Table.Column
             title="Message"
             dataIndex="message"

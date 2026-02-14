@@ -13,10 +13,6 @@ const authOptions = {
       clientSecret: process.env.AUTH0_CLIENT_SECRET ?? "",
       issuer: process.env.AUTH0_ISSUER_BASE_URL ?? "",
     }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -124,7 +120,8 @@ const authOptions = {
       return true;
     },
   },
-  secret: process.env.AUTH0_SECRET,
+  secret: process.env.AUTH0_SECRET || process.env.NEXTAUTH_SECRET,
+  useSecureCookies: process.env.NEXTAUTH_URL?.startsWith("https://"),
   pages: {
     signIn: "/login",
     newUser: "/",

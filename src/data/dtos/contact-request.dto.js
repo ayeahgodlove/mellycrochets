@@ -10,6 +10,7 @@ class ContactRequestDto {
     }
     this.name = data.name;
     this.email = data.email;
+    this.phone = data.phone != null ? String(data.phone).trim() : "";
     this.message = data.message;
   }
 
@@ -19,6 +20,7 @@ class ContactRequestDto {
       id: nanoid(20),
       name: this.name,
       email: this.email,
+      phone: this.phone || "",
       message: this.message,
     };
   }

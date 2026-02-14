@@ -24,10 +24,13 @@ export const metadata = {
     template: "%s | MellyCrochets",
   },
   description:
-    "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
+    "Handcrafted crochet fashion from Cameroon – MellyCrochets. Crocheters in Cameroon & Bamenda. Trendy, stylish crochet wear for every occasion. Shop worldwide.",
   keywords: [
     "crochet fashion",
     "handcrafted crochet",
+    "crochets cameroon",
+    "crocheters in cameroon",
+    "crochets bamenda",
     "MellyCrochets",
     "trendy crochet outfits",
     "custom crochet clothing",
@@ -48,7 +51,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "MellyCrochets",
     description:
-      "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
+      "Handcrafted crochet fashion from Cameroon. Crocheters in Cameroon & Bamenda – trendy crochet wear. Shop MellyCrochets worldwide.",
     images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
     site: "@mellycrochets",
     creator: "@mellycrochets",
@@ -59,7 +62,7 @@ export const metadata = {
   openGraph: {
     title: "MellyCrochets",
     description:
-      "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
+      "Handcrafted crochet fashion from Cameroon. Crocheters in Cameroon & Bamenda – trendy crochet wear. Shop MellyCrochets worldwide.",
     images: [
       {
         url: `${url}/uploads/crochets/crochet-dress-main.jpg`,

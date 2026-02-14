@@ -19,7 +19,7 @@ export const metadata = {
     title: "Crochet Blog - Tips, Patterns & Inspiration",
     description:
       "Discover crochet patterns, tutorials, and creative inspiration from MellyCrochets. Perfect for crochet enthusiasts of all skill levels.",
-    type: "article",
+    type: "website",
     url: `${url}/blog_posts`,
     siteName: "MellyCrochets",
     images: [
@@ -30,7 +30,6 @@ export const metadata = {
         alt: "Crochet blog header image",
       },
     ],
-    type: "article",
     locale: "en_US",
   },
   twitter: {

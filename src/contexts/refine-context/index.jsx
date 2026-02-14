@@ -11,7 +11,10 @@ export const RefineContext = (props) => {
   const defaultMode = props?.defaultMode;
 
   return (
-    <SessionProvider>
+    <SessionProvider
+      refetchOnWindowFocus={false}
+      refetchWhenOffline={false}
+    >
       <ColorModeContextProvider defaultMode={defaultMode}>
         <App {...props} />
         <Toaster richColors />

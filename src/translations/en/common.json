@@ -53,6 +53,8 @@
     "location": "Location",
     "locationDescription": "MellyCrochets ETS is located in the heart of the city of Bamenda, Cameroon, making it easy for you to visit us. We are always happy to welcome you to our store.",
     "phone": "Phone",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "e.g. +237 6XX XXX XXXX",
     "chatOnWhatsapp": "Chat with us on WhatsApp",
     "sendUsMessage": "Send us a message",
     "mssge": "Have a custom crochet design in mind? Need help choosing a size or color? Drop us a message!"
@@ -249,6 +251,15 @@
       "create": "Create User",
       "edit": "Edit User",
       "show": "Show User"
+    }
+  },
+  "reviews": {
+    "reviews": "Reviews",
+    "titles": {
+      "list": "List Reviews",
+      "create": "Create Review",
+      "edit": "Edit Review",
+      "show": "Show Review"
     }
   },
   "payment_success": {

@@ -25,6 +25,7 @@ export default function ContactShow() {
           <Descriptions bordered={false}>
           <Descriptions.Item label="Name">{record?.name}</Descriptions.Item>
           <Descriptions.Item label="Email">{record?.email}</Descriptions.Item>
+          <Descriptions.Item label="Phone">{record?.phone || "—"}</Descriptions.Item>
           <Descriptions.Item label="Message">
             <div className="whitespace-pre-wrap">{record?.message}</div>
           </Descriptions.Item>

@@ -13,7 +13,7 @@ import AppCurrency from "./shared/currency.component";
 import { crochetTypeAPI } from "@/store/api/crochet_type_api";
 import CrochetDropdownV2 from "./shared/crochet-type-menu-v2.component";
 import { useCart } from "../hooks/cart.hook";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { format } from "../lib/format";
 import { Avatar, Dropdown, Space, Image } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,11 @@ const AppNavigation = () => {
   const { loadCartCrochets } = useCart();
 
   const [isOpen, setOpen] = useState(false);
-  const { data: user } = useGetIdentity({});
+  const { data: session } = useSession();
+  const { data: identity } = useGetIdentity({});
+  const user = session?.user
+    ? { ...session.user, avatar: session.user.image ?? identity?.avatar }
+    : identity;
   const [cartCount, setCartCount] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const [scrolled, setScrolled] = useState(false);

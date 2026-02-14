@@ -153,6 +153,7 @@ const emptyContact = {
   id: "",
   name: "",
   email: "",
+  phone: "",
   message: "",
 };
 

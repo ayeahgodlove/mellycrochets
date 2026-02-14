@@ -26,6 +26,7 @@ const CrochetDetail = ({ crochet }) => {
   const [loadingAddToCart, setLoadingAddToCart] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColors, setSelectedColors] = useState([]);
+  const [reviewsRefreshTrigger, setReviewsRefreshTrigger] = useState(0);
 
   const { addToCart } = useCart();
   const { currency, getConvertedPrice } = useCurrency();
@@ -330,8 +331,11 @@ const CrochetDetail = ({ crochet }) => {
       {/* Reviews Section */}
       <section className="bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 md:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-8">
-          <ReviewCreate crochetId={crochet.id} />
-          <ReviewList crochetId={crochet.id} />
+          <ReviewCreate
+            crochetId={crochet.id}
+            onReviewSubmitted={() => setReviewsRefreshTrigger((t) => t + 1)}
+          />
+          <ReviewList crochetId={crochet.id} refreshTrigger={reviewsRefreshTrigger} />
         </div>
       </section>
     </>

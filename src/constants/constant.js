@@ -75,6 +75,15 @@ export const keywords = [
   "Crochet Inspiration",
   "Bamenda Crochet Fashion",
   "Cameroon Handmade Fashion",
+  "crochets cameroon",
+  "crochets bamenda",
+  "crocheters in cameroon",
+  "crochet cameroon",
+  "handmade crochet cameroon",
+  "crochet bamenda",
+  "crochet north west cameroon",
+  "buy crochet cameroon",
+  "crochet shop cameroon",
   "Crochet Craftsmanship",
   "Crochet Gifts",
   "Crochet Community",
@@ -102,7 +111,7 @@ export const SEOConfig = {
   },
   openGraph: {
     description:
-      "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
+      "Handcrafted crochet fashion from Cameroon. Crocheters in Cameroon & Bamenda – trendy crochet wear. Shop MellyCrochets worldwide.",
     images: [
       `${process.env.NEXTAUTH_URL}/uploads/crochets/crochet-dress-main.jpg`,
     ],

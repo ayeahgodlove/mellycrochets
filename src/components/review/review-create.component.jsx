@@ -4,8 +4,11 @@ import { Rate, Input, Button, message, Card } from "@/components/ui";
 import { useTranslations } from "next-intl";
 import { MessageSquare, Star } from "lucide-react";
 
-export const ReviewCreate = ({ crochetId }) => {
-  const { mutate, isLoading } = useCreate();
+export const ReviewCreate = ({ crochetId, onReviewSubmitted }) => {
+  const { mutate, isLoading } = useCreate({
+    resource: "reviews",
+    invalidates: ["list"],
+  });
   const { data: user } = useGetIdentity({});
   const [rating, setRating] = useState(3);
   const [username, setUsername] = useState("");
@@ -13,26 +16,32 @@ export const ReviewCreate = ({ crochetId }) => {
   const t = useTranslations("customer_detail");
 
   const handleSubmit = () => {
-    const isUsername = !user && !username 
+    const isUsername = !user && !username;
     if (!rating || !comment.trim() || isUsername) {
       return message.warning(t("warningMsg"));
     }
 
-    mutate({
-      resource: "reviews",
-      values: {
-        userId: user ? user.id : null,
-        crochetId,
-        rating,
-        comment,
-        username,
+    mutate(
+      {
+        resource: "reviews",
+        values: {
+          userId: user ? user.id : null,
+          crochetId,
+          rating,
+          comment,
+          username,
+        },
       },
-    });
-    
-    // Reset form after successful submission
-    setComment("");
-    setRating(3);
-    if (!user) setUsername("");
+      {
+        onSuccess: () => {
+          message.success(t("btnMsg") + " – thank you!");
+          setComment("");
+          setRating(3);
+          if (!user) setUsername("");
+          onReviewSubmitted?.();
+        },
+      }
+    );
   };
 
   return (

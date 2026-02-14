@@ -17,10 +17,13 @@ export const metadata = {
     template: "%s | MellyCrochets",
   },
   description:
-    "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
+    "Handcrafted crochet fashion from Cameroon – MellyCrochets. Crocheters in Cameroon & Bamenda. Trendy, stylish crochet wear for every occasion. Shop handmade crochet worldwide.",
   keywords: [
     "crochet fashion",
     "handcrafted crochet",
+    "crochets cameroon",
+    "crocheters in cameroon",
+    "crochets bamenda",
     "MellyCrochets",
     "trendy crochet outfits",
     "custom crochet clothing",
@@ -37,15 +40,29 @@ export const metadata = {
     card: "summary_large_image",
     title: "MellyCrochets",
     description:
-      "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
+      "Handcrafted crochet fashion from Cameroon. Crocheters in Cameroon & Bamenda – trendy crochet wear. Shop MellyCrochets worldwide.",
     images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
     creator: "@mellycrochets",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: url,
   },
   openGraph: {
     title: "MellyCrochets",
     description:
-      "Explore a collection of handcrafted crochet outfits at MellyCrochets. Trendy, stylish, and comfortable crochet wear for every occasion.",
-    images: [`${url}/uploads/crochets/crochet-dress-main.jpg`],
+      "Handcrafted crochet fashion from Cameroon. Crocheters in Cameroon & Bamenda – trendy crochet wear. Shop MellyCrochets worldwide.",
+    images: [
+      {
+        url: `${url}/uploads/crochets/crochet-dress-main.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "MellyCrochets handcrafted crochet fashion",
+      },
+    ],
     siteName: "MellyCrochets",
     locale: "en_US",
     url: url,
@@ -115,7 +132,7 @@ export default async function RootLayout({ children }) {
               url: url,
               logo: `${url}/logo.png`,
               image: `${url}/uploads/crochets/crochet-dress-main.jpg`,
-              description: "Handcrafted crochet fashion and accessories. Sustainable, eco-friendly pieces for every style.",
+              description: "Handcrafted crochet fashion and accessories from Cameroon. Crocheters in Bamenda and Cameroon – sustainable, eco-friendly pieces for every style. MellyCrochets.",
               telephone: "+237681077051",
               address: {
                 "@type": "PostalAddress",
@@ -140,7 +157,7 @@ export default async function RootLayout({ children }) {
               "@type": "WebSite",
               name: "MellyCrochets",
               url: url,
-              description: "Handcrafted crochet fashion and accessories",
+              description: "Handcrafted crochet fashion from Cameroon. Crocheters in Cameroon and Bamenda – shop MellyCrochets for handmade crochet wear worldwide.",
               publisher: { "@id": `${url}/#organization` },
               potentialAction: {
                 "@type": "SearchAction",
@@ -161,7 +178,7 @@ export default async function RootLayout({ children }) {
               "@type": "LocalBusiness",
               name: "MellyCrochets",
               image: `${url}/uploads/crochets/crochet-dress-main.jpg`,
-              description: "Handcrafted crochet fashion and accessories",
+              description: "Handcrafted crochet fashion from Cameroon. Crocheters in Bamenda – handmade crochet wear and accessories. MellyCrochets.",
               url: url,
               telephone: "+237681077051",
               address: {
