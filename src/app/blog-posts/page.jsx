@@ -13,14 +13,14 @@ export const metadata = {
   description:
     "Discover crochet patterns, tutorials, and creative inspiration from MellyCrochets. Perfect for crochet enthusiasts of all skill levels.",
   alternates: {
-    canonical: `${url}/blog_posts`,
+    canonical: "/blog-posts",
   },
   openGraph: {
     title: "Crochet Blog - Tips, Patterns & Inspiration",
     description:
       "Discover crochet patterns, tutorials, and creative inspiration from MellyCrochets. Perfect for crochet enthusiasts of all skill levels.",
     type: "website",
-    url: `${url}/blog_posts`,
+    url: `${url}/blog-posts`,
     siteName: "MellyCrochets",
     images: [
       {
@@ -71,7 +71,8 @@ export const metadata = {
   },
 };
 
-export default async function IndexPage() {
+export default async function BlogPostsIndexPage() {
   const t = await getTranslations("blog_posts");
   return <BlogPostsPage title={t("title")} description={t("description")} />;
 }
+

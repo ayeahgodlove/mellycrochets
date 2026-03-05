@@ -8,7 +8,7 @@ const CategoryPostsPage = ({ category }) => {
         title={category.name}
         description={category.description}
         breadcrumbs={[
-          { title: "Posts", href: "/blog_posts" },
+          { title: "Posts", href: "/blog-posts" },
           { title: category.name, href: "#" },
         ]}
       />

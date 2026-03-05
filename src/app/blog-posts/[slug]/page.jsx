@@ -22,12 +22,13 @@ export async function generateMetadata({ params }) {
       ...keywords,
       ...(post.tags?.map((tag) => tag.name) || []),
       post.category?.name || "",
-    ].filter(Boolean)
+    ]
+      .filter(Boolean)
       .join(", "),
     slug,
-    url: `${process.env.NEXTAUTH_URL}/blog_posts/${slug}`,
+    url: `${process.env.NEXTAUTH_URL}/blog-posts/${slug}`,
     alternates: {
-      canonical: `${process.env.NEXTAUTH_URL}/blog_posts/${slug}`,
+      canonical: `${process.env.NEXTAUTH_URL}/blog-posts/${slug}`,
     },
     image: `${process.env.NEXTAUTH_URL}${getPostImageUrl(post.imageUrl)}`,
     images: [
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }) {
       type: "article",
       title: post.title,
       description: post.summary || `Read this post about ${post.title}`,
-      url: `${process.env.NEXTAUTH_URL}/blog_posts/${slug}`,
+      url: `${process.env.NEXTAUTH_URL}/blog-posts/${slug}`,
       siteName: "MellyCrochets",
       images: [
         {
@@ -105,13 +106,13 @@ function buildBlogPostBreadcrumbSchema(post, baseUrl) {
         "@type": "ListItem",
         position: 3,
         name: post.title,
-        item: `${baseUrl}/blog_posts/${post.slug}`,
+        item: `${baseUrl}/blog-posts/${post.slug}`,
       },
     ],
   };
 }
 
-export default async function IndexPage({ params }) {
+export default async function BlogPostDetailRoute({ params }) {
   const { slug } = await params;
   const [post, categories, tags, latestPosts] = await Promise.all([
     fetchPostBySlug(slug),
@@ -135,3 +136,4 @@ export default async function IndexPage({ params }) {
     </>
   );
 }
+

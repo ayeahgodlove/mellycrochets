@@ -91,7 +91,7 @@ export async function generateMetadata({ params }) {
           tag.posts?.map((post) => ({
             "@type": "BlogPosting",
             name: post.title,
-            url: `${process.env.NEXTAUTH_URL}/blog_posts/${post.slug}`,
+            url: `${process.env.NEXTAUTH_URL}/blog-posts/${post.slug}`,
             keywords: tag.name,
           })) || [],
       },

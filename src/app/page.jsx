@@ -57,7 +57,7 @@ export const metadata = {
     creator: "@mellycrochets",
   },
   alternates: {
-    canonical: `${url}`,
+    canonical: "/",
   },
   openGraph: {
     title: "MellyCrochets",

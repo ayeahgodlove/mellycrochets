@@ -18,11 +18,11 @@ const AppPost = ({ post }) => {
       />
       <div className="px-6 py-3">
         <p className="text-lg font-semibold text-gray-800">
-          <Link href={`/blog_posts/${post.slug}`}>{post.title}</Link>
+          <Link href={`/blog-posts/${post.slug}`}>{post.title}</Link>
         </p>
         <p className="text-gray-600 mt-2 text-sm">{post.summary}</p>
         <Link
-          href={`/blog_posts/${post.slug}`}
+          href={`/blog-posts/${post.slug}`}
           className="view-country-link mt-4 px-6 py-2 border rounded-full w-full justify-center"
         >
           Learn more

@@ -8,7 +8,7 @@ const TagPostsPage = ({ tag }) => {
         title={tag.name}
         description={tag.description}
         breadcrumbs={[
-          { title: "Posts", href: "/blog_posts" },
+          { title: "Posts", href: "/blog-posts" },
           { title: tag.name, href: "#" },
         ]}
       />

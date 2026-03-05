@@ -21,28 +21,25 @@ export async function generateMetadata({ params }) {
   const url = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
 
   if (!slug) {
-    return {}; // Avoid breaking the app
+    return {};
   }
 
-  // Fetch the crochet type details
   const crochetType = await fetchCrochetTypeDetails(slug);
   if (!crochetType) {
-    return {}; // Handle the case where crochetType data is not available
+    return {};
   }
 
-  // Construct the image URL for openGraph and other metadata
   const imageUrl = crochetType.crochets[0]?.imageUrls[0]
     ? `${url}/uploads/crochets/${crochetType.crochets[0].imageUrls[0]}`
-    : `${url}/uploads/default-crochet.jpg`; // Fallback if no image URL
+    : `${url}/uploads/default-crochet.jpg`;
 
-  // Generate metadata
   return generatePageMetadata({
     title: `${crochetType.name} | MellyCrochets Shop`,
     description:
       crochetType.description ||
       `Beautiful handmade ${crochetType.name} crochet designs by MellyCrochets`,
     alternates: {
-      canonical: `${url}/crochet_designs/${slug}`,
+      canonical: `${url}/crochet-designs/${slug}`,
     },
     slug,
     image: imageUrl,
@@ -59,7 +56,7 @@ export async function generateMetadata({ params }) {
       description:
         crochetType.description ||
         `Handmade ${crochetType.name} crochet creations`,
-      url: `${url}/crochet_designs/${slug}`,
+      url: `${url}/crochet-designs/${slug}`,
       type: "website",
       images: [
         {
@@ -86,12 +83,11 @@ export async function generateMetadata({ params }) {
       ],
       apple: "/apple-touch-icon.png",
     },
-    url: `${url}/crochet_designs/${slug}`,
+    url: `${url}/crochet-designs/${slug}`,
     publishedTime: new Date(crochetType.createdAt).toISOString(),
     modifiedTime: new Date(crochetType.updatedAt).toISOString(),
   });
 }
-
 
 function buildCrochetDesignBreadcrumbSchema(crochetType, baseUrl) {
   return {
@@ -104,7 +100,7 @@ function buildCrochetDesignBreadcrumbSchema(crochetType, baseUrl) {
         "@type": "ListItem",
         position: 3,
         name: crochetType.name,
-        item: `${baseUrl}/crochet_designs/${crochetType.slug}`,
+        item: `${baseUrl}/crochet-designs/${crochetType.slug}`,
       },
     ],
   };
@@ -137,3 +133,4 @@ export default async function Page({ params }) {
     </>
   );
 }
+

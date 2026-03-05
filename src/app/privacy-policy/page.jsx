@@ -20,14 +20,14 @@ export const metadata = {
     "Learn how MellyCrochets collects, uses, and protects your personal information. Your privacy is important to us.",
   keywords: baseKeywords.join(", "),
   alternates: {
-    canonical: `${url}/privacy-policy`,
+    canonical: "/privacy-policy",
   },
   openGraph: {
     title: "Privacy Policy | MellyCrochets Shop",
     description:
       "Your privacy matters. Learn how we protect and use your information at MellyCrochets.",
     url: `${url}/privacy-policy`,
-    type: "article",
+    type: "website",
     images: [
       {
         url: `${url}/uploads/crochets/cameroon.jpg`,

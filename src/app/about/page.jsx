@@ -19,7 +19,7 @@ export async function generateMetadata() {
       ...keywords,
     ].join(", "),
     alternates: {
-      canonical: `${url}/about`,
+      canonical: "/about",
     },
     robots: {
       index: true,

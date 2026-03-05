@@ -20,6 +20,8 @@ export default function HeroSection({
   primaryCtaLabel,
   secondaryCtaLabel,
   heroImages = [],
+  primaryHref = "/shop",
+  secondaryHref = "/#listing",
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -110,14 +112,14 @@ export default function HeroSection({
           </p>
           <div className="hero-desc-in mt-8 md:mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4">
             <Link
-              href="/shop"
+              href={primaryHref}
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-base font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#82181a]"
               style={{ backgroundColor: "#82181a" }}
             >
               {primaryCtaLabel ?? "Shop the collection"}
             </Link>
             <Link
-              href="/#listing"
+              href={secondaryHref}
               className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-base font-semibold border-2 border-[#82181a] text-[#82181a] bg-transparent transition-all duration-300 hover:bg-[#82181a]/5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#82181a]"
             >
               {secondaryCtaLabel ?? "Explore styles"}

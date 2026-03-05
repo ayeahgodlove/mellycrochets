@@ -49,7 +49,7 @@ export const metadata = {
     follow: true,
   },
   alternates: {
-    canonical: url,
+    canonical: "/",
   },
   openGraph: {
     title: "MellyCrochets",
@@ -146,7 +146,7 @@ export default async function RootLayout({ children }) {
                 "https://www.instagram.com/mellycrochets_",
                 "https://facebook.com/MellycrochetsETS",
               ],
-            }),
+            }).replace(/</g, "\\u003c"),
           }}
         />
         <script
@@ -167,7 +167,7 @@ export default async function RootLayout({ children }) {
                 },
                 "query-input": "required name=search_term_string",
               },
-            }),
+            }).replace(/</g, "\\u003c"),
           }}
         />
         <script
@@ -191,7 +191,7 @@ export default async function RootLayout({ children }) {
               },
               openingHours: "Mo,Tu,We,Th,Fr 09:00-17:00",
               priceRange: "$$",
-            }),
+            }).replace(/</g, "\\u003c"),
           }}
         />
         {/* Google tag (gtag.js) */}

@@ -21,7 +21,7 @@ function buildRssXml(posts, baseUrl) {
   const items = posts
     .map((post) => {
       const plain = post?.get ? post.get() : post;
-      const link = `${baseUrl}/blog_posts/${plain.slug}`;
+      const link = `${baseUrl}/blog-posts/${plain.slug}`;
       const pubDate = plain.createdAt ? new Date(plain.createdAt).toUTCString() : lastBuildDate;
       const title = escapeXml(plain.title || "");
       const description = escapeXml(plain.summary || plain.title || "");

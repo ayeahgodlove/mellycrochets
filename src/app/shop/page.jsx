@@ -54,7 +54,7 @@ export const metadata = {
   },
   manifest: "/site.webmanifest",
   alternates: {
-    canonical: `${url}/shop`,
+    canonical: "/shop",
   },
   openGraph: {
     title: "MellyCrochets Shop - Unique Handmade Crochet Creations",

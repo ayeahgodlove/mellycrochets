@@ -46,7 +46,7 @@ const BlogPostDetailPage = ({
               <nav className="flex items-center gap-2 text-sm text-white/80 mb-4" aria-label="Breadcrumb">
                 <Link href="/" className="hover:text-white transition-colors">Home</Link>
                 <ChevronRight className="w-4 h-4 shrink-0" />
-                <Link href="/blog_posts" className="hover:text-white transition-colors">Posts</Link>
+                <Link href="/blog-posts" className="hover:text-white transition-colors">Posts</Link>
                 <ChevronRight className="w-4 h-4 shrink-0" />
                 <span className="text-white/95 truncate max-w-[180px] md:max-w-none" aria-current="page">
                   {post?.title}
@@ -123,7 +123,7 @@ const BlogPostDetailPage = ({
                 {latestPosts?.map((p) => (
                   <li key={p.id}>
                     <Link
-                      href={`/blog_posts/${p.slug}`}
+                      href={`/blog-posts/${p.slug}`}
                       className="block px-5 py-3.5 text-[#374151] hover:bg-[#fef2f2] hover:text-[#82181a] transition-colors line-clamp-2"
                     >
                       {p.title}

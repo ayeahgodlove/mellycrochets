@@ -40,29 +40,35 @@ export default async function sitemap() {
   categories = Array.isArray(categories) ? categories.map(toPlain) : [];
   tags = Array.isArray(tags) ? tags.map(toPlain) : [];
 
-  const crochetsData = crochets.map((crochet) => ({
-    url: `${baseUrl}/crochets/${crochet?.slug}`,
-    lastModified: new Date(crochet?.updatedAt || crochet?.createdAt),
-    changeFrequency: "weekly",
-    priority: 0.8,
-    images: (crochet?.imageUrls || []).map((imageUrl) => ({
-      url: `${baseUrl}/uploads/crochets/${typeof imageUrl === "string" ? imageUrl : imageUrl?.url || ""}`,
-      alt: crochet?.name,
-    })).filter((img) => img.url !== `${baseUrl}/uploads/crochets/`),
-  }));
+  const crochetsData = crochets.map((crochet) => {
+    const imageUrls = Array.isArray(crochet?.imageUrls) ? crochet.imageUrls : [];
+    const images = imageUrls
+      .map((imageUrl) =>
+        `${baseUrl}/uploads/crochets/${
+          typeof imageUrl === "string" ? imageUrl : imageUrl?.url || ""
+        }`
+      )
+      .filter((url) => url !== `${baseUrl}/uploads/crochets/`);
+
+    return {
+      url: `${baseUrl}/crochets/${crochet?.slug}`,
+      lastModified: new Date(crochet?.updatedAt || crochet?.createdAt),
+      changeFrequency: "weekly",
+      priority: 0.8,
+      images,
+    };
+  });
 
   const blogsData = blogs.map((blog) => ({
-    url: `${baseUrl}/blog_posts/${blog?.slug}`,
+    url: `${baseUrl}/blog-posts/${blog?.slug}`,
     lastModified: new Date(blog?.updatedAt || blog?.createdAt),
     changeFrequency: "monthly",
     priority: 0.7,
-    images: blog?.imageUrl
-      ? [{ url: `${baseUrl}${getPostImageUrl(blog?.imageUrl)}`, alt: blog?.title }]
-      : [],
+    images: blog?.imageUrl ? [`${baseUrl}${getPostImageUrl(blog?.imageUrl)}`] : [],
   }));
 
   const crochetTypeData = crochetTypes.map((crochetType) => ({
-    url: `${baseUrl}/crochet_designs/${crochetType?.slug}`,
+    url: `${baseUrl}/crochet-designs/${crochetType?.slug}`,
     lastModified: new Date(crochetType?.updatedAt || crochetType?.createdAt),
     changeFrequency: "monthly",
     priority: 0.7,
@@ -95,9 +101,21 @@ export default async function sitemap() {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/crochets`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/crochet-designs`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
     { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/blog_posts`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/blog-posts`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/cart`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
     ...crochetsData,
@@ -105,7 +123,5 @@ export default async function sitemap() {
     ...blogsData,
     ...categoryData,
     ...tagData,
-    { url: `${baseUrl}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/register`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
   ];
 }

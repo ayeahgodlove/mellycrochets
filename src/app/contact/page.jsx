@@ -11,7 +11,7 @@ export const metadata = {
     "Get in touch with MellyCrochets for inquiries about our handcrafted crochet fashion and custom orders.",
 
   alternates: {
-    canonical: `${url}/contact`,
+    canonical: "/contact",
   },
   robots: {
     index: true,

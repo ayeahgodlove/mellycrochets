@@ -11,7 +11,9 @@ const CrochetDropdownV2 = ({ crochetTypes, onNavigate, isMobile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const pathname = usePathname();
-  const isDropdownActive = pathname.startsWith("/crochet_designs/");
+  const isDropdownActive =
+    pathname.startsWith("/crochet-designs/") ||
+    pathname === "/crochet-designs";
 
   // Defer close to next tick so link navigation starts before menu unmounts (fixes mobile links not going)
   const handleLinkClick = () => {
@@ -42,7 +44,7 @@ const CrochetDropdownV2 = ({ crochetTypes, onNavigate, isMobile }) => {
   const linkClassName = (slug) =>
     cn(
       "block px-3 py-2 text-sm rounded-md transition-colors",
-      pathname === `/crochet_designs/${slug}`
+      pathname === `/crochet-designs/${slug}`
         ? "text-red-800 bg-red-50"
         : "text-gray-700 hover:text-red-800 hover:bg-red-50"
     );
@@ -83,10 +85,10 @@ const CrochetDropdownV2 = ({ crochetTypes, onNavigate, isMobile }) => {
               {crochetTypes?.map((type) => (
                 <li key={type.id} className="flex">
                   <Link
-                    href={`/crochet_designs/${type.slug}`}
+                    href={`/crochet-designs/${type.slug}`}
                     className={cn(
                       "flex-1 block min-h-[44px] px-3 py-2.5 text-sm rounded-md transition-colors touch-manipulation flex items-center",
-                      pathname === `/crochet_designs/${type.slug}`
+                      pathname === `/crochet-designs/${type.slug}`
                         ? "text-red-800 bg-red-50 font-medium"
                         : "text-gray-700 hover:text-red-800 hover:bg-red-50 active:bg-red-50/80"
                     )}
@@ -107,7 +109,7 @@ const CrochetDropdownV2 = ({ crochetTypes, onNavigate, isMobile }) => {
     key: type.id,
     label: (
       <Link
-        href={`/crochet_designs/${type.slug}`}
+        href={`/crochet-designs/${type.slug}`}
         className={linkClassName(type.slug)}
         onClick={handleLinkClick}
       >

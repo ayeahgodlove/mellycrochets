@@ -2,50 +2,28 @@ import CrochetDetailPage from "../../../page-components/crochets/crochet-detail-
 import { fetchCrochetBySlug } from "../../../utils/data";
 import { keywords } from "../../../constants/constant";
 import { JsonLd } from "../../../components/seo/json-ld";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   if (!slug) {
-    return {
-      title: "Crochet Product | MellyCrochets Shop",
-      description: "Beautiful handmade crochet designs from MellyCrochets",
-      robots: {
-        index: true,
-        follow: true,
-      },
-    };
+    notFound();
   }
 
   let crochet;
   try {
     crochet = await fetchCrochetBySlug(slug);
   } catch {
-    return {
-      title: "Crochet Product | MellyCrochets Shop",
-      description: "Beautiful handmade crochet designs from MellyCrochets",
-      robots: {
-        index: true,
-        follow: true,
-      },
-    };
+    notFound();
   }
 
   if (!crochet) {
-    return {
-      title: "Crochet Product | MellyCrochets Shop",
-      description: "Beautiful handmade crochet designs from MellyCrochets",
-      alternates: {
-        canonical: `${process.env.NEXTAUTH_URL}/crochets/${slug}`
-      },
-      robots: {
-        index: true,
-        follow: true,
-      },
-    };
+    notFound();
   }
 
   const baseUrl = process.env.NEXTAUTH_URL || "https://mellycrochets.shop";
-  const productUrl = `${baseUrl}/crochets/${slug}`;
+  const canonicalPath = `/crochets/${slug}`;
+  const productUrl = `${baseUrl}${canonicalPath}`;
   const imageUrl = crochet.imageUrls?.[0]
     ? `${baseUrl}/uploads/crochets/${crochet.imageUrls[0]}`
     : `${baseUrl}/default-crochet-image.jpg`;
@@ -57,7 +35,7 @@ export async function generateMetadata({ params }) {
     title,
     description,
     alternates: {
-      canonical: productUrl
+      canonical: canonicalPath,
     },
     openGraph: {
       title,
@@ -170,16 +148,26 @@ function buildBreadcrumbSchema(crochet, baseUrl) {
 
 export default async function IndexPage({ params }) {
   const { slug } = await params;
-  const crochet = await fetchCrochetBySlug(slug);
-  const baseUrl = process.env.NEXTAUTH_URL || "";
 
-  const productSchema = crochet ? buildProductSchema(crochet, baseUrl) : null;
-  const breadcrumbSchema = crochet ? buildBreadcrumbSchema(crochet, baseUrl) : null;
+  let crochet;
+  try {
+    crochet = await fetchCrochetBySlug(slug);
+  } catch {
+    notFound();
+  }
+
+  if (!crochet) {
+    notFound();
+  }
+
+  const baseUrl = process.env.NEXTAUTH_URL || "";
+  const productSchema = buildProductSchema(crochet, baseUrl);
+  const breadcrumbSchema = buildBreadcrumbSchema(crochet, baseUrl);
 
   return (
     <>
-      {productSchema && <JsonLd data={productSchema} />}
-      {breadcrumbSchema && <JsonLd data={breadcrumbSchema} />}
+      <JsonLd data={productSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <CrochetDetailPage crochet={crochet} />
     </>
   );

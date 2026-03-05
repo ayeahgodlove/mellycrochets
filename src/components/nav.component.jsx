@@ -125,7 +125,7 @@ const AppNavigation = () => {
     { href: "/", label: t("home") },
     { href: "/shop", label: t("shop") },
     { href: "/about", label: t("about") },
-    { href: "/blog_posts", label: t("article") },
+    { href: "/blog-posts", label: t("article") },
     { href: "/contact", label: t("contact") },
   ];
 
